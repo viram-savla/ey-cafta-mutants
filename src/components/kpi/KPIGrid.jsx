@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { KPICard } from './KPICard';
 import { AlertBanner } from './AlertBanner';
 import { MODEL } from '../../lib/constants';
 import { getRAGStatus, calcIC } from '../../lib/calculations';
-import { Printer, X, Package, TrendingDown } from 'lucide-react';
+import { Printer, Package, TrendingDown } from 'lucide-react';
+import { Button } from '../ui/button';
+import { Progress } from '../ui/progress';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from '../ui/dialog';
 
 function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
   const ic = calcIC(MODEL.ebitda, MODEL.annualInterestInr);
@@ -16,6 +20,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 11.0%',
       status: getRAGStatus('ebitdaHedged', hedgedMargin),
       tab: 'scenario',
+      tooltip: `EBITDA ÷ Revenue at 80% hedge ratio · Combined shock: ₹${Math.round(hedgedMargin * MODEL.revenue)} Cr ÷ ₹${MODEL.revenue} Cr`,
     },
     {
       id: 'ebitdaUnhedged',
@@ -24,6 +29,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 11.0%',
       status: getRAGStatus('ebitdaUnhedged', unhedgedMargin),
       tab: 'scenario',
+      tooltip: `EBITDA ÷ Revenue at 0% hedge · ${unhedgedMargin < 0.11 ? `Board floor BREACH by ${((0.11 - unhedgedMargin) * 10000).toFixed(0)}bps` : `+${((unhedgedMargin - 0.11) * 10000).toFixed(0)}bps above floor`}`,
     },
     {
       id: 'hedgeCoverage',
@@ -32,14 +38,16 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 80%',
       status: getRAGStatus('hedgeCoverage', 0.80),
       tab: 'scenario',
+      tooltip: '0–3M: 80% via SGX Futures · 3–6M: 50% via FFA Collar · 6–12M: 20% via Participating Forward',
     },
     {
       id: 'wahr',
       label: 'FX WAHR',
-      value: `${MODEL.wahr.toFixed(2)}`,
+      value: `₹${MODEL.wahr.toFixed(2)}/USD`,
       target: '83.50–85.50',
       status: getRAGStatus('wahr', MODEL.wahr),
       tab: 'scenario',
+      tooltip: `Weighted Average Hedge Rate across USD 140M net-long position · 3-bucket ladder · Band: ₹${MODEL.wahRangeLow}–${MODEL.wahRangeHigh}`,
     },
     {
       id: 'inventoryDays',
@@ -48,6 +56,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≤ 55 days',
       status: getRAGStatus('inventoryDays', MODEL.inventoryDaysCurrent),
       tab: 'overview',
+      tooltip: `Current ${MODEL.inventoryDaysCurrent}d vs target ${MODEL.inventoryDaysTarget}d · Click to see ₹${MODEL.wcRelease} Cr WC release breakdown`,
     },
     {
       id: 'nigeriaBuffer',
@@ -56,6 +65,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 45 days',
       status: getRAGStatus('nigeriaBuffer', MODEL.nigeriaBufferDays),
       tab: 'nigeria',
+      tooltip: `USD ${MODEL.nigeriaBuffer}M ÷ USD ${MODEL.nigeriaMonthlyImport}M/month × 30 = ${MODEL.nigeriaBufferDays} days · Policy floor: ${MODEL.nigeriaGreenFloor} days`,
     },
     {
       id: 'ic',
@@ -64,6 +74,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 2.0×',
       status: getRAGStatus('ic', ic),
       tab: 'overview',
+      tooltip: `EBITDA ÷ Annual Interest = ₹${MODEL.ebitda} Cr ÷ ₹${MODEL.annualInterestInr} Cr = ${ic.toFixed(1)}×`,
     },
     {
       id: 'debtMaturity',
@@ -72,6 +83,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 3 years',
       status: getRAGStatus('debtMaturity', MODEL.loanMaturityYears),
       tab: 'overview',
+      tooltip: `USD ${MODEL.loanPrincipal}M term loan · SOFR+${(MODEL.creditSpread * 100).toFixed(0)}bps · Matures in ${MODEL.loanMaturityYears} years`,
     },
     {
       id: 'sofr',
@@ -80,6 +92,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '< 6.0%',
       status: getRAGStatus('sofr', MODEL.allInRate),
       tab: 'overview',
+      tooltip: `SOFR ${(MODEL.sofr * 100).toFixed(2)}% + Spread ${(MODEL.creditSpread * 100).toFixed(0)}bps = ${(MODEL.allInRate * 100).toFixed(2)}% · USD ${MODEL.collarNotional}M collared at ${(MODEL.collarFloor * 100).toFixed(0)}–${(MODEL.collarCap * 100).toFixed(0)}%`,
     },
     {
       id: 'cfar',
@@ -88,6 +101,7 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
       target: '≥ 8.0%',
       status: getRAGStatus('cfar', cfar5th || 0.085),
       tab: 'montecarlo',
+      tooltip: '5th percentile EBITDA margin across 1,000 Monte Carlo paths (FX + iron ore + freight) · Run CFaR Simulator to update',
     },
   ];
 }
@@ -99,91 +113,12 @@ const INVENTORY_ITEMS = [
   { label: 'MRO / Consumables', current: null, target: null, dailyCost: null, fixed: 24, color: '#8b5cf6' },
 ];
 
-function InventoryDrilldown({ onClose }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.7)' }}
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.95, y: 12 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.95, y: 12 }}
-        className="rounded-lg p-5 w-full max-w-lg"
-        style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Package size={16} style={{ color: '#3b82f6' }} />
-            <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>Inventory Optimisation — WC Release</span>
-          </div>
-          <button onClick={onClose} style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
-        </div>
-
-        {/* Summary */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          {[
-            { label: 'Current Days', value: `${MODEL.inventoryDaysCurrent}d`, color: 'var(--red)' },
-            { label: 'Target Days', value: `${MODEL.inventoryDaysTarget}d`, color: 'var(--green)' },
-            { label: 'WC Release', value: `₹${MODEL.wcRelease} Cr`, color: 'var(--accent-gold)' },
-          ].map(item => (
-            <div key={item.label} className="text-center p-2 rounded" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
-              <div className="font-mono font-bold mt-0.5" style={{ color: item.color }}>{item.value}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Breakdown */}
-        <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Savings Breakdown</div>
-        <div className="space-y-2">
-          {INVENTORY_ITEMS.map(item => {
-            const release = item.fixed ?? Math.round((item.current - item.target) * item.dailyCost);
-            const reduction = item.current ? item.current - item.target : null;
-            return (
-              <div key={item.label} className="flex items-center gap-3 p-2 rounded text-xs"
-                style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-                <div className="w-2 h-6 rounded" style={{ background: item.color, opacity: 0.8 }} />
-                <div className="flex-1">
-                  <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{item.label}</div>
-                  {reduction !== null && (
-                    <div style={{ color: 'var(--text-muted)' }}>{item.current}d → {item.target}d (−{reduction} days × ₹{item.dailyCost.toFixed(1)} Cr/day)</div>
-                  )}
-                  {item.fixed && <div style={{ color: 'var(--text-muted)' }}>Rationalisation + standardisation</div>}
-                </div>
-                <div className="font-mono font-bold" style={{ color: item.color }}>₹{release} Cr</div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Total */}
-        <div className="mt-3 flex items-center justify-between p-2 rounded"
-          style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid var(--amber-border)' }}>
-          <div className="flex items-center gap-2 text-xs">
-            <TrendingDown size={12} style={{ color: 'var(--accent-gold)' }} />
-            <span style={{ color: 'var(--text-secondary)' }}>Total WC Release (Year 1 one-time cash inflow)</span>
-          </div>
-          <div className="font-mono font-bold" style={{ color: 'var(--accent-gold)' }}>₹{MODEL.wcRelease} Cr</div>
-        </div>
-        <p className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-          Daily raw material cost basis: ₹{MODEL.dailyRmCost.toFixed(2)} Cr/day (Revenue ₹{MODEL.revenue} Cr ÷ 365 × RM cost ratio ~48.7%)
-        </p>
-      </motion.div>
-    </motion.div>
-  );
-}
-
 export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
   const kpis = buildKPIs(hedgedMargin, unhedgedMargin, cfar5th);
   const [showInventoryDrill, setShowInventoryDrill] = useState(false);
 
-  const handlePrint = () => window.print();
+  const progressValue = Math.min((hedgedMargin / 0.14) * 100, 100);
+  const floorPct = (0.11 / 0.14) * 100; // tick position at 78.6%
 
   return (
     <div>
@@ -193,14 +128,15 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
         <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
           Board KPI Scorecard — Live
         </h2>
-        <button
-          onClick={handlePrint}
-          className="no-print flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)', color: 'var(--text-secondary)' }}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.print()}
+          className="no-print gap-1.5"
         >
           <Printer size={12} />
           Board Snapshot
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -212,6 +148,7 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
             target={kpi.target}
             status={kpi.status}
             delay={i * 0.05}
+            tooltip={kpi.tooltip}
             onClick={kpi.id === 'inventoryDays'
               ? () => setShowInventoryDrill(true)
               : onNavigate ? () => onNavigate(kpi.tab) : undefined}
@@ -219,11 +156,66 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
         ))}
       </div>
 
-      <AnimatePresence>
-        {showInventoryDrill && <InventoryDrilldown onClose={() => setShowInventoryDrill(false)} />}
-      </AnimatePresence>
+      {/* Inventory drill-down — shadcn Dialog */}
+      <Dialog open={showInventoryDrill} onOpenChange={setShowInventoryDrill}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package size={15} style={{ color: '#3b82f6' }} />
+              Inventory Optimisation — WC Release
+            </DialogTitle>
+          </DialogHeader>
 
-      {/* Board floor compliance bar */}
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            {[
+              { label: 'Current Days', value: `${MODEL.inventoryDaysCurrent}d`, color: 'var(--red)' },
+              { label: 'Target Days', value: `${MODEL.inventoryDaysTarget}d`, color: 'var(--green)' },
+              { label: 'WC Release', value: `₹${MODEL.wcRelease} Cr`, color: 'var(--accent-gold)' },
+            ].map(item => (
+              <div key={item.label} className="text-center p-2 rounded" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
+                <div className="font-mono font-bold mt-0.5" style={{ color: item.color }}>{item.value}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Savings Breakdown</div>
+          <div className="space-y-2">
+            {INVENTORY_ITEMS.map(item => {
+              const release = item.fixed ?? Math.round((item.current - item.target) * item.dailyCost);
+              const reduction = item.current ? item.current - item.target : null;
+              return (
+                <div key={item.label} className="flex items-center gap-3 p-2 rounded text-xs"
+                  style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                  <div className="w-2 h-6 rounded shrink-0" style={{ background: item.color, opacity: 0.8 }} />
+                  <div className="flex-1">
+                    <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{item.label}</div>
+                    {reduction !== null && (
+                      <div style={{ color: 'var(--text-muted)' }}>{item.current}d → {item.target}d (−{reduction}d × ₹{item.dailyCost.toFixed(1)} Cr/day)</div>
+                    )}
+                    {item.fixed && <div style={{ color: 'var(--text-muted)' }}>Rationalisation + standardisation</div>}
+                  </div>
+                  <div className="font-mono font-bold shrink-0" style={{ color: item.color }}>₹{release} Cr</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-3 flex items-center justify-between p-2 rounded"
+            style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid var(--amber-border)' }}>
+            <div className="flex items-center gap-2 text-xs">
+              <TrendingDown size={12} style={{ color: 'var(--accent-gold)' }} />
+              <span style={{ color: 'var(--text-secondary)' }}>Total WC Release (Year 1 one-time)</span>
+            </div>
+            <div className="font-mono font-bold" style={{ color: 'var(--accent-gold)' }}>₹{MODEL.wcRelease} Cr</div>
+          </div>
+          <p className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+            Daily RM cost: ₹{MODEL.dailyRmCost.toFixed(2)} Cr/day · Revenue ₹{MODEL.revenue} Cr ÷ 365 × ~48.7% RM ratio
+          </p>
+        </DialogContent>
+      </Dialog>
+
+      {/* Board Floor Compliance — shadcn Progress */}
       <div className="mt-4 p-3 rounded-lg" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
         <div className="flex items-center justify-between mb-2 text-xs" style={{ color: 'var(--text-muted)' }}>
           <span>Board Floor Compliance</span>
@@ -231,15 +223,15 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
             {(hedgedMargin * 100).toFixed(2)}% hedged vs 11.0% floor · +{((hedgedMargin - 0.11) * 10000).toFixed(0)}bps buffer
           </span>
         </div>
-        <div className="relative h-3 rounded-full overflow-hidden" style={{ background: 'var(--border-accent)' }}>
-          <div
-            className="h-full rounded-full transition-all duration-700"
-            style={{ width: `${Math.min(hedgedMargin / 0.14 * 100, 100)}%`, background: 'linear-gradient(90deg, var(--green-border), var(--green))' }}
+        <div className="relative">
+          <Progress
+            value={progressValue}
+            indicatorClassName="bg-gradient-to-r from-[var(--green-border)] to-[var(--green)]"
           />
-          {/* Board floor tick at 11/14 = 78.6% */}
+          {/* Board floor tick */}
           <div
             className="absolute top-0 bottom-0 w-0.5"
-            style={{ left: `${0.11 / 0.14 * 100}%`, background: 'var(--red)', boxShadow: '0 0 4px var(--red)' }}
+            style={{ left: `${floorPct}%`, background: 'var(--red)', boxShadow: '0 0 4px var(--red)' }}
           />
         </div>
         <div className="flex items-center justify-between mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>

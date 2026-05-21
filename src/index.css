@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+/* Map our dark-theme CSS variables to Tailwind v4 color tokens.
+   This lets shadcn components use bg-background, text-foreground, etc.
+   without any colour changes — the palette stays identical. */
+@theme inline {
+  --color-background:          var(--bg-primary);
+  --color-foreground:          var(--text-primary);
+  --color-card:                var(--bg-card);
+  --color-card-foreground:     var(--text-primary);
+  --color-popover:             var(--bg-card);
+  --color-popover-foreground:  var(--text-primary);
+  --color-primary:             var(--accent-blue);
+  --color-primary-foreground:  #ffffff;
+  --color-secondary:           var(--bg-card-hover);
+  --color-secondary-foreground:var(--text-secondary);
+  --color-muted:               var(--border-accent);
+  --color-muted-foreground:    var(--text-muted);
+  --color-accent:              var(--bg-card-hover);
+  --color-accent-foreground:   var(--text-primary);
+  --color-destructive:         var(--red);
+  --color-destructive-foreground: #ffffff;
+  --color-border:              var(--border);
+  --color-input:               var(--border-accent);
+  --color-ring:                var(--accent-blue);
+}
+
 :root {
   --bg-primary: #0a0f1e;
   --bg-card: #111827;
@@ -120,6 +145,18 @@ input[type="range"]::-moz-range-thumb {
   50% { border-color: rgba(239, 68, 68, 1); }
 }
 .alert-pulse { animation: alert-pulse 1.5s ease-in-out infinite; }
+
+/* shadcn accordion animations */
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+.animate-accordion-up   { animation: accordion-up   0.2s ease-out; }
 
 /* Value ticker */
 @keyframes count-up {

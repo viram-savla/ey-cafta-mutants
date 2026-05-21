@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingDown, TrendingUp, Minus, ChevronDown, ChevronUp } from 'lucide-react';
 import { PayoffDiagram } from './PayoffDiagram';
 import { MODEL } from '../../lib/constants';
+import { Button } from '../ui/button';
 
 const COMMODITIES = [
   {
@@ -124,14 +125,16 @@ function CommodityCard({ commodity, expanded, onToggle }) {
       </div>
 
       {commodity.hasPayoff && (
-        <button
+        <Button
+          variant="ghost"
+          size="xs"
           onClick={onToggle}
-          className="w-full flex items-center justify-between px-3 py-2 text-xs transition-colors"
+          className="w-full justify-between rounded-none"
           style={{ borderTop: `1px solid ${commodity.border}`, color: commodity.color, background: 'rgba(0,0,0,0.2)' }}
         >
           <span>Hedge Payoff Diagram</span>
           {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-        </button>
+        </Button>
       )}
     </motion.div>
   );

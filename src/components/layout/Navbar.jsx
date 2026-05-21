@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Activity } from 'lucide-react';
 import { ValueTicker } from '../shared/ValueTicker';
+import { Badge } from '../ui/badge';
 
 export function Navbar({ activeTab, onTabChange, hedgeValue }) {
   const [sofr, setSofr] = useState(3.59);
@@ -63,15 +64,15 @@ export function Navbar({ activeTab, onTabChange, hedgeValue }) {
           {/* Right side */}
           <div className="flex items-center gap-3">
             {/* SGX Iron Ore badge */}
-            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono" style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)', color: 'var(--amber)' }}>
+            <Badge variant="gold" className="hidden lg:inline-flex gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--amber)' }} />
               SGX Fe62 $110
-            </div>
+            </Badge>
             {/* SOFR badge */}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono" style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', color: 'var(--green)' }}>
+            <Badge variant="green" className="hidden sm:inline-flex gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--green)' }} />
               SOFR {sofr.toFixed(2)}%
-            </div>
+            </Badge>
             {/* Hedge ticker */}
             <div className="hidden lg:flex items-center gap-1.5 text-xs font-mono" style={{ color: 'var(--accent-gold)' }}>
               <Activity size={12} />
