@@ -46,7 +46,13 @@ export function NigeriaScreen() {
   return (
     <div className="space-y-4">
       {/* Status header */}
-      <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="rounded-xl p-4" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -124,7 +130,10 @@ export function NigeriaScreen() {
       </Card>
 
       {/* Status table */}
-      <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+      <div className="rounded-xl overflow-hidden" style={{
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -153,20 +162,29 @@ export function NigeriaScreen() {
           { title: 'Tier 1: Immediate Operational Controls (Months 1–3)', items: NIGERIA_TIER1, defaultValue: 'tier-0' },
           { title: 'Tier 2: Structural Solutions (Months 3–12)', items: NIGERIA_TIER2, defaultValue: undefined },
         ].map((tier, i) => (
-          <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+          <div key={i} className="rounded-lg overflow-hidden" style={{
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+          }}>
             <Accordion type="single" collapsible defaultValue={tier.defaultValue}>
               <AccordionItem value={`tier-${i}`} className="border-0">
                 <AccordionTrigger
                   className="px-3 rounded-none"
-                  style={{ background: 'var(--bg-card)' }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                  }}
                 >
                   {tier.title}
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="px-3 space-y-2" style={{ background: 'var(--bg-primary)' }}>
+                  <ul className="px-3 space-y-2" style={{
+                    background: 'rgba(255, 255, 255, 0.02)',
+                  }}>
                     {tier.items.map((item, j) => (
                       <li key={j} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                        <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent-blue)' }} />
+                        <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent-teal)' }} />
                         {item}
                       </li>
                     ))}

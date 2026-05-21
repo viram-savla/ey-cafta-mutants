@@ -82,7 +82,11 @@ function CommodityCard({ commodity, expanded, onToggle }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-lg overflow-hidden"
-      style={{ background: commodity.bg, border: `1px solid ${commodity.border}` }}
+      style={{
+        background: commodity.bg,
+        border: `1px solid ${commodity.border}`,
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+      }}
     >
       <div className="p-3">
         <div className="flex items-start justify-between gap-2 mb-2">
@@ -146,14 +150,20 @@ export function CommodityPanel() {
   const totalAnnualCostCr = COMMODITIES.reduce((s, c) => s + c.annualCostCr, 0);
 
   return (
-    <div className="rounded-lg p-4 space-y-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+    <div className="rounded-xl p-4 space-y-4" style={{
+      background: 'rgba(255, 255, 255, 0.05)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+    }}>
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
             Commodity Exposure
           </h3>
           <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-            Total annual commodity cost: <span className="font-mono" style={{ color: 'var(--accent-gold)' }}>
+            Total annual commodity cost: <span className="font-mono" style={{ color: 'var(--accent-teal)' }}>
               ₹{totalAnnualCostCr.toLocaleString('en-IN')} Cr
             </span> · Based on case prices at ₹83.25/USD
           </p>
@@ -179,7 +189,12 @@ export function CommodityPanel() {
             exit={{ opacity: 0, height: 0 }}
             style={{ overflow: 'hidden' }}
           >
-            <div className="rounded-lg p-4" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-accent)' }}>
+            <div className="rounded-lg p-4" style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
               <h4 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 Iron Ore Hedge Payoff — Margin Impact vs Price (bps)
               </h4>
