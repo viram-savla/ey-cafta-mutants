@@ -28,82 +28,82 @@
 }
 
 :root {
-  /* ─── Surface palette ─────────────────────────────────────── */
-  --bg-primary:        #0a0d14;   /* deepest charcoal */
-  --bg-elevated:       #0e1219;   /* one notch up */
-  --bg-card:           rgba(255, 255, 255, 0.04);
-  --bg-card-hover:     rgba(255, 255, 255, 0.07);
-  --bg-card-strong:    rgba(255, 255, 255, 0.06);
-  --bg-popover:        #151b26;
-  --bg-nav:            rgba(10, 13, 20, 0.72);
+  /* ─── Surface palette (Perplexity-inspired warm-dark) ────────── */
+  --bg-primary:        #131316;   /* near-black with warm undertone */
+  --bg-elevated:       #18191f;   /* subtle lift */
+  --bg-card:           rgba(255, 255, 255, 0.042);
+  --bg-card-hover:     rgba(255, 255, 255, 0.072);
+  --bg-card-strong:    rgba(255, 255, 255, 0.058);
+  --bg-popover:        #1e1f28;
+  --bg-nav:            rgba(19, 19, 22, 0.84);
 
   /* ─── Borders ─────────────────────────────────────────────── */
-  --border:            rgba(255, 255, 255, 0.08);
-  --border-accent:     rgba(255, 255, 255, 0.12);
-  --border-strong:     rgba(255, 255, 255, 0.18);
+  --border:            rgba(255, 255, 255, 0.09);
+  --border-accent:     rgba(255, 255, 255, 0.14);
+  --border-strong:     rgba(255, 255, 255, 0.22);
 
-  /* ─── Text (WCAG AA verified) ─────────────────────────────── */
-  --text-primary:      #f4f6fa;   /* 17.1:1 on bg-primary */
-  --text-secondary:    #c8d0db;   /* 11.3:1 */
-  --text-muted:        #8e99ad;   /* 6.1:1  */
-  --text-faint:        #6e7a8c;   /* 4.6:1 — bumped from #5b6577 for AA on glass */
+  /* ─── Text (WCAG AA, Perplexity tonal range) ─────────────── */
+  --text-primary:      #e8eaed;   /* warm near-white, not harsh */
+  --text-secondary:    #a8b3c0;   /* clear blue-gray */
+  --text-muted:        #6c7585;   /* accessible muted */
+  --text-faint:        #4e5666;   /* fine print */
 
-  /* ─── Status colours (refined for contrast on tinted bgs) ─── */
-  --green:             #10b981;
-  --green-soft:        #34d399;
-  --green-bg:          rgba(16, 185, 129, 0.12);
-  --green-border:      rgba(16, 185, 129, 0.45);
+  /* ─── Status colours (vivid, Perplexity-grade saturation) ─── */
+  --green:             #22c55e;
+  --green-soft:        #4ade80;
+  --green-bg:          rgba(34, 197, 94, 0.11);
+  --green-border:      rgba(34, 197, 94, 0.40);
   --amber:             #f59e0b;
   --amber-soft:        #fbbf24;
-  --amber-bg:          rgba(245, 158, 11, 0.12);
-  --amber-border:      rgba(245, 158, 11, 0.45);
+  --amber-bg:          rgba(245, 158, 11, 0.11);
+  --amber-border:      rgba(245, 158, 11, 0.40);
   --red:               #f43f5e;
-  --red-soft:          #fda4af;   /* brightened from #fb7185 for AA on red-bg */
-  --red-bg:            rgba(244, 63, 94, 0.12);
-  --red-border:        rgba(244, 63, 94, 0.45);
+  --red-soft:          #fb7185;
+  --red-bg:            rgba(244, 63, 94, 0.11);
+  --red-border:        rgba(244, 63, 94, 0.40);
 
-  /* ─── Chart palette (centralized for migration) ───────────── */
+  /* ─── Chart palette ───────────────────────────────────────── */
   --chart-blue:        #60a5fa;
   --chart-amber:       #fbbf24;
   --chart-violet:      #a78bfa;
   --chart-cyan:        #22d3ee;
-  --chart-rose:        #fda4af;
+  --chart-rose:        #fb7185;
 
   /* ─── Brand accents ───────────────────────────────────────── */
   --accent-teal:       #14b8a6;
   --accent-teal-soft:  #2dd4bf;
   --accent-teal-bg:    rgba(20, 184, 166, 0.12);
-  --accent-teal-border: rgba(20, 184, 166, 0.45);
+  --accent-teal-border: rgba(20, 184, 166, 0.42);
   --accent-blue:       #3b82f6;
   --accent-gold:       #f59e0b;
   --accent-violet:     #8b5cf6;
 
-  /* ─── Spacing & radii (8px grid) ──────────────────────────── */
+  /* ─── Spacing & radii ─────────────────────────────────────── */
   --radius-xs:  4px;
   --radius-sm:  6px;
   --radius:     10px;
   --radius-lg:  14px;
-  --radius-xl:  18px;
+  --radius-xl:  20px;
 
-  /* ─── Shadows (soft, large) ───────────────────────────────── */
-  --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
-  --shadow-lg:   0 12px 32px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.15);
-  --shadow-xl:   0 24px 64px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.2);
-  --shadow-glow-teal:  0 0 0 1px rgba(20, 184, 166, 0.35), 0 8px 24px rgba(20, 184, 166, 0.15);
-  --shadow-glow-red:   0 0 0 1px rgba(244, 63, 94, 0.35), 0 8px 24px rgba(244, 63, 94, 0.18);
+  /* ─── Shadows ─────────────────────────────────────────────── */
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:   0 4px 16px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.18);
+  --shadow-lg:   0 12px 36px rgba(0, 0, 0, 0.40), 0 4px 10px rgba(0, 0, 0, 0.18);
+  --shadow-xl:   0 24px 64px rgba(0, 0, 0, 0.46), 0 8px 20px rgba(0, 0, 0, 0.22);
+  --shadow-glow-teal:  0 0 0 1px rgba(20, 184, 166, 0.32), 0 8px 24px rgba(20, 184, 166, 0.14);
+  --shadow-glow-red:   0 0 0 1px rgba(244, 63, 94, 0.32), 0 8px 24px rgba(244, 63, 94, 0.16);
 
-  /* ─── Status-tinted resting shadows (pronounced ~12%) ──────── */
-  --shadow-status-green: 0 8px 24px rgba(16, 185, 129, 0.12), 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-status-amber: 0 8px 24px rgba(245, 158, 11, 0.12), 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-status-red:   0 8px 24px rgba(244, 63, 94, 0.13), 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-status-green-hover: 0 16px 40px rgba(16, 185, 129, 0.22), 0 4px 8px rgba(0, 0, 0, 0.2);
-  --shadow-status-amber-hover: 0 16px 40px rgba(245, 158, 11, 0.22), 0 4px 8px rgba(0, 0, 0, 0.2);
-  --shadow-status-red-hover:   0 16px 40px rgba(244, 63, 94, 0.24),  0 4px 8px rgba(0, 0, 0, 0.2);
+  /* ─── Status-tinted resting shadows ──────────────────────── */
+  --shadow-status-green: 0 6px 20px rgba(34, 197, 94, 0.11), 0 2px 6px rgba(0, 0, 0, 0.22);
+  --shadow-status-amber: 0 6px 20px rgba(245, 158, 11, 0.11), 0 2px 6px rgba(0, 0, 0, 0.22);
+  --shadow-status-red:   0 6px 20px rgba(244, 63, 94, 0.12),  0 2px 6px rgba(0, 0, 0, 0.22);
+  --shadow-status-green-hover: 0 14px 36px rgba(34, 197, 94, 0.20), 0 4px 8px rgba(0, 0, 0, 0.22);
+  --shadow-status-amber-hover: 0 14px 36px rgba(245, 158, 11, 0.20), 0 4px 8px rgba(0, 0, 0, 0.22);
+  --shadow-status-red-hover:   0 14px 36px rgba(244, 63, 94, 0.22),  0 4px 8px rgba(0, 0, 0, 0.22);
 
-  /* ─── Typography ──────────────────────────────────────────── */
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  /* ─── Typography (Manrope — clean modern grotesque) ──────── */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Manrope', system-ui, -apple-system, sans-serif;
 
   /* ─── Type ramp (one source of truth) ─────────────────────── */
   --fs-display:    36px;  --tracking-display: -0.035em;
@@ -132,29 +132,23 @@
 html, body {
   margin: 0;
   font-family: var(--font-sans);
-  font-feature-settings:
-    'cv11' 1,   /* alternate digit zero (slashed) */
-    'ss01' 1,   /* single-storey g/y */
-    'ss03' 1,   /* curly alternates */
-    'cpsp' 1,   /* capital spacing */
-    'case' 1,   /* case-aware punctuation (em-dash, parens) */
-    'ccmp' 1,   /* composition (proper diacritics) */
-    'kern' 1;   /* kerning */
+  font-feature-settings: 'kern' 1, 'calt' 1, 'liga' 1;
+  font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
   overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 body {
   background-color: var(--bg-primary);
-  /* Subtle dot-grid texture for Bloomberg-terminal authority */
+  /* Perplexity-style: subtle teal crown glow + deep indigo bottom — no harsh texture */
   background-image:
-    radial-gradient(circle at 25% 10%, rgba(20, 184, 166, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 75% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 55%),
-    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 24px 24px;
+    radial-gradient(ellipse 140% 45% at 50% -2%, rgba(20, 184, 166, 0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 40% at 0% 100%,  rgba(99, 102, 241, 0.05) 0%, transparent 60%);
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -206,27 +200,27 @@ body {
    ──────────────────────────────────────────────────────────── */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-lg);
 }
 
 .glass-panel-strong {
   background: var(--bg-card-strong);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid var(--border-accent);
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-lg);
 }
 
 .glass-panel-subtle {
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.028);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius);
 }
 
