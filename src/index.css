@@ -1,54 +1,135 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* Map our dark-theme CSS variables to Tailwind v4 color tokens.
-   This lets shadcn components use bg-background, text-foreground, etc.
-   without any colour changes — the palette stays identical. */
+/* Dark mode triggered by .dark class on any ancestor */
+@custom-variant dark (&:is(.dark *));
+
 @theme inline {
-  --color-background:          var(--bg-primary);
-  --color-foreground:          var(--text-primary);
-  --color-card:                var(--bg-card);
-  --color-card-foreground:     var(--text-primary);
-  --color-popover:             var(--bg-card);
-  --color-popover-foreground:  var(--text-primary);
-  --color-primary:             var(--accent-blue);
-  --color-primary-foreground:  #ffffff;
-  --color-secondary:           var(--bg-card-hover);
-  --color-secondary-foreground:var(--text-secondary);
-  --color-muted:               var(--border-accent);
-  --color-muted-foreground:    var(--text-muted);
-  --color-accent:              var(--bg-card-hover);
-  --color-accent-foreground:   var(--text-primary);
-  --color-destructive:         var(--red);
-  --color-destructive-foreground: #ffffff;
-  --color-border:              var(--border);
-  --color-input:               var(--border-accent);
-  --color-ring:                var(--accent-blue);
+  /* Shadcn standard token → CSS variable mapping */
+  --color-background:            var(--background);
+  --color-foreground:            var(--foreground);
+  --color-card:                  var(--card);
+  --color-card-foreground:       var(--card-foreground);
+  --color-popover:               var(--popover);
+  --color-popover-foreground:    var(--popover-foreground);
+  --color-primary:               var(--primary);
+  --color-primary-foreground:    var(--primary-foreground);
+  --color-secondary:             var(--secondary);
+  --color-secondary-foreground:  var(--secondary-foreground);
+  --color-muted:                 var(--muted);
+  --color-muted-foreground:      var(--muted-foreground);
+  --color-accent:                var(--accent);
+  --color-accent-foreground:     var(--accent-foreground);
+  --color-destructive:           var(--destructive);
+  --color-destructive-foreground:var(--destructive-foreground);
+  --color-border:                var(--border);
+  --color-input:                 var(--input);
+  --color-ring:                  var(--ring);
+
+  /* Radius scale */
+  --radius-sm:  calc(var(--radius) - 2px);
+  --radius-md:  var(--radius);
+  --radius-lg:  calc(var(--radius) + 2px);
+  --radius-xl:  calc(var(--radius) + 4px);
+
+  /* Accordion animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up:   accordion-up   0.2s ease-out;
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
+/* ============================================================
+   LIGHT MODE (default — official shadcn default theme)
+   ============================================================ */
 :root {
-  --bg-primary: #0a0f1e;
-  --bg-card: #111827;
-  --bg-card-hover: #1f2937;
-  --border: #1f2937;
-  --border-accent: #374151;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-  --green: #10b981;
-  --green-bg: #064e3b;
-  --green-border: #059669;
-  --amber: #f59e0b;
-  --amber-bg: #451a03;
-  --amber-border: #d97706;
-  --red: #ef4444;
-  --red-bg: #450a0a;
-  --red-border: #dc2626;
-  --accent-blue: #3b82f6;
-  --accent-gold: #f59e0b;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --radius: 0.5rem;
+
+  /* Official shadcn default light palette (OKLCH) */
+  --background:              oklch(1 0 0);
+  --foreground:              oklch(0.145 0 0);
+  --card:                    oklch(1 0 0);
+  --card-foreground:         oklch(0.145 0 0);
+  --popover:                 oklch(1 0 0);
+  --popover-foreground:      oklch(0.145 0 0);
+  --primary:                 oklch(0.205 0 0);
+  --primary-foreground:      oklch(0.985 0 0);
+  --secondary:               oklch(0.97 0 0);
+  --secondary-foreground:    oklch(0.205 0 0);
+  --muted:                   oklch(0.97 0 0);
+  --muted-foreground:        oklch(0.556 0 0);
+  --accent:                  oklch(0.97 0 0);
+  --accent-foreground:       oklch(0.205 0 0);
+  --destructive:             oklch(0.577 0.245 27.325);
+  --destructive-foreground:  oklch(0.97 0.01 17);
+  --border:                  oklch(0.922 0 0);
+  --input:                   oklch(0.922 0 0);
+  --ring:                    oklch(0.708 0 0);
+
+  /* App-specific aliases that map to shadcn tokens */
+  --bg-primary:    var(--background);
+  --bg-card:       var(--card);
+  --bg-card-hover: var(--accent);
+  --text-primary:  var(--foreground);
+  --text-secondary:var(--muted-foreground);
+  --text-muted:    var(--muted-foreground);
+  --border-accent: var(--input);
+
+  /* Accent colors (not in shadcn defaults) */
+  --accent-blue: oklch(0.58 0.21 255);
+  --accent-gold: oklch(0.72 0.17 75);
+
+  /* RAG semantic colors — light mode */
+  --green:        #059669;
+  --green-bg:     #d1fae5;
+  --green-border: #6ee7b7;
+  --amber:        #b45309;
+  --amber-bg:     #fef3c7;
+  --amber-border: #fcd34d;
+  --red:          #dc2626;
+  --red-bg:       #fee2e2;
+  --red-border:   #fca5a5;
+
+  /* Typography */
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+/* ============================================================
+   DARK MODE (.dark class on any ancestor element)
+   ============================================================ */
+.dark {
+  /* Official shadcn default dark palette (OKLCH) */
+  --background:              oklch(0.145 0 0);
+  --foreground:              oklch(0.985 0 0);
+  --card:                    oklch(0.205 0 0);
+  --card-foreground:         oklch(0.985 0 0);
+  --popover:                 oklch(0.205 0 0);
+  --popover-foreground:      oklch(0.985 0 0);
+  --primary:                 oklch(0.922 0 0);
+  --primary-foreground:      oklch(0.205 0 0);
+  --secondary:               oklch(0.269 0 0);
+  --secondary-foreground:    oklch(0.985 0 0);
+  --muted:                   oklch(0.269 0 0);
+  --muted-foreground:        oklch(0.708 0 0);
+  --accent:                  oklch(0.371 0 0);
+  --accent-foreground:       oklch(0.985 0 0);
+  --destructive:             oklch(0.704 0.191 22.216);
+  --destructive-foreground:  oklch(0.58 0.22 27);
+  --border:                  oklch(1 0 0 / 10%);
+  --input:                   oklch(1 0 0 / 15%);
+  --ring:                    oklch(0.556 0 0);
+
+  /* RAG backgrounds adjust for dark mode */
+  --green-bg:     #064e3b;
+  --amber-bg:     #451a03;
+  --red-bg:       #450a0a;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 * {
   box-sizing: border-box;
 }
@@ -72,95 +153,67 @@ body {
   font-family: var(--font-mono) !important;
 }
 
-/* RAG badge colors */
+/* ============================================================
+   RAG BADGE CLASSES
+   ============================================================ */
 .rag-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
 .rag-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-.rag-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.rag-red   { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-border); }
 
 /* KPI card bottom borders */
 .border-rag-green { border-bottom: 2px solid var(--green); }
 .border-rag-amber { border-bottom: 2px solid var(--amber); }
-.border-rag-red { border-bottom: 2px solid var(--red); }
+.border-rag-red   { border-bottom: 2px solid var(--red); }
 
-/* Custom scrollbar */
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-card); }
 ::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
 
-/* Recharts tooltip override */
-.recharts-tooltip-wrapper { z-index: 50; }
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to   { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to   { height: 0; opacity: 0; }
+}
+.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+.animate-accordion-up   { animation: accordion-up   0.2s ease-out; }
 
-/* Print styles */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+@keyframes alert-pulse {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.6); }
+  50%       { border-color: rgba(239, 68, 68, 1); }
+}
+.alert-pulse { animation: alert-pulse 1.5s ease-in-out infinite; }
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.count-up { animation: count-up 0.3s ease-out; }
+
+/* ============================================================
+   MISC
+   ============================================================ */
+.recharts-tooltip-wrapper { z-index: 50; }
+.glow-green { box-shadow: 0 0 12px rgba(16, 185, 129, 0.2); }
+.glow-amber { box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
+.glow-red   { box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
+
 @media print {
   .no-print { display: none !important; }
   body { background: white; color: black; }
   .print-only { display: block !important; }
 }
-
-/* Slider styling */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--border-accent);
-  outline: none;
-  cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-blue);
-  cursor: pointer;
-  border: 2px solid var(--bg-primary);
-  box-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
-}
-input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-blue);
-  cursor: pointer;
-  border: 2px solid var(--bg-primary);
-}
-
-/* Glow effects */
-.glow-green { box-shadow: 0 0 12px rgba(16, 185, 129, 0.2); }
-.glow-amber { box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
-.glow-red { box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
-
-/* Pulse animation */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
-
-/* Alert banner pulse */
-@keyframes alert-pulse {
-  0%, 100% { border-color: rgba(239, 68, 68, 0.6); }
-  50% { border-color: rgba(239, 68, 68, 1); }
-}
-.alert-pulse { animation: alert-pulse 1.5s ease-in-out infinite; }
-
-/* shadcn accordion animations */
-@keyframes accordion-down {
-  from { height: 0; opacity: 0; }
-  to { height: var(--radix-accordion-content-height); opacity: 1; }
-}
-@keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); opacity: 1; }
-  to { height: 0; opacity: 0; }
-}
-.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
-.animate-accordion-up   { animation: accordion-up   0.2s ease-out; }
-
-/* Value ticker */
-@keyframes count-up {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.count-up { animation: count-up 0.3s ease-out; }

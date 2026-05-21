@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, Component } from 'react';
+import { useState, useCallback, useMemo, Component, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/layout/Navbar';
 import { KPIGrid } from './components/kpi/KPIGrid';
@@ -64,6 +64,17 @@ const TAB_LABELS = {
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
   const [cfar5th, setCfar5th] = useState(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const defaultResults = useMemo(() =>
     calcHedgedVsUnhedged(COMBINED_DEFAULTS.ironOreShock, COMBINED_DEFAULTS.inrRate, COMBINED_DEFAULTS.freightShock),
@@ -79,7 +90,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} hedgeValue={hedgeValue} />
+      <Navbar activeTab={activeTab} onTabChange={setActiveTab} hedgeValue={hedgeValue} theme={theme} onThemeToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} />
 
       {/* Print-only header */}
       <div className="hidden print:block p-6 border-b" style={{ borderColor: 'var(--border)' }}>
