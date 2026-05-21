@@ -1,7 +1,0 @@
-node_modules/
-dist/
-src/
-package.json
-package-lock.json
-vite.config.js
-eslint.config.js
