@@ -1,21 +1,19 @@
 import { PRESETS } from '../../lib/constants';
+import { Button } from '../ui/button';
 
 export function ScenarioPresets({ activePreset, onSelect }) {
   return (
     <div className="flex flex-wrap gap-2 mb-4">
       {Object.entries(PRESETS).map(([key, preset]) => (
-        <button
+        <Button
           key={key}
+          variant={activePreset === key ? 'default' : 'outline'}
+          size="sm"
           onClick={() => onSelect(key)}
-          className="px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
-          style={{
-            background: activePreset === key ? 'var(--accent-blue)' : 'var(--bg-card)',
-            border: `1px solid ${activePreset === key ? 'var(--accent-blue)' : 'var(--border-accent)'}`,
-            color: activePreset === key ? 'white' : 'var(--text-secondary)',
-          }}
+          className="rounded-full"
         >
           {preset.label}
-        </button>
+        </Button>
       ))}
     </div>
   );

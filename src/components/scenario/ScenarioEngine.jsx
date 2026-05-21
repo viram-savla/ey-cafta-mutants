@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, AlertTriangle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 import { ScenarioSlider } from './ScenarioSlider';
 import { ScenarioPresets } from './ScenarioPresets';
 import { MarginGauge } from './MarginGauge';
@@ -9,6 +9,7 @@ import { SOFRCollarChart } from './SOFRCollarChart';
 import { FXHedgeLadder } from './FXHedgeLadder';
 import { ResidualRiskPanel } from './ResidualRiskPanel';
 import { CommodityPanel } from '../commodity/CommodityPanel';
+import { Switch } from '../ui/switch';
 import { calcHedgedVsUnhedged, calcBreachThreshold } from '../../lib/calculations';
 import { PRESETS } from '../../lib/constants';
 
@@ -91,11 +92,7 @@ export function ScenarioEngine({ onHedgeValueChange }) {
             <span className="text-sm font-medium" style={{ color: hedgeActive ? 'var(--green)' : 'var(--red)' }}>
               {hedgeActive ? 'Hedges Active (80% SGX/FFA/FX)' : 'Fully Unhedged'}
             </span>
-            <button onClick={() => setHedgeActive(!hedgeActive)} className="transition-colors">
-              {hedgeActive
-                ? <ToggleRight size={32} style={{ color: 'var(--green)' }} />
-                : <ToggleLeft size={32} style={{ color: 'var(--red)' }} />}
-            </button>
+            <Switch checked={hedgeActive} onCheckedChange={setHedgeActive} />
           </div>
         </div>
 

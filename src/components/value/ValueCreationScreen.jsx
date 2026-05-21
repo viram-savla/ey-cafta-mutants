@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, LabelList,
 } from 'recharts';
-import { TrendingUp, Package, Layers, Shield, Leaf, ChevronDown, ChevronUp } from 'lucide-react';
+import { TrendingUp, Package, Layers, Shield, Leaf } from 'lucide-react';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../ui/accordion';
 
 const DISCOUNT_RATE = 0.15;
 const NPV_YEARS = 5;
@@ -144,7 +144,6 @@ const NPV_BAR_DATA = [
 ];
 
 function LeverCard({ lever, index }) {
-  const [expanded, setExpanded] = useState(false);
   const Icon = lever.icon;
 
   return (
@@ -205,31 +204,26 @@ function LeverCard({ lever, index }) {
         </div>
       </div>
 
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-2 text-xs transition-colors"
-        style={{ borderTop: `1px solid ${lever.borderColor}`, color: 'var(--text-muted)', background: 'rgba(0,0,0,0.2)' }}
-      >
-        <span>Key actions</span>
-        {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-      </button>
-
-      {expanded && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          className="px-4 pb-3"
-        >
-          <ul className="mt-2 space-y-1">
-            {lever.actions.map((a, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                <span className="mt-0.5 shrink-0" style={{ color: lever.color }}>›</span>
-                {a}
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-      )}
+      <Accordion type="single" collapsible>
+        <AccordionItem value="actions" className="border-0">
+          <AccordionTrigger
+            className="px-4 py-2 text-xs rounded-none hover:no-underline"
+            style={{ borderTop: `1px solid ${lever.borderColor}`, color: 'var(--text-muted)', background: 'rgba(0,0,0,0.2)' }}
+          >
+            Key actions
+          </AccordionTrigger>
+          <AccordionContent className="px-4">
+            <ul className="space-y-1">
+              {lever.actions.map((a, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                  <span className="mt-0.5 shrink-0" style={{ color: lever.color }}>›</span>
+                  {a}
+                </li>
+              ))}
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </motion.div>
   );
 }

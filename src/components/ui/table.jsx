@@ -1,0 +1,68 @@
+import { cn } from '../../lib/utils';
+
+export function Table({ className, ...props }) {
+  return (
+    <div className="relative w-full overflow-auto">
+      <table
+        className={cn('w-full caption-bottom text-xs', className)}
+        {...props}
+      />
+    </div>
+  );
+}
+
+export function TableHeader({ className, ...props }) {
+  return <thead className={cn('[&_tr]:border-b [&_tr]:border-border', className)} {...props} />;
+}
+
+export function TableBody({ className, ...props }) {
+  return (
+    <tbody
+      className={cn('[&_tr:last-child]:border-0', className)}
+      {...props}
+    />
+  );
+}
+
+export function TableRow({ className, ...props }) {
+  return (
+    <tr
+      className={cn(
+        'border-b border-border transition-colors hover:bg-accent/30 data-[state=selected]:bg-muted',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function TableHead({ className, ...props }) {
+  return (
+    <th
+      className={cn(
+        'h-8 px-3 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-[10px]',
+        '[&:has([role=checkbox])]:pr-0',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function TableCell({ className, ...props }) {
+  return (
+    <td
+      className={cn('px-3 py-2 align-middle font-mono [&:has([role=checkbox])]:pr-0', className)}
+      {...props}
+    />
+  );
+}
+
+export function TableFooter({ className, ...props }) {
+  return (
+    <tfoot
+      className={cn('border-t border-border bg-muted/50 font-medium', className)}
+      {...props}
+    />
+  );
+}

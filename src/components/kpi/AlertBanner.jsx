@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from '../ui/alert';
 
 export function AlertBanner({ kpis, hedgedMargin }) {
   const redCount = kpis.filter(k => k.status === 'red').length;
@@ -17,19 +18,21 @@ export function AlertBanner({ kpis, hedgedMargin }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -12 }}
         transition={{ duration: 0.35 }}
-        className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-4 text-sm font-medium ${hasAlert ? 'alert-pulse' : ''}`}
-        style={{
-          background: hasAlert ? 'var(--red-bg)' : 'var(--green-bg)',
-          border: `1px solid ${hasAlert ? 'var(--red-border)' : 'var(--green-border)'}`,
-          color: hasAlert ? 'var(--red)' : 'var(--green)',
-        }}
+        className="mb-4"
       >
-        {hasAlert ? <AlertTriangle size={16} /> : <CheckCircle size={16} />}
-        <span>
+        <Alert
+          variant={hasAlert ? 'destructive' : 'success'}
+          className={hasAlert ? 'alert-pulse font-medium' : 'font-medium'}
+        >
           {hasAlert
-            ? `BOARD ALERT: ${redCount} KPI${redCount > 1 ? 's' : ''} in breach — immediate escalation required`
-            : `ALL SYSTEMS COMPLIANT — Hedged margin ${marginPct}% | ${bufferSign}${bufferBps}bps above Board floor`}
-        </span>
+            ? <AlertTriangle size={15} />
+            : <CheckCircle size={15} />}
+          <AlertDescription className="text-sm opacity-100 font-medium">
+            {hasAlert
+              ? `BOARD ALERT: ${redCount} KPI${redCount > 1 ? 's' : ''} in breach — immediate escalation required`
+              : `ALL SYSTEMS COMPLIANT — Hedged margin ${marginPct}% | ${bufferSign}${bufferBps}bps above Board floor`}
+          </AlertDescription>
+        </Alert>
       </motion.div>
     </AnimatePresence>
   );

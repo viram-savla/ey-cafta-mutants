@@ -8,6 +8,7 @@ import { Play, RefreshCw } from 'lucide-react';
 import { runMonteCarlo } from '../../lib/calculations';
 import { RAGBadge } from '../shared/RAGBadge';
 import { ScenarioSlider } from '../scenario/ScenarioSlider';
+import { Button } from '../ui/button';
 
 function buildHistogram(paths, binWidth = 0.005) {
   if (!paths.length) return [];
@@ -126,49 +127,38 @@ export function MCScreen({ onCfarUpdate }) {
             <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Hedge Ratio</div>
             <div className="flex gap-2">
               {[0, 0.80].map(r => (
-                <button
+                <Button
                   key={r}
+                  variant={hedgeRatio === r ? 'default' : 'outline'}
+                  size="xs"
+                  className="flex-1"
                   onClick={() => setHedgeRatio(r)}
-                  className="flex-1 py-1.5 rounded text-xs font-semibold transition-all"
-                  style={{
-                    background: hedgeRatio === r ? 'var(--accent-blue)' : 'var(--bg-primary)',
-                    border: `1px solid ${hedgeRatio === r ? 'var(--accent-blue)' : 'var(--border-accent)'}`,
-                    color: hedgeRatio === r ? 'white' : 'var(--text-secondary)',
-                  }}
                 >
                   {r === 0 ? 'Unhedged' : '80% Hedged'}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           <div className="flex gap-2 pt-1">
-            <button
+            <Button
               onClick={() => runSimulation()}
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all"
-              style={{
-                background: 'var(--accent-blue)',
-                color: 'white',
-                opacity: loading ? 0.7 : 1,
-              }}
+              className="flex-1"
             >
               {loading ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
               {loading ? 'Running...' : 'Run Simulation'}
-            </button>
+            </Button>
           </div>
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={runComparison}
             disabled={loading}
-            className="w-full py-2 rounded text-xs font-medium transition-all"
-            style={{
-              background: 'var(--bg-primary)',
-              border: '1px solid var(--border-accent)',
-              color: 'var(--text-secondary)',
-            }}
+            className="w-full"
           >
             Compare 0% vs 80% Hedge
-          </button>
+          </Button>
         </div>
 
         {/* Results */}
