@@ -238,10 +238,18 @@ body {
 .shadow-status-amber { box-shadow: var(--shadow-status-amber); }
 .shadow-status-red   { box-shadow: var(--shadow-status-red); }
 
+/* KPI card status shadows with hover transition */
+.kpi-card-green { box-shadow: var(--shadow-status-green); transition: box-shadow 220ms var(--ease-out-quart); }
+.kpi-card-amber { box-shadow: var(--shadow-status-amber); transition: box-shadow 220ms var(--ease-out-quart); }
+.kpi-card-red   { box-shadow: var(--shadow-status-red);   transition: box-shadow 220ms var(--ease-out-quart); }
+.kpi-card-green:hover { box-shadow: var(--shadow-status-green-hover); }
+.kpi-card-amber:hover { box-shadow: var(--shadow-status-amber-hover); }
+.kpi-card-red:hover   { box-shadow: var(--shadow-status-red-hover); }
+
 /* Mouse-tracked card spotlight (set --mx/--my via JS) */
 .card-spotlight {
   position: relative;
-  isolation: isolate;
+  isolation: isolate; /* creates a new stacking context so z-index: -1 stays inside */
 }
 .card-spotlight::before {
   content: '';
@@ -256,10 +264,9 @@ body {
   opacity: 0;
   transition: opacity 220ms ease;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1; /* sit behind content; isolation keeps it within the card */
 }
 .card-spotlight:hover::before { opacity: 1; }
-.card-spotlight > * { position: relative; z-index: 1; }
 
 /* Hover lift — refined with asymmetric shadow growth */
 .lift-on-hover {

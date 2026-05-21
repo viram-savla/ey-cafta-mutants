@@ -7,18 +7,6 @@ import {
   Tooltip, TooltipContent, TooltipTrigger, TooltipProvider,
 } from '../ui/tooltip';
 
-const STATUS_HOVER_SHADOW = {
-  green: 'var(--shadow-status-green-hover)',
-  amber: 'var(--shadow-status-amber-hover)',
-  red:   'var(--shadow-status-red-hover)',
-};
-
-const STATUS_RESTING_SHADOW = {
-  green: 'var(--shadow-status-green)',
-  amber: 'var(--shadow-status-amber)',
-  red:   'var(--shadow-status-red)',
-};
-
 const STATUS_COLOR = {
   green: 'var(--green-soft)',
   amber: 'var(--amber-soft)',
@@ -61,19 +49,17 @@ export function KPICard({ id, label, value, target, status, onClick, delay = 0, 
       onMouseMove={handleMouseMove}
       whileHover={onClick ? {
         y: -3,
-        boxShadow: STATUS_HOVER_SHADOW[status],
         transition: { type: 'spring', stiffness: 300, damping: 22 },
       } : {}}
       whileTap={onClick ? { scale: 0.97, transition: { duration: 0.08 } } : {}}
-      className={`card-spotlight relative overflow-hidden rounded-xl p-4 ${onClick ? 'cursor-pointer' : ''}`}
+      className={`card-spotlight kpi-card-${status} relative overflow-hidden rounded-xl p-4 ${onClick ? 'cursor-pointer' : ''}`}
       style={{
         background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',
         backdropFilter: 'blur(14px) saturate(140%)',
         WebkitBackdropFilter: 'blur(14px) saturate(140%)',
         border: '1px solid var(--border)',
         borderBottom: `2px solid var(--${status})`,
-        boxShadow: STATUS_RESTING_SHADOW[status],
-        minHeight: 130,
+        minHeight: 142,
       }}
     >
       {/* top-edge accent bar */}
@@ -101,12 +87,8 @@ export function KPICard({ id, label, value, target, status, onClick, delay = 0, 
         <RAGBadge status={status} />
       </div>
 
-      {/* value */}
-      <motion.div
-        key={value}
-        initial={{ opacity: 0.7 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.18 }}
+      {/* value — no key, AnimatedNumber handles spring-tween between values */}
+      <div
         className="tabular-nums"
         style={{
           color: 'var(--text-primary)',
@@ -119,23 +101,30 @@ export function KPICard({ id, label, value, target, status, onClick, delay = 0, 
         {numeric ? (
           <AnimatedKPI {...numeric} />
         ) : value}
-      </motion.div>
+      </div>
 
-      {/* target line */}
-      <div className="flex items-center gap-1.5 mt-1.5 text-[11px]" style={{ color: 'var(--text-faint)' }}>
+      {/* target line — always visible */}
+      <div
+        className="flex items-center gap-1.5 mt-1.5 text-[11px]"
+        style={{ color: 'var(--text-faint)' }}
+      >
         <span>Target</span>
         <span className="tabular-nums" style={{ color: 'var(--text-muted)' }}>{target}</span>
       </div>
 
-      {/* Sparkline on hover */}
+      {/* Sparkline reveals on hover, sits at the bottom edge */}
       <div
-        className="absolute inset-x-0 bottom-0 px-3 pb-2 pointer-events-none"
-        style={{ opacity: hovering ? 1 : 0, transition: 'opacity 220ms ease' }}
+        className="absolute inset-x-0 bottom-2 px-4 pointer-events-none"
+        style={{
+          opacity: hovering ? 1 : 0,
+          transform: hovering ? 'translateY(0)' : 'translateY(4px)',
+          transition: 'opacity 240ms ease, transform 240ms ease',
+        }}
       >
         <Sparkline
           seed={`${id || label}-${status}`}
           color={accent}
-          height={22}
+          height={18}
           active={hovering}
         />
       </div>
@@ -159,11 +148,30 @@ export function KPICard({ id, label, value, target, status, onClick, delay = 0, 
 }
 
 function AnimatedKPI({ prefix, num, suffix, decimals }) {
+  const trimmed = (suffix || '').trim();
+  // Symbol units (%, ×, /USD, /t) stay inline & same size.
+  // Word units (days, years, M, Cr) get the smaller .unit-suffix treatment.
+  const isWordUnit = /^[a-z]+$/i.test(trimmed);
+
+  if (!trimmed) {
+    return <>{prefix}<AnimatedNumber value={num} decimals={decimals} /></>;
+  }
+
+  if (isWordUnit) {
+    return (
+      <>
+        {prefix}
+        <AnimatedNumber value={num} decimals={decimals} />
+        <span className="unit-suffix">{trimmed}</span>
+      </>
+    );
+  }
+
+  // Symbol unit — render inline as part of the number itself
   return (
     <>
       {prefix}
-      <AnimatedNumber value={num} decimals={decimals} />
-      {suffix && <span className="unit-suffix">{suffix.trim()}</span>}
+      <AnimatedNumber value={num} decimals={decimals} suffix={trimmed} />
     </>
   );
 }
