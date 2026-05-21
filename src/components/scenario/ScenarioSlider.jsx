@@ -15,7 +15,7 @@ export function ScenarioSlider({ label, value, min, max, step, onChange, formatV
         onValueChange={([v]) => onChange(v)}
       />
       {note && (
-        <p className="text-xs" style={{ color: 'var(--accent-gold)' }}>{note}</p>
+        <p className="text-xs" style={{ color: 'var(--accent-teal)' }}>{note}</p>
       )}
     </div>
   );

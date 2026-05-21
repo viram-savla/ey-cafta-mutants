@@ -59,7 +59,13 @@ export function ScenarioEngine({ onHedgeValueChange }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Controls */}
-        <div className="rounded-lg p-4 space-y-5" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+        <div className="rounded-xl p-4 space-y-5" style={{
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+        }}>
           <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
             Scenario Controls
           </h3>
@@ -88,7 +94,12 @@ export function ScenarioEngine({ onHedgeValueChange }) {
           />
 
           {/* Hedge toggle */}
-          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--bg-primary)', border: `1px solid ${hedgeActive ? 'var(--green-border)' : 'var(--red-border)'}` }}>
+          <div className="flex items-center justify-between p-3 rounded-lg" style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: `1px solid ${hedgeActive ? 'var(--green-border)' : 'var(--red-border)'}`,
+          }}>
             <span className="text-sm font-medium" style={{ color: hedgeActive ? 'var(--green)' : 'var(--red)' }}>
               {hedgeActive ? 'Hedges Active (80% SGX/FFA/FX)' : 'Fully Unhedged'}
             </span>
@@ -99,7 +110,13 @@ export function ScenarioEngine({ onHedgeValueChange }) {
         {/* Results panel */}
         <div className="space-y-3">
           {/* Gauge */}
-          <div className="rounded-lg p-3 flex justify-center" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+          <div className="rounded-xl p-3 flex justify-center" style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+          }}>
             <MarginGauge margin={displayResult.margin} />
           </div>
 
@@ -146,7 +163,7 @@ export function ScenarioEngine({ onHedgeValueChange }) {
                   : `COMPLIANT +${results.hedged.boardFloorBuffer.toFixed(0)}bps`}
               </div>
               {hedgeValue > 0 && (
-                <div className="mt-1 text-xs font-mono" style={{ color: 'var(--accent-gold)' }}>
+                <div className="mt-1 text-xs font-mono" style={{ color: 'var(--accent-teal)' }}>
                   Saves ₹{hedgeValue} Cr
                 </div>
               )}
@@ -156,7 +173,13 @@ export function ScenarioEngine({ onHedgeValueChange }) {
       </div>
 
       {/* Waterfall chart */}
-      <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="rounded-xl p-4" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
           Margin Impact by Scenario (bps vs Base 11.60%)
         </h3>
@@ -173,7 +196,13 @@ export function ScenarioEngine({ onHedgeValueChange }) {
       <ResidualRiskPanel />
 
       {/* Breach calculator */}
-      <div className="rounded-lg p-4 space-y-3" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="rounded-xl p-4 space-y-3" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
           What Would It Take to Breach?
         </h3>
@@ -182,7 +211,12 @@ export function ScenarioEngine({ onHedgeValueChange }) {
             { label: 'Unhedged breach', data: breachUnhedged, severity: breachSeverity(breachUnhedged.ironOreBreachPct) },
             { label: 'Hedged breach (80%)', data: breachHedged, severity: breachSeverity(breachHedged.ironOreBreachPct) },
           ].map((item) => (
-            <div key={item.label} className="p-3 rounded-lg" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-accent)' }}>
+            <div key={item.label} className="p-3 rounded-lg" style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
               <div className="text-xs font-medium mb-1.5" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
               <div className="font-mono text-lg font-bold" style={{ color: item.severity.color }}>
                 USD {item.data.ironOreBreachPrice.toFixed(0)}/t

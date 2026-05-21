@@ -13,15 +13,22 @@ export function KPICard({ label, value, target, status, onClick, delay = 0, tool
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay, ease: 'easeOut' }}
       onClick={onClick}
-      className={`rounded-lg p-4 transition-all duration-300 ${borderClass} ${onClick ? 'cursor-pointer' : ''}`}
-      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+      className={`rounded-xl p-4 transition-all duration-300 ${onClick ? 'cursor-pointer' : ''}`}
+      style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: `2px solid var(--${status})`,
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}
       whileHover={onClick
         ? {
             boxShadow:
-              status === 'green' ? '0 0 16px rgba(16,185,129,0.25)'
-              : status === 'amber' ? '0 0 16px rgba(245,158,11,0.25)'
-              : '0 0 16px rgba(239,68,68,0.25)',
-            y: -1,
+              status === 'green' ? '0 8px 32px rgba(16,185,129,0.2), 0 2px 8px rgba(0,0,0,0.15)'
+              : status === 'amber' ? '0 8px 32px rgba(245,158,11,0.2), 0 2px 8px rgba(0,0,0,0.15)'
+              : '0 8px 32px rgba(239,68,68,0.2), 0 2px 8px rgba(0,0,0,0.15)',
+            y: -2,
           }
         : {}}
     >

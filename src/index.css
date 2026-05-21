@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 /* Map our dark-theme CSS variables to Tailwind v4 color tokens.
-   This lets shadcn components use bg-background, text-foreground, etc.
-   without any colour changes — the palette stays identical. */
+   Perplexity-inspired redesign: teal accent, glassmorphism cards, refined spacing. */
 @theme inline {
   --color-background:          var(--bg-primary);
   --color-foreground:          var(--text-primary);
@@ -10,7 +9,7 @@
   --color-card-foreground:     var(--text-primary);
   --color-popover:             var(--bg-card);
   --color-popover-foreground:  var(--text-primary);
-  --color-primary:             var(--accent-blue);
+  --color-primary:             var(--accent-teal);
   --color-primary-foreground:  #ffffff;
   --color-secondary:           var(--bg-card-hover);
   --color-secondary-foreground:var(--text-secondary);
@@ -22,18 +21,21 @@
   --color-destructive-foreground: #ffffff;
   --color-border:              var(--border);
   --color-input:               var(--border-accent);
-  --color-ring:                var(--accent-blue);
+  --color-ring:                var(--accent-teal);
 }
 
 :root {
-  --bg-primary: #0a0f1e;
+  /* Perplexity-inspired dark theme: refined, minimal, premium aesthetic */
+  --bg-primary: #0a0e1a;
+  --bg-card-base: rgba(255, 255, 255, 0.05);
+  --bg-card-blur: 10px;
   --bg-card: #111827;
   --bg-card-hover: #1f2937;
-  --border: #1f2937;
-  --border-accent: #374151;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
+  --border: transparent;
+  --border-accent: rgba(255, 255, 255, 0.1);
+  --text-primary: #fafbfc;
+  --text-secondary: #b0b8c1;
+  --text-muted: #7a8390;
   --green: #10b981;
   --green-bg: #064e3b;
   --green-border: #059669;
@@ -43,6 +45,7 @@
   --red: #ef4444;
   --red-bg: #450a0a;
   --red-border: #dc2626;
+  --accent-teal: #20b2aa;
   --accent-blue: #3b82f6;
   --accent-gold: #f59e0b;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -72,6 +75,30 @@ body {
   font-family: var(--font-mono) !important;
 }
 
+/* Glassmorphism utilities: frosted glass effect for cards and surfaces */
+.glassmorphism {
+  background: var(--bg-card-base);
+  backdrop-filter: blur(var(--bg-card-blur));
+  -webkit-backdrop-filter: blur(var(--bg-card-blur));
+  border: 1px solid var(--border-accent);
+}
+
+.glassmorphism-light {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Card shadow with refined layering */
+.card-shadow {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-shadow-sm {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* RAG badge colors */
 .rag-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
 .rag-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
@@ -97,7 +124,7 @@ body {
   .print-only { display: block !important; }
 }
 
-/* Slider styling */
+/* Slider styling: teal accent for refined, modern look */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -113,38 +140,39 @@ input[type="range"]::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent-blue);
+  background: var(--accent-teal);
   cursor: pointer;
   border: 2px solid var(--bg-primary);
-  box-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 6px rgba(32, 178, 170, 0.4);
 }
 input[type="range"]::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent-blue);
+  background: var(--accent-teal);
   cursor: pointer;
   border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 6px rgba(32, 178, 170, 0.4);
 }
 
-/* Glow effects */
-.glow-green { box-shadow: 0 0 12px rgba(16, 185, 129, 0.2); }
-.glow-amber { box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
-.glow-red { box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
+/* Glow effects: subtle shadow instead of aggressive glow */
+.glow-green { box-shadow: 0 0 8px rgba(16, 185, 129, 0.15); }
+.glow-amber { box-shadow: 0 0 8px rgba(245, 158, 11, 0.15); }
+.glow-red { box-shadow: 0 0 8px rgba(239, 68, 68, 0.15); }
 
-/* Pulse animation */
+/* Pulse animation: reduced to gentle fade (no longer distracting) */
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.5; }
 }
-.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+.pulse-dot { animation: pulse-dot 3s ease-in-out infinite; }
 
-/* Alert banner pulse */
+/* Alert banner pulse: subtle, infrequent */
 @keyframes alert-pulse {
-  0%, 100% { border-color: rgba(239, 68, 68, 0.6); }
-  50% { border-color: rgba(239, 68, 68, 1); }
+  0%, 100% { border-color: rgba(239, 68, 68, 0.5); }
+  50% { border-color: rgba(239, 68, 68, 0.8); }
 }
-.alert-pulse { animation: alert-pulse 1.5s ease-in-out infinite; }
+.alert-pulse { animation: alert-pulse 2.5s ease-in-out infinite; }
 
 /* shadcn accordion animations */
 @keyframes accordion-down {
