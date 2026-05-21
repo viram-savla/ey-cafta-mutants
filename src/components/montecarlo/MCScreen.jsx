@@ -152,7 +152,7 @@ export function MCScreen({ onCfarUpdate }) {
         {/* Results */}
         <div className="lg:col-span-2 space-y-3">
           {results && (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 { label: '5th Percentile (CFaR)', value: `${(results.p5 * 100).toFixed(2)}%`, target: '≥ 8.0%', status: results.p5 >= 0.08 ? 'green' : 'red' },
                 { label: 'Mean Margin', value: `${(results.mean * 100).toFixed(2)}%`, target: 'Base: 11.60%', status: 'green' },

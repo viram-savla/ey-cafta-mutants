@@ -150,8 +150,8 @@ export function NigeriaScreen() {
       </div>
 
       {/* Status table */}
-      <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }}>
-        <table className="w-full text-xs font-mono">
+      <div className="rounded-lg overflow-hidden overflow-x-auto" style={{ border: '1px solid var(--border)' }}>
+        <table className="w-full min-w-[480px] text-xs font-mono">
           <thead>
             <tr style={{ background: 'var(--bg-card)', borderBottom: '1px solid var(--border)' }}>
               {['Metric', 'Current', 'Policy Floor', 'Gap', 'RAG'].map(h => (
