@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -43,3 +43,17 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  record-url:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write live URL to file
+        run: |
+          echo "${{ needs.deploy.outputs.page_url }}" > LIVE_URL.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add LIVE_URL.txt
+          git diff --cached --quiet || git commit -m "ci: record live deployment URL [skip ci]"
+          git push
