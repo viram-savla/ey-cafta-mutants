@@ -96,7 +96,13 @@ export function MCScreen({ onCfarUpdate }) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Parameters */}
-        <div className="rounded-lg p-4 space-y-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+        <div className="rounded-xl p-4 space-y-4" style={{
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+        }}>
           <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
             Simulation Parameters
           </h3>
@@ -175,7 +181,12 @@ export function MCScreen({ onCfarUpdate }) {
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="rounded-lg p-3"
-                  style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                  }}
                 >
                   <div className="flex items-start justify-between mb-1">
                     <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{stat.label}</span>
@@ -253,7 +264,7 @@ export function MCScreen({ onCfarUpdate }) {
                       <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR Floor 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
                       <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Board Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
                       {p5Pct && (
-                        <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="var(--accent-blue)" strokeDasharray="4 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: 'var(--accent-blue)', fontSize: 9, position: 'insideTopLeft' }} />
+                        <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="var(--accent-teal)" strokeDasharray="4 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: 'var(--accent-teal)', fontSize: 9, position: 'insideTopLeft' }} />
                       )}
                       <Bar dataKey="count" radius={[2, 2, 0, 0]}>
                         {histogram.map((entry, i) => (
@@ -280,7 +291,13 @@ export function MCScreen({ onCfarUpdate }) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               className="rounded-lg p-4"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+              }}
             >
               <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 CFaR Comparison: Unhedged vs 80% Hedged

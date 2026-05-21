@@ -233,14 +233,20 @@ function LeverCard({ lever, index }) {
 function Quadrant2x2() {
   const dots = [
     { label: 'Contracting', x: 82, y: 88, color: '#10b981' },
-    { label: 'Inventory', x: 40, y: 92, color: '#3b82f6' },
+    { label: 'Inventory', x: 40, y: 92, color: '#20b2aa' },
     { label: 'Landed Cost', x: 55, y: 52, color: '#f59e0b' },
     { label: 'RCC', x: 80, y: 68, color: '#8b5cf6' },
     { label: 'CBAM', x: 22, y: 38, color: '#06b6d4' },
   ];
 
   return (
-    <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+    <div className="rounded-xl p-4" style={{
+      background: 'rgba(255, 255, 255, 0.05)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+    }}>
       <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
         2×2: Speed vs Value Magnitude
       </h3>
@@ -353,7 +359,12 @@ export function ValueCreationScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06 }}
             className="rounded-lg p-3"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}
           >
             <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{kpi.label}</div>
             <div className="font-mono text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</div>
@@ -384,10 +395,15 @@ export function ValueCreationScreen() {
           </CardHeader>
           <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
             <NPVBarChart />
-            <div className="mt-3 p-2 rounded text-xs" style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)' }}>
-              <span style={{ color: 'var(--amber)' }} className="font-semibold">Total: </span>
+            <div className="mt-3 p-2 rounded-lg text-xs" style={{
+              background: 'rgba(32, 178, 170, 0.1)',
+              border: '1px solid rgba(32, 178, 170, 0.3)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}>
+              <span style={{ color: 'var(--accent-teal)' }} className="font-semibold">Total: </span>
               <span style={{ color: 'var(--text-secondary)' }}>
-                PV(₹129–203 Cr annuity, 5yr, 15%) + ₹394 Cr = <span className="font-mono" style={{ color: 'var(--accent-gold)' }}>₹826–1,075 Cr</span>
+                PV(₹129–203 Cr annuity, 5yr, 15%) + ₹394 Cr = <span className="font-mono" style={{ color: 'var(--accent-teal)' }}>₹826–1,075 Cr</span>
               </span>
             </div>
           </CardContent>
@@ -395,7 +411,13 @@ export function ValueCreationScreen() {
       </div>
 
       {/* Footnote */}
-      <div className="p-3 rounded-lg text-xs" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+      <div className="p-3 rounded-lg text-xs" style={{
+        background: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        color: 'var(--text-muted)',
+      }}>
         <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Assumptions: </span>
         15% cost of capital · 5-year horizon · Annual savings realised from Year 1 post-implementation ·
         Inventory WC release treated as Year-1 cash inflow · CBAM not included in base NPV (regulatory timeline TBD) ·
