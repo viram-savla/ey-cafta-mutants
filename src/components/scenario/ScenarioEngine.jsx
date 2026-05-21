@@ -10,6 +10,7 @@ import { FXHedgeLadder } from './FXHedgeLadder';
 import { ResidualRiskPanel } from './ResidualRiskPanel';
 import { CommodityPanel } from '../commodity/CommodityPanel';
 import { Switch } from '../ui/switch';
+import { AnimatedNumber } from '../shared/AnimatedNumber';
 import { calcHedgedVsUnhedged, calcBreachThreshold } from '../../lib/calculations';
 import { PRESETS } from '../../lib/constants';
 
@@ -153,11 +154,11 @@ export function ScenarioEngine({ onHedgeValueChange }) {
                 <ShieldOff size={11} style={{ color: 'var(--red-soft)' }} />
                 <span className="text-[10.5px] font-medium uppercase tracking-[0.1em]" style={{ color: 'var(--text-muted)' }}>Unhedged · 0%</span>
               </div>
-              <div className="font-semibold tabular-nums tracking-tight" style={{ color: 'var(--red-soft)', fontSize: 22, letterSpacing: '-0.02em' }}>
-                {(results.unhedged.margin * 100).toFixed(2)}%
+              <div className="font-semibold tabular-nums" style={{ color: 'var(--red-soft)', fontSize: 24, letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+                <AnimatedNumber value={results.unhedged.margin * 100} decimals={2} suffix="%" />
               </div>
               <div className="text-[11px] font-mono tabular-nums mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                ₹{Math.round(results.unhedged.ebitda)} Cr EBITDA
+                ₹<AnimatedNumber value={Math.round(results.unhedged.ebitda)} /> Cr EBITDA
               </div>
               <div className="flex items-center gap-1 mt-2 text-[10.5px] font-medium"
                    style={{ color: results.unhedged.boardFloorBreached ? 'var(--red-soft)' : 'var(--green-soft)' }}>
@@ -187,11 +188,11 @@ export function ScenarioEngine({ onHedgeValueChange }) {
                 <Shield size={11} style={{ color: 'var(--green-soft)' }} />
                 <span className="text-[10.5px] font-medium uppercase tracking-[0.1em]" style={{ color: 'var(--text-muted)' }}>Hedged · 80%</span>
               </div>
-              <div className="font-semibold tabular-nums tracking-tight" style={{ color: 'var(--green-soft)', fontSize: 22, letterSpacing: '-0.02em' }}>
-                {(results.hedged.margin * 100).toFixed(2)}%
+              <div className="font-semibold tabular-nums" style={{ color: 'var(--green-soft)', fontSize: 24, letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+                <AnimatedNumber value={results.hedged.margin * 100} decimals={2} suffix="%" />
               </div>
               <div className="text-[11px] font-mono tabular-nums mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                ₹{Math.round(results.hedged.ebitda)} Cr EBITDA
+                ₹<AnimatedNumber value={Math.round(results.hedged.ebitda)} /> Cr EBITDA
               </div>
               <div className="flex items-center gap-1 mt-2 text-[10.5px] font-medium"
                    style={{ color: results.hedged.boardFloorBreached ? 'var(--red-soft)' : 'var(--green-soft)' }}>
@@ -206,7 +207,7 @@ export function ScenarioEngine({ onHedgeValueChange }) {
                 <div className="mt-2 pt-2 flex items-center gap-1.5 text-[10.5px] font-mono"
                      style={{ color: 'var(--accent-teal-soft)', borderTop: '1px solid rgba(16,185,129,0.18)' }}>
                   <Zap size={10} />
-                  <span className="tabular-nums">Hedge saves ₹{hedgeValue} Cr</span>
+                  <span className="tabular-nums">Hedge saves ₹<AnimatedNumber value={hedgeValue} /> Cr</span>
                 </div>
               )}
             </motion.div>
@@ -239,11 +240,11 @@ export function ScenarioEngine({ onHedgeValueChange }) {
           ].map((item) => (
             <div key={item.label} className="glass-panel-subtle p-3.5">
               <div className="text-[10.5px] font-medium uppercase tracking-[0.1em] mb-2" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
-              <div className="font-semibold tabular-nums tracking-tight" style={{ color: item.severity.color, fontSize: 19, letterSpacing: '-0.02em' }}>
-                ${item.data.ironOreBreachPrice.toFixed(0)}<span className="text-[12px] font-normal ml-0.5">/t</span>
+              <div className="font-semibold tabular-nums" style={{ color: item.severity.color, fontSize: 20, letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+                $<AnimatedNumber value={item.data.ironOreBreachPrice} decimals={0} /><span className="unit-suffix">/t</span>
               </div>
               <div className="text-[11px] font-mono tabular-nums mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                +{item.data.ironOreBreachPct.toFixed(1)}% from $120/t case
+                +<AnimatedNumber value={item.data.ironOreBreachPct} decimals={1} />% from $120/t case
               </div>
               <div className="text-[11px] mt-2 leading-snug" style={{ color: item.severity.color }}>
                 {item.severity.text}

@@ -3,6 +3,21 @@ import { motion } from 'framer-motion';
 import { Activity, Sun, Moon, Menu, X } from 'lucide-react';
 import { ValueTicker } from '../shared/ValueTicker';
 
+function LiveDot({ color }) {
+  return (
+    <span className="relative inline-flex w-2.5 h-2.5 items-center justify-center" aria-hidden="true">
+      <span
+        className="absolute inset-0 rounded-full live-ring"
+        style={{ background: color }}
+      />
+      <span
+        className="relative w-1.5 h-1.5 rounded-full pulse-dot"
+        style={{ background: color, boxShadow: `0 0 4px ${color}` }}
+      />
+    </span>
+  );
+}
+
 export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggle }) {
   const [sofr, setSofr] = useState(3.59);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -126,7 +141,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
                 color: 'var(--amber-soft)',
               }}
             >
-              <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--amber)' }} />
+              <LiveDot color="var(--amber)" />
               <span className="font-semibold tracking-tight">SGX Fe62</span>
               <span className="tabular-nums">$110</span>
             </div>
@@ -139,7 +154,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
                 color: 'var(--green-soft)',
               }}
             >
-              <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--green)' }} />
+              <LiveDot color="var(--green)" />
               <span className="font-semibold tracking-tight">SOFR</span>
               <span className="tabular-nums">{sofr.toFixed(2)}%</span>
             </div>

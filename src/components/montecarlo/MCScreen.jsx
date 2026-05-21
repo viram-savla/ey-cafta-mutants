@@ -11,6 +11,7 @@ import { ScenarioSlider } from '../scenario/ScenarioSlider';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+import { AnimatedNumber } from '../shared/AnimatedNumber';
 
 function buildHistogram(paths, binWidth = 0.005) {
   if (!paths.length) return [];
@@ -178,21 +179,24 @@ export function MCScreen({ onCfarUpdate }) {
           {results && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
-                { label: '5th Percentile (CFaR)', value: `${(results.p5 * 100).toFixed(2)}%`, target: '≥ 8.0%', status: results.p5 >= 0.08 ? 'green' : 'red' },
-                { label: 'Mean Margin', value: `${(results.mean * 100).toFixed(2)}%`, target: 'Base: 11.60%', status: 'green' },
-                { label: 'Above Board Floor', value: `${results.pctAboveFloor.toFixed(1)}%`, target: 'Of paths ≥ 11.0%', status: results.pctAboveFloor >= 80 ? 'green' : 'amber' },
-              ].map((stat) => (
+                { label: '5th Percentile (CFaR)',  raw: results.p5 * 100,           decimals: 2, suffix: '%', target: '≥ 8.0%',            status: results.p5 >= 0.08 ? 'green' : 'red' },
+                { label: 'Mean Margin',            raw: results.mean * 100,         decimals: 2, suffix: '%', target: 'Base: 11.60%',     status: 'green' },
+                { label: 'Above Board Floor',      raw: results.pctAboveFloor,      decimals: 1, suffix: '%', target: 'Of paths ≥ 11.0%', status: results.pctAboveFloor >= 80 ? 'green' : 'amber' },
+              ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 120, damping: 20, delay: i * 0.04 }}
                   className="glass-panel-subtle p-3.5"
                 >
                   <div className="flex items-start justify-between mb-2 gap-2">
                     <span className="text-[10.5px] font-medium uppercase tracking-[0.1em] leading-tight" style={{ color: 'var(--text-muted)' }}>{stat.label}</span>
                     <RAGBadge status={stat.status} />
                   </div>
-                  <div className="font-semibold tabular-nums tracking-tight" style={{ color: 'var(--text-primary)', fontSize: 21, letterSpacing: '-0.02em' }}>{stat.value}</div>
+                  <div className="font-semibold tabular-nums" style={{ color: 'var(--text-primary)', fontSize: 22, letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+                    <AnimatedNumber value={stat.raw} decimals={stat.decimals} suffix={stat.suffix} />
+                  </div>
                   <div className="text-[11px] mt-0.5 font-mono tabular-nums" style={{ color: 'var(--text-faint)' }}>{stat.target}</div>
                 </motion.div>
               ))}

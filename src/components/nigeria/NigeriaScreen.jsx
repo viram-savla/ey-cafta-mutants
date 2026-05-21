@@ -12,6 +12,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '..
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+import { AnimatedNumber } from '../shared/AnimatedNumber';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -56,10 +57,10 @@ export function NigeriaScreen() {
             </div>
             <div className="flex items-baseline gap-3 flex-wrap">
               <span
-                className="font-semibold tabular-nums tracking-tight"
-                style={{ color: ragColor, fontSize: 36, letterSpacing: '-0.025em', lineHeight: 1 }}
+                className="font-semibold tabular-nums"
+                style={{ color: ragColor, fontSize: 38, letterSpacing: '-0.035em', lineHeight: 1 }}
               >
-                {currentDays.toFixed(1)}
+                <AnimatedNumber value={currentDays} decimals={1} />
               </span>
               <span className="text-[14px] font-medium" style={{ color: 'var(--text-secondary)' }}>days of cover</span>
               <RAGBadge status={ragStatus} size="md" />

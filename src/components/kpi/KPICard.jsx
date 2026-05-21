@@ -1,82 +1,143 @@
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { RAGBadge } from '../shared/RAGBadge';
+import { Sparkline } from '../shared/Sparkline';
+import { AnimatedNumber } from '../shared/AnimatedNumber';
 import {
   Tooltip, TooltipContent, TooltipTrigger, TooltipProvider,
 } from '../ui/tooltip';
 
-const STATUS_GLOW = {
-  green: '0 0 0 1px rgba(16,185,129,0.35), 0 12px 32px rgba(16,185,129,0.12)',
-  amber: '0 0 0 1px rgba(245,158,11,0.35), 0 12px 32px rgba(245,158,11,0.12)',
-  red:   '0 0 0 1px rgba(244,63,94,0.35),  0 12px 32px rgba(244,63,94,0.14)',
+const STATUS_HOVER_SHADOW = {
+  green: 'var(--shadow-status-green-hover)',
+  amber: 'var(--shadow-status-amber-hover)',
+  red:   'var(--shadow-status-red-hover)',
+};
+
+const STATUS_RESTING_SHADOW = {
+  green: 'var(--shadow-status-green)',
+  amber: 'var(--shadow-status-amber)',
+  red:   'var(--shadow-status-red)',
 };
 
 const STATUS_COLOR = {
-  green: 'var(--green)',
-  amber: 'var(--amber)',
-  red:   'var(--red)',
+  green: 'var(--green-soft)',
+  amber: 'var(--amber-soft)',
+  red:   'var(--red-soft)',
 };
 
-export function KPICard({ label, value, target, status, onClick, delay = 0, tooltip }) {
+// Parse a numeric prefix out of the value string so we can animate it
+function parseNumeric(value) {
+  if (typeof value !== 'string') return null;
+  const match = value.match(/^([₹$]?)\s*(-?\d+(?:\.\d+)?)\s*(.*)$/);
+  if (!match) return null;
+  const [, prefix, num, suffix] = match;
+  return { prefix, num: parseFloat(num), suffix, decimals: (num.split('.')[1] || '').length };
+}
+
+export function KPICard({ id, label, value, target, status, onClick, delay = 0, tooltip }) {
   const accent = STATUS_COLOR[status];
+  const cardRef = useRef(null);
+  const [hovering, setHovering] = useState(false);
+  const numeric = parseNumeric(value);
+
+  function handleMouseMove(e) {
+    if (!cardRef.current) return;
+    const r = cardRef.current.getBoundingClientRect();
+    const mx = ((e.clientX - r.left) / r.width) * 100;
+    const my = ((e.clientY - r.top) / r.height) * 100;
+    cardRef.current.style.setProperty('--mx', `${mx}%`);
+    cardRef.current.style.setProperty('--my', `${my}%`);
+  }
 
   const card = (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      ref={cardRef}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay, ease: [0.2, 0, 0.2, 1] }}
+      transition={{ type: 'spring', stiffness: 110, damping: 18, mass: 0.9, delay }}
       onClick={onClick}
-      whileHover={onClick ? { y: -2, boxShadow: STATUS_GLOW[status] } : {}}
-      className={`relative overflow-hidden rounded-xl p-4 ${onClick ? 'cursor-pointer' : ''}`}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      onMouseMove={handleMouseMove}
+      whileHover={onClick ? {
+        y: -3,
+        boxShadow: STATUS_HOVER_SHADOW[status],
+        transition: { type: 'spring', stiffness: 300, damping: 22 },
+      } : {}}
+      whileTap={onClick ? { scale: 0.97, transition: { duration: 0.08 } } : {}}
+      className={`card-spotlight relative overflow-hidden rounded-xl p-4 ${onClick ? 'cursor-pointer' : ''}`}
       style={{
         background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',
         backdropFilter: 'blur(14px) saturate(140%)',
         WebkitBackdropFilter: 'blur(14px) saturate(140%)',
         border: '1px solid var(--border)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
-        transition: 'box-shadow 240ms ease, border-color 240ms ease, transform 240ms ease',
+        borderBottom: `2px solid var(--${status})`,
+        boxShadow: STATUS_RESTING_SHADOW[status],
+        minHeight: 130,
       }}
     >
       {/* top-edge accent bar */}
       <div
-        className="absolute inset-x-0 top-0 h-[2px]"
+        className="absolute inset-x-0 top-0 h-[2px] pointer-events-none"
         style={{
-          background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
-          opacity: 0.7,
+          background: `linear-gradient(90deg, transparent, var(--${status}), transparent)`,
+          opacity: 0.8,
         }}
       />
 
       {/* label + RAG */}
       <div className="flex items-start justify-between mb-3 gap-2">
         <span
-          className="text-[10.5px] font-medium uppercase tracking-[0.1em] leading-tight"
-          style={{ color: 'var(--text-muted)' }}
+          className="font-medium leading-tight"
+          style={{
+            color: 'var(--text-muted)',
+            fontSize: 11,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+          }}
         >
           {label}
         </span>
         <RAGBadge status={status} />
       </div>
 
-      {/* value — Inter, tabular nums, prominent */}
+      {/* value */}
       <motion.div
         key={value}
-        initial={{ opacity: 0.6 }}
+        initial={{ opacity: 0.7 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
-        className="font-semibold tracking-tight tabular-nums"
+        transition={{ duration: 0.18 }}
+        className="tabular-nums"
         style={{
           color: 'var(--text-primary)',
-          fontSize: 24,
-          lineHeight: 1.1,
-          letterSpacing: '-0.02em',
+          fontSize: 26,
+          fontWeight: 600,
+          lineHeight: 1.05,
+          letterSpacing: '-0.025em',
         }}
       >
-        {value}
+        {numeric ? (
+          <AnimatedKPI {...numeric} />
+        ) : value}
       </motion.div>
 
       {/* target line */}
       <div className="flex items-center gap-1.5 mt-1.5 text-[11px]" style={{ color: 'var(--text-faint)' }}>
         <span>Target</span>
         <span className="tabular-nums" style={{ color: 'var(--text-muted)' }}>{target}</span>
+      </div>
+
+      {/* Sparkline on hover */}
+      <div
+        className="absolute inset-x-0 bottom-0 px-3 pb-2 pointer-events-none"
+        style={{ opacity: hovering ? 1 : 0, transition: 'opacity 220ms ease' }}
+      >
+        <Sparkline
+          seed={`${id || label}-${status}`}
+          color={accent}
+          height={22}
+          active={hovering}
+        />
       </div>
     </motion.div>
   );
@@ -94,5 +155,15 @@ export function KPICard({ label, value, target, status, onClick, delay = 0, tool
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
+  );
+}
+
+function AnimatedKPI({ prefix, num, suffix, decimals }) {
+  return (
+    <>
+      {prefix}
+      <AnimatedNumber value={num} decimals={decimals} />
+      {suffix && <span className="unit-suffix">{suffix.trim()}</span>}
+    </>
   );
 }

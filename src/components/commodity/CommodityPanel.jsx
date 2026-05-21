@@ -79,8 +79,9 @@ function PriceChange({ casePrice, livePrice, color }) {
 function CommodityCard({ commodity, expanded, onToggle }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 120, damping: 20 }}
       className="rounded-xl overflow-hidden lift-on-hover"
       style={{
         background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',

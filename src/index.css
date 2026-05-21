@@ -374,6 +374,13 @@ input[type="range"]::-moz-range-thumb {
 }
 .pulse-ring { animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
+/* Generic color-aware live ring */
+@keyframes live-ring {
+  0%   { transform: scale(0.7); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.live-ring { animation: live-ring 1.8s ease-out infinite; }
+
 @keyframes alert-pulse {
   0%, 100% { border-color: rgba(244, 63, 94, 0.5); box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.15); }
   50%      { border-color: rgba(244, 63, 94, 0.9); box-shadow: 0 0 24px rgba(244, 63, 94, 0.25); }

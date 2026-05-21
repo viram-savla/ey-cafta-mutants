@@ -7,6 +7,7 @@ import { TrendingUp, Package, Layers, Shield, Leaf } from 'lucide-react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../ui/accordion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+import { AnimatedNumber } from '../shared/AnimatedNumber';
 
 const DISCOUNT_RATE = 0.15;
 const NPV_YEARS = 5;
@@ -151,9 +152,9 @@ function LeverCard({ lever, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06, duration: 0.4, ease: [0.2, 0, 0.2, 1] }}
+      initial={{ opacity: 0, y: 12, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 110, damping: 18, mass: 0.9, delay: index * 0.05 }}
       className="rounded-xl overflow-hidden lift-on-hover"
       style={{
         background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',
@@ -372,20 +373,26 @@ export function ValueCreationScreen() {
       {/* Header KPI bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Total 5-yr NPV',  value: `₹${TOTAL_NPV_LOW}–${TOTAL_NPV_HIGH} Cr`, sub: 'at 15% CoC',                  color: 'var(--accent-teal-soft)' },
-          { label: 'Annual Cash Flow',value: '₹129–203 Cr/yr',                          sub: 'Contracting + Landed Cost',  color: 'var(--green-soft)' },
-          { label: 'WC Release (Y1)', value: '₹394 Cr',                                  sub: '71 → 55 inventory days',     color: '#60a5fa' },
-          { label: 'CBAM Premium',    value: '~₹30 Cr/yr',                               sub: 'EUR 110M exports · post-2026', color: '#22d3ee' },
+          { label: 'Total 5-yr NPV',  numeric: TOTAL_NPV_HIGH, prefix: '₹', suffix: ` Cr`,    display: `₹${TOTAL_NPV_LOW}–${TOTAL_NPV_HIGH} Cr`,   sub: 'at 15% CoC',                   color: 'var(--accent-teal-soft)' },
+          { label: 'Annual Cash Flow', display: '₹129–203 Cr/yr', sub: 'Contracting + Landed Cost',   color: 'var(--green-soft)' },
+          { label: 'WC Release (Y1)',  numeric: 394, prefix: '₹', suffix: ' Cr', sub: '71 → 55 inventory days',      color: '#60a5fa' },
+          { label: 'CBAM Premium',     display: '~₹30 Cr/yr',  sub: 'EUR 110M exports · post-2026',  color: '#22d3ee' },
         ].map((kpi, i) => (
           <motion.div
             key={kpi.label}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06, duration: 0.35, ease: [0.2, 0, 0.2, 1] }}
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 120, damping: 20, delay: i * 0.05 }}
             className="glass-panel-subtle p-3.5 lift-on-hover"
           >
             <div className="text-[10.5px] font-medium uppercase tracking-[0.1em]" style={{ color: 'var(--text-faint)' }}>{kpi.label}</div>
-            <div className="font-semibold tabular-nums tracking-tight mt-1.5" style={{ color: kpi.color, fontSize: 18, letterSpacing: '-0.02em' }}>{kpi.value}</div>
+            <div className="font-semibold tabular-nums mt-1.5" style={{ color: kpi.color, fontSize: 19, letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+              {kpi.numeric != null ? (
+                <>
+                  {kpi.prefix}<AnimatedNumber value={kpi.numeric} decimals={0} />{kpi.suffix && <span className="unit-suffix">{kpi.suffix.trim()}</span>}
+                </>
+              ) : kpi.display}
+            </div>
             <div className="text-[10.5px] mt-1 leading-snug" style={{ color: 'var(--text-muted)' }}>{kpi.sub}</div>
           </motion.div>
         ))}

@@ -151,11 +151,12 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
         {kpis.map((kpi, i) => (
           <KPICard
             key={kpi.id}
+            id={kpi.id}
             label={kpi.label}
             value={kpi.value}
             target={kpi.target}
             status={kpi.status}
-            delay={i * 0.05}
+            delay={i * 0.045}
             tooltip={kpi.tooltip}
             onClick={kpi.id === 'inventoryDays'
               ? () => setShowInventoryDrill(true)
