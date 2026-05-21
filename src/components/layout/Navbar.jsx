@@ -23,6 +23,8 @@ export function Navbar({ activeTab, onTabChange, hedgeValue }) {
     { id: 'scenario', label: 'Scenario Engine' },
     { id: 'nigeria', label: 'Nigeria' },
     { id: 'montecarlo', label: 'CFaR Simulator' },
+    { id: 'value', label: 'Value Creation' },
+    { id: 'roadmap', label: 'Roadmap' },
   ];
 
   return (
@@ -60,6 +62,11 @@ export function Navbar({ activeTab, onTabChange, hedgeValue }) {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {/* SGX Iron Ore badge */}
+            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono" style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)', color: 'var(--amber)' }}>
+              <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--amber)' }} />
+              SGX Fe62 $110
+            </div>
             {/* SOFR badge */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono" style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', color: 'var(--green)' }}>
               <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--green)' }} />
@@ -103,7 +110,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue }) {
             ))}
             <div className="px-3 py-2 flex items-center gap-2 text-xs font-mono" style={{ color: 'var(--green)' }}>
               <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--green)' }} />
-              SOFR {sofr.toFixed(2)}% · {sofrSource}
+              SOFR {sofr.toFixed(2)}% · SGX Fe62 $110
             </div>
           </div>
         )}

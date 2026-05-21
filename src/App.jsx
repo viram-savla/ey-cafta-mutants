@@ -5,6 +5,8 @@ import { KPIGrid } from './components/kpi/KPIGrid';
 import { ScenarioEngine } from './components/scenario/ScenarioEngine';
 import { NigeriaScreen } from './components/nigeria/NigeriaScreen';
 import { MCScreen } from './components/montecarlo/MCScreen';
+import { ValueCreationScreen } from './components/value/ValueCreationScreen';
+import { RoadmapScreen } from './components/roadmap/RoadmapScreen';
 import { calcHedgedVsUnhedged, calcHedgeValueCrore } from './lib/calculations';
 
 const COMBINED_DEFAULTS = { ironOreShock: 0.15, inrRate: 88, freightShock: 0.20 };
@@ -18,6 +20,8 @@ const TAB_LABELS = {
   scenario: 'Scenario Engine',
   nigeria: 'Nigeria Liquidity',
   montecarlo: 'CFaR Simulator',
+  value: 'Part D: Value Creation',
+  roadmap: '12-Month Roadmap',
 };
 
 export default function App() {
@@ -100,6 +104,18 @@ export default function App() {
             {activeTab === 'montecarlo' && (
               <ErrorBoundary>
                 <MCScreen onCfarUpdate={handleCfarUpdate} />
+              </ErrorBoundary>
+            )}
+
+            {activeTab === 'value' && (
+              <ErrorBoundary>
+                <ValueCreationScreen />
+              </ErrorBoundary>
+            )}
+
+            {activeTab === 'roadmap' && (
+              <ErrorBoundary>
+                <RoadmapScreen />
               </ErrorBoundary>
             )}
           </motion.div>

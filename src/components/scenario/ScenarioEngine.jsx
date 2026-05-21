@@ -5,6 +5,9 @@ import { ScenarioSlider } from './ScenarioSlider';
 import { ScenarioPresets } from './ScenarioPresets';
 import { MarginGauge } from './MarginGauge';
 import { WaterfallChart } from './WaterfallChart';
+import { SOFRCollarChart } from './SOFRCollarChart';
+import { FXHedgeLadder } from './FXHedgeLadder';
+import { ResidualRiskPanel } from './ResidualRiskPanel';
 import { calcHedgedVsUnhedged, calcBreachThreshold } from '../../lib/calculations';
 import { PRESETS } from '../../lib/constants';
 
@@ -158,6 +161,15 @@ export function ScenarioEngine({ onHedgeValueChange }) {
         </h3>
         <WaterfallChart ironOreShock={ironOreShock} inrRate={inrRate} freightShock={freightShock} />
       </div>
+
+      {/* SOFR Collar Chart */}
+      <SOFRCollarChart />
+
+      {/* FX Hedge Ladder */}
+      <FXHedgeLadder />
+
+      {/* Residual Risk Panel */}
+      <ResidualRiskPanel />
 
       {/* Breach calculator */}
       <div className="rounded-lg p-4 space-y-3" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>

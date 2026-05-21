@@ -217,6 +217,73 @@ export function MCScreen({ onCfarUpdate }) {
             )}
           </div>
 
+          {/* CFaR Hedge Comparison side-by-side */}
+          {showComparison && results && compareResults && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-lg p-4"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}
+            >
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+                CFaR Comparison: Unhedged vs 80% Hedged
+              </h3>
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                {[
+                  {
+                    label: 'Unhedged (0%)',
+                    p5: compareResults.p5,
+                    mean: compareResults.mean,
+                    pct: compareResults.pctAboveFloor,
+                    color: '#ef4444',
+                    bg: 'var(--red-bg)',
+                    border: 'var(--red-border)',
+                  },
+                  {
+                    label: '80% Hedged',
+                    p5: results.p5,
+                    mean: results.mean,
+                    pct: results.pctAboveFloor,
+                    color: '#10b981',
+                    bg: 'var(--green-bg)',
+                    border: 'var(--green-border)',
+                  },
+                ].map((col) => (
+                  <div key={col.label} className="rounded p-3" style={{ background: col.bg, border: `1px solid ${col.border}` }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: col.color }}>{col.label}</div>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span style={{ color: 'var(--text-muted)' }}>P5 (CFaR)</span>
+                        <span className="font-mono font-bold" style={{ color: col.color }}>{(col.p5 * 100).toFixed(2)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span style={{ color: 'var(--text-muted)' }}>Mean</span>
+                        <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>{(col.mean * 100).toFixed(2)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span style={{ color: 'var(--text-muted)' }}>Above floor</span>
+                        <span className="font-mono" style={{ color: col.pct >= 80 ? '#10b981' : '#f59e0b' }}>{col.pct.toFixed(1)}%</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Improvement summary */}
+              <div className="p-2 rounded text-xs" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid var(--amber-border)' }}>
+                <span style={{ color: 'var(--amber)' }} className="font-semibold">Hedge benefit: </span>
+                <span style={{ color: 'var(--text-secondary)' }}>
+                  P5 improves from{' '}
+                  <span className="font-mono" style={{ color: '#ef4444' }}>{(compareResults.p5 * 100).toFixed(2)}%</span>
+                  {' '}→{' '}
+                  <span className="font-mono" style={{ color: '#10b981' }}>{(results.p5 * 100).toFixed(2)}%</span>
+                  {' '}(+{((results.p5 - compareResults.p5) * 10000).toFixed(0)}bps).{' '}
+                  This is the margin predictability value of 80% hedging — compressing the left tail without
+                  capping the upside beyond hedge-adjusted outcomes.
+                </span>
+              </div>
+            </motion.div>
+          )}
+
           {/* Interpretation */}
           {results && (
             <motion.div
