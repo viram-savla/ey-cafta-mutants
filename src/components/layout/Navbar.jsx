@@ -89,7 +89,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
           </div>
 
           {/* ─── Center: tabs (segmented control) ─────────── */}
-          <div className="hidden lg:flex flex-1 justify-center px-4">
+          <div className="hidden md:flex flex-1 justify-center px-3">
             <div
               className="inline-flex p-1 rounded-xl items-center"
               style={{
@@ -104,7 +104,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
                   <button
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
-                    className="relative px-3 py-1.5 text-[12.5px] font-medium rounded-lg transition-colors"
+                    className="relative px-2.5 lg:px-3 py-1.5 text-[12px] lg:text-[12.5px] font-medium rounded-lg transition-colors whitespace-nowrap"
                     style={{
                       color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
                     }}
@@ -123,7 +123,8 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
                         transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                       />
                     )}
-                    <span className="relative z-10">{tab.label}</span>
+                    <span className="relative z-10 lg:hidden">{tab.short}</span>
+                    <span className="relative z-10 hidden lg:inline">{tab.label}</span>
                   </button>
                 );
               })}
@@ -202,7 +203,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
             </button>
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden p-1.5 rounded-md"
+              className="md:hidden p-1.5 rounded-md"
               style={{ color: 'var(--text-secondary)' }}
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Menu"
@@ -217,7 +218,7 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="lg:hidden pb-3 pt-1 grid grid-cols-2 gap-1.5"
+            className="md:hidden pb-3 pt-1 grid grid-cols-2 gap-1.5"
           >
             {tabs.map(tab => {
               const isActive = activeTab === tab.id;

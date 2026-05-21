@@ -141,9 +141,10 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
           size="sm"
           onClick={() => window.print()}
           className="no-print gap-1.5"
+          title="Opens the browser print dialog — choose 'Save as PDF' to download"
         >
           <Printer size={12} />
-          Board Snapshot
+          Print / Save PDF
         </Button>
       </div>
 

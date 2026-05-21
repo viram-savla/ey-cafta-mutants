@@ -129,13 +129,13 @@ export default function App() {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 6, scale: 0.995 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.998 }}
-            transition={{ type: 'spring', stiffness: 90, damping: 22, mass: 0.85 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: [0.25, 1, 0.5, 1] }}
           >
             {activeTab === 'overview' && (
               <ErrorBoundary>
@@ -202,10 +202,16 @@ export default function App() {
                 Bharat Advanced Materials Limited · EY CAFTA Case Championship 2026 — 11th Edition · Masters Union
               </p>
             </div>
-            <div className="text-[10.5px] font-mono tabular-nums leading-relaxed text-right hidden md:block" style={{ color: 'var(--text-faint)' }}>
-              <div>10 sheets · 7,382 formulas · 1,000 MC paths</div>
-              <div>SOFR 3.59% (NY Fed, 19 May 2026)</div>
-              <div className="mt-1" style={{ color: 'var(--text-muted)' }}>Live · Tabular · Tabular nums</div>
+            <div className="text-[10.5px] leading-relaxed text-right hidden md:block" style={{ color: 'var(--text-muted)' }}>
+              <div>
+                Last updated{' '}
+                <span className="font-mono tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+                  {new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })} IST
+                </span>
+              </div>
+              <div className="mt-0.5" style={{ color: 'var(--text-faint)' }}>
+                Sources · NY Fed (SOFR) · SGX Fe62 · RBI reference rates
+              </div>
             </div>
           </div>
         </div>

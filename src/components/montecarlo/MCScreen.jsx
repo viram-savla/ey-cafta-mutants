@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -72,6 +72,14 @@ export function MCScreen({ onCfarUpdate }) {
       setLoading(false);
     }, 300);
   }, [nPaths, fxStd, ironOreStd, hedgeRatio, onCfarUpdate]);
+
+  // Auto-run on mount so the page lands with results visible — no empty state.
+  useEffect(() => {
+    const res = runMonteCarlo(nPaths, fxStd, ironOreStd, hedgeRatio);
+    setResults(res);
+    if (onCfarUpdate) onCfarUpdate(res.p5);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const runComparison = useCallback(() => {
     setLoading(true);

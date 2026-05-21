@@ -44,9 +44,9 @@
 
   /* ─── Text (WCAG AA, Perplexity tonal range) ─────────────── */
   --text-primary:      #e8eaed;   /* warm near-white, not harsh */
-  --text-secondary:    #a8b3c0;   /* clear blue-gray */
-  --text-muted:        #6c7585;   /* accessible muted */
-  --text-faint:        #4e5666;   /* fine print */
+  --text-secondary:    #b6c0cd;   /* clear blue-gray, bumped for AA */
+  --text-muted:        #8a93a4;   /* accessible muted, bumped to ~5.5:1 */
+  --text-faint:        #707b8f;   /* fine print — bumped from #4e5666 to clear 4.5:1 */
 
   /* ─── Status colours (vivid, Perplexity-grade saturation) ─── */
   --green:             #22c55e;
