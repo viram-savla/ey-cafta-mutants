@@ -33,8 +33,8 @@ const CustomTooltip = ({ active, payload }) => {
 
 export function MCScreen({ onCfarUpdate }) {
   const [nPaths, setNPaths] = useState(1000);
-  const [fxStd, setFxStd] = useState(2.5);
-  const [ironOreStd, setIronOreStd] = useState(8);
+  const [fxStd, setFxStd] = useState(4.0);
+  const [ironOreStd, setIronOreStd] = useState(20);
   const [hedgeRatio, setHedgeRatio] = useState(0.80);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -94,7 +94,7 @@ export function MCScreen({ onCfarUpdate }) {
           <ScenarioSlider
             label="Iron Ore Volatility (σ USD/t)"
             value={ironOreStd}
-            min={4} max={15} step={1}
+            min={4} max={30} step={1}
             onChange={setIronOreStd}
             formatValue={v => `±${v.toFixed(0)}`}
           />

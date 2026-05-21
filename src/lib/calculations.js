@@ -13,18 +13,22 @@ export function calcScenario(params) {
   const totalVol = 1800000;
   const baseFx = 83.25;
 
-  const ironOreImpact = ironOreVol * (ironOrePrice * ironOreShock) * inrRate / 1e7;
-  const ironOreHedgeGain = ironOreImpact * hedgeRatio;
-  const netIronOreImpact = ironOreImpact - ironOreHedgeGain;
+  // S1: Iron ore — converted at base FX (isolates commodity vs FX shocks, per slides)
+  const ironOreImpact = ironOreVol * (ironOrePrice * ironOreShock) * baseFx / 1e7;
+  const netIronOreImpact = ironOreImpact * (1 - hedgeRatio);
 
+  // S2: FX — BAML is net long USD 140M. INR weakness is a tailwind.
+  // Forwards lock in the USD selling rate: hedged portion loses the upside vs spot.
   const fxDelta = inrRate - baseFx;
   const exportGain = 620 * fxDelta / 10;
   const importCost = 480 * fxDelta / 10;
-  const netFxImpact = exportGain - importCost;
+  const netFxUnhedged = exportGain - importCost; // +ve when INR depreciates
+  // Hedged portion (hedgeRatio) is locked at forward rate — misses spot upside
+  const netFxImpact = netFxUnhedged * (1 - hedgeRatio);
 
-  const freightImpact = totalVol * (freightRate * freightShock) * inrRate / 1e7;
-  const freightHedgeGain = freightImpact * hedgeRatio;
-  const netFreightImpact = freightImpact - freightHedgeGain;
+  // S3: Freight — converted at base FX (isolates commodity vs FX shocks, per slides)
+  const freightImpact = totalVol * (freightRate * freightShock) * baseFx / 1e7;
+  const netFreightImpact = freightImpact * (1 - hedgeRatio);
 
   const ebitdaChange = -netIronOreImpact + netFxImpact - netFreightImpact;
   const ebitda = baseEbitda + ebitdaChange;
@@ -82,8 +86,8 @@ export function calcNigeriaWithFacility(currentBuffer, facility, monthlyImport) 
 }
 
 export function calcBreachThreshold(inrRate = 83.25, freightShock = 0, hedgeRatio = 0.80) {
-  let low = 0, high = 1.0;
-  for (let i = 0; i < 50; i++) {
+  let low = 0, high = 2.0;
+  for (let i = 0; i < 60; i++) {
     const mid = (low + high) / 2;
     const result = calcScenario({ ironOreShock: mid, inrRate, freightShock, hedgeRatio });
     if (result.margin > 0.11) low = mid;
@@ -96,27 +100,34 @@ export function calcBreachThreshold(inrRate = 83.25, freightShock = 0, hedgeRati
   };
 }
 
+// Box-Muller normal random pair
+function randn() {
+  const u1 = Math.random(), u2 = Math.random();
+  const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2);
+  return [z0, z1];
+}
+
 export function runMonteCarlo(nPaths = 1000, fxStd = 2.50, ironOreStd = 8, hedgeRatio = 0.80) {
   const results = [];
   for (let i = 0; i < nPaths; i++) {
-    const u1 = Math.random(), u2 = Math.random();
-    const u3 = Math.random(), u4 = Math.random();
-    const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-    const z2 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2);
-    const z3 = Math.sqrt(-2 * Math.log(u3)) * Math.cos(2 * Math.PI * u4);
+    const [zFx, zIronOre] = randn();
+    const [zFreight] = randn();
 
-    const fxSim = 83.25 + fxStd * z1;
-    const ironOreSim = 120 + ironOreStd * z3;
+    const fxSim = Math.max(70, 83.25 + fxStd * zFx);
+    const ironOreSim = Math.max(60, 120 + ironOreStd * zIronOre);
+    const freightSim = Math.max(0, 1 + 0.15 * zFreight); // ±15% freight std
+
     const ironOreShock = (ironOreSim - 120) / 120;
+    const freightShock = freightSim - 1;
 
     const result = calcScenario({
-      ironOreShock: Math.max(ironOreShock, -0.5),
-      inrRate: Math.max(fxSim, 70),
-      freightShock: 0,
+      ironOreShock,
+      inrRate: fxSim,
+      freightShock,
       hedgeRatio,
     });
     results.push(result.margin);
-    void z2;
   }
   results.sort((a, b) => a - b);
   const p5 = results[Math.floor(nPaths * 0.05)];
