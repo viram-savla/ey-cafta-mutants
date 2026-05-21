@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, LabelList,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Cell, LabelList,
 } from 'recharts';
 import { TrendingUp, Package, Layers, Shield, Leaf } from 'lucide-react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../ui/accordion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 const DISCOUNT_RATE = 0.15;
 const NPV_YEARS = 5;
@@ -287,6 +289,10 @@ function Quadrant2x2() {
   );
 }
 
+const npvChartConfig = {
+  npvMid: { label: '5-yr NPV (₹ Cr)' },
+};
+
 function NPVBarChart() {
   const data = NPV_BAR_DATA.map(d => ({
     name: d.name.replace('\n', ' '),
@@ -294,53 +300,39 @@ function NPVBarChart() {
     color: d.color,
   }));
 
-  const CustomLabel = (props) => {
-    const { x, y, width, value, color } = props;
-    return (
-      <text x={x + width / 2} y={y - 4} textAnchor="middle" fill={color} fontSize={10} fontFamily="monospace">
-        ₹{value}
-      </text>
-    );
-  };
-
   return (
-    <div style={{ width: '100%', height: 180 }}>
-      <ResponsiveContainer>
-        <BarChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-          <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={v => `₹${v}`} />
-          <Tooltip
-            content={({ active, payload }) => {
-              if (!active || !payload?.length) return null;
-              const d = payload[0];
+    <ChartContainer config={npvChartConfig} className="aspect-auto h-[180px] w-full">
+      <BarChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={v => `₹${v}`} />
+        <ChartTooltip
+          cursor={false}
+          content={
+            <ChartTooltipContent
+              indicator="dot"
+              formatter={(value, name, item) => [`₹${value} Cr`, '5-yr NPV']}
+            />
+          }
+        />
+        <Bar dataKey="npvMid" radius={[3, 3, 0, 0]}>
+          {data.map((entry, i) => (
+            <Cell key={i} fill={entry.color} fillOpacity={0.8} />
+          ))}
+          <LabelList
+            content={(props) => {
+              const { x, y, width, value, index } = props;
               return (
-                <div className="rounded p-2 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
-                  <p style={{ color: 'var(--text-primary)' }}>{d.payload.name}</p>
-                  <p style={{ color: d.payload.color }}>5-yr NPV: ₹{d.value} Cr</p>
-                </div>
+                <text x={x + width / 2} y={y - 4} textAnchor="middle"
+                  fill={data[index]?.color} fontSize={9} fontFamily="monospace">
+                  ₹{value}
+                </text>
               );
             }}
           />
-          <Bar dataKey="npvMid" radius={[3, 3, 0, 0]}>
-            {data.map((entry, i) => (
-              <Cell key={i} fill={entry.color} fillOpacity={0.8} />
-            ))}
-            <LabelList
-              content={(props) => {
-                const { x, y, width, value, index } = props;
-                return (
-                  <text x={x + width / 2} y={y - 4} textAnchor="middle"
-                    fill={data[index]?.color} fontSize={9} fontFamily="monospace">
-                    ₹{value}
-                  </text>
-                );
-              }}
-            />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+        </Bar>
+      </BarChart>
+    </ChartContainer>
   );
 }
 
@@ -383,21 +375,23 @@ export function ValueCreationScreen() {
         <Quadrant2x2 />
 
         {/* NPV bar chart */}
-        <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-          <h3 className="text-sm font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
-            5-Year NPV by Lever (₹ Cr, 15% CoC)
-          </h3>
-          <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-            Mid-point estimates · Inventory = one-time WC release (not discounted further)
-          </p>
-          <NPVBarChart />
-          <div className="mt-3 p-2 rounded text-xs" style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)' }}>
-            <span style={{ color: 'var(--amber)' }} className="font-semibold">Total: </span>
-            <span style={{ color: 'var(--text-secondary)' }}>
-              PV(₹129–203 Cr annuity, 5yr, 15%) + ₹394 Cr = <span className="font-mono" style={{ color: 'var(--accent-gold)' }}>₹826–1,075 Cr</span>
-            </span>
-          </div>
-        </div>
+        <Card className="pt-0">
+          <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+            <div className="grid flex-1 gap-1">
+              <CardTitle>5-Year NPV by Lever (₹ Cr, 15% CoC)</CardTitle>
+              <CardDescription>Mid-point estimates · Inventory = one-time WC release (not discounted further)</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+            <NPVBarChart />
+            <div className="mt-3 p-2 rounded text-xs" style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)' }}>
+              <span style={{ color: 'var(--amber)' }} className="font-semibold">Total: </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                PV(₹129–203 Cr annuity, 5yr, 15%) + ₹394 Cr = <span className="font-mono" style={{ color: 'var(--accent-gold)' }}>₹826–1,075 Cr</span>
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Footnote */}

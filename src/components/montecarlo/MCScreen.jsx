@@ -1,14 +1,16 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ReferenceLine, ResponsiveContainer, Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  ReferenceLine, Cell,
 } from 'recharts';
 import { Play, RefreshCw } from 'lucide-react';
 import { runMonteCarlo } from '../../lib/calculations';
 import { RAGBadge } from '../shared/RAGBadge';
 import { ScenarioSlider } from '../scenario/ScenarioSlider';
 import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 function buildHistogram(paths, binWidth = 0.005) {
   if (!paths.length) return [];
@@ -42,14 +44,12 @@ function buildOverlaidHistogram(hedgedPaths, unhedgedPaths, binWidth = 0.005) {
   return bins;
 }
 
-const CustomTooltip = ({ active, payload }) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded p-2 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
-      <p style={{ color: 'var(--text-primary)' }}>Margin: {payload[0]?.payload?.centerPct?.toFixed(2)}%</p>
-      <p style={{ color: 'var(--text-secondary)' }}>Paths: {payload[0]?.value}</p>
-    </div>
-  );
+const singleChartConfig = {
+  count: { label: 'Paths' },
+};
+const overlaidChartConfig = {
+  unhedged: { label: 'Unhedged', color: '#ef4444' },
+  hedged: { label: '80% Hedged', color: '#10b981' },
 };
 
 export function MCScreen({ onCfarUpdate }) {
@@ -189,37 +189,41 @@ export function MCScreen({ onCfarUpdate }) {
           )}
 
           {/* Histogram */}
-          <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                {overlaidHistogram ? 'Distribution Overlay — Unhedged vs 80% Hedged' : `EBITDA Margin Distribution — ${nPaths.toLocaleString()} Paths`}
-              </h3>
-              {overlaidHistogram && (
-                <div className="flex items-center gap-3 text-xs font-mono">
-                  <span style={{ color: '#ef4444' }}>■ Unhedged</span>
-                  <span style={{ color: '#10b981' }}>■ 80% Hedged</span>
-                </div>
-              )}
-            </div>
-            {results ? (
-              <div style={{ width: '100%', height: 220 }}>
-                <ResponsiveContainer>
+          <Card className="pt-0">
+            <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+              <div className="grid flex-1 gap-1">
+                <CardTitle>
+                  {overlaidHistogram ? 'Distribution Overlay — Unhedged vs 80% Hedged' : `EBITDA Margin Distribution`}
+                </CardTitle>
+                <CardDescription>
+                  {overlaidHistogram ? 'Path-level comparison of hedge benefit' : `${nPaths.toLocaleString()} simulated paths · P5 = CFaR floor`}
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+              {results ? (
+                <ChartContainer
+                  config={overlaidHistogram ? overlaidChartConfig : singleChartConfig}
+                  className="aspect-auto h-[220px] w-full"
+                >
                   {overlaidHistogram ? (
                     <BarChart data={overlaidHistogram} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                       <XAxis dataKey="margin" tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toFixed(1)}%`} interval={Math.floor(overlaidHistogram.length / 8)} />
                       <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip content={({ active, payload, label }) => {
-                        if (!active || !payload?.length) return null;
-                        return (
-                          <div className="rounded p-2 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
-                            <p style={{ color: 'var(--text-primary)' }}>Margin: {Number(label).toFixed(1)}%</p>
-                            {payload.map(p => <p key={p.dataKey} style={{ color: p.fill }}>
-                              {p.dataKey === 'unhedged' ? 'Unhedged' : '80% Hedged'}: {p.value} paths
-                            </p>)}
-                          </div>
-                        );
-                      }} />
+                      <ChartTooltip
+                        cursor={false}
+                        content={
+                          <ChartTooltipContent
+                            indicator="dot"
+                            labelFormatter={(v) => `Margin: ${Number(v).toFixed(1)}%`}
+                            formatter={(value, name) => [
+                              `${value} paths`,
+                              overlaidChartConfig[name]?.label || name,
+                            ]}
+                          />
+                        }
+                      />
                       <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
                       <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
                       {compareResults?.p5 && (
@@ -228,15 +232,24 @@ export function MCScreen({ onCfarUpdate }) {
                       {p5Pct && (
                         <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="#10b981" strokeDasharray="3 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: '#10b981', fontSize: 8, position: 'insideTopRight' }} />
                       )}
-                      <Bar dataKey="unhedged" fill="#ef4444" fillOpacity={0.55} radius={[2, 2, 0, 0]} />
-                      <Bar dataKey="hedged" fill="#10b981" fillOpacity={0.7} radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="unhedged" fill="var(--color-unhedged)" fillOpacity={0.55} radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="hedged" fill="var(--color-hedged)" fillOpacity={0.7} radius={[2, 2, 0, 0]} />
                     </BarChart>
                   ) : (
                     <BarChart data={histogram} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                       <XAxis dataKey="margin" tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toFixed(1)}%`} interval={Math.floor(histogram.length / 8)} />
                       <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip content={<CustomTooltip />} />
+                      <ChartTooltip
+                        cursor={false}
+                        content={
+                          <ChartTooltipContent
+                            indicator="dot"
+                            labelFormatter={(v) => `Margin: ${Number(v).toFixed(2)}%`}
+                            formatter={(value) => [`${value} paths`, 'Count']}
+                          />
+                        }
+                      />
                       <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR Floor 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
                       <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Board Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
                       {p5Pct && (
@@ -244,26 +257,22 @@ export function MCScreen({ onCfarUpdate }) {
                       )}
                       <Bar dataKey="count" radius={[2, 2, 0, 0]}>
                         {histogram.map((entry, i) => (
-                          <Cell
-                            key={i}
-                            fill={entry.centerPct < 8 ? '#ef4444' : entry.centerPct < 11 ? '#f59e0b' : '#10b981'}
-                            opacity={0.85}
-                          />
+                          <Cell key={i} fill={entry.centerPct < 8 ? '#ef4444' : entry.centerPct < 11 ? '#f59e0b' : '#10b981'} opacity={0.85} />
                         ))}
                       </Bar>
                     </BarChart>
                   )}
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="h-48 flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
-                <div className="text-center">
-                  <Play size={32} className="mx-auto mb-2 opacity-30" />
-                  <p className="text-sm">Run simulation to see distribution</p>
+                </ChartContainer>
+              ) : (
+                <div className="h-48 flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-center">
+                    <Play size={32} className="mx-auto mb-2 opacity-30" />
+                    <p className="text-sm">Run simulation to see distribution</p>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* CFaR Hedge Comparison side-by-side */}
           {showComparison && results && compareResults && (
