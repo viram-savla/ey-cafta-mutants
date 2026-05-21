@@ -21,6 +21,26 @@ function buildHistogram(paths, binWidth = 0.005) {
   return bins;
 }
 
+// Build aligned bins for two distributions on the same x-axis
+function buildOverlaidHistogram(hedgedPaths, unhedgedPaths, binWidth = 0.005) {
+  if (!hedgedPaths.length || !unhedgedPaths.length) return [];
+  const allPaths = [...hedgedPaths, ...unhedgedPaths];
+  const min = Math.floor(Math.min(...allPaths) / binWidth) * binWidth;
+  const max = Math.ceil(Math.max(...allPaths) / binWidth) * binWidth;
+  const bins = [];
+  for (let v = min; v <= max; v += binWidth) {
+    const hedged = hedgedPaths.filter(p => p >= v && p < v + binWidth).length;
+    const unhedged = unhedgedPaths.filter(p => p >= v && p < v + binWidth).length;
+    bins.push({
+      margin: v * 100,
+      centerPct: (v + binWidth / 2) * 100,
+      hedged,
+      unhedged,
+    });
+  }
+  return bins;
+}
+
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
   return (
@@ -65,7 +85,9 @@ export function MCScreen({ onCfarUpdate }) {
   }, [nPaths, fxStd, ironOreStd, onCfarUpdate]);
 
   const histogram = results ? buildHistogram(results.paths) : [];
-  const compareHistogram = compareResults ? buildHistogram(compareResults.paths) : [];
+  const overlaidHistogram = (showComparison && results && compareResults)
+    ? buildOverlaidHistogram(results.paths, compareResults.paths)
+    : null;
 
   const p5Pct = results ? results.p5 * 100 : null;
 
@@ -178,33 +200,69 @@ export function MCScreen({ onCfarUpdate }) {
 
           {/* Histogram */}
           <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-            <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
-              EBITDA Margin Distribution — {nPaths.toLocaleString()} Paths
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                {overlaidHistogram ? 'Distribution Overlay — Unhedged vs 80% Hedged' : `EBITDA Margin Distribution — ${nPaths.toLocaleString()} Paths`}
+              </h3>
+              {overlaidHistogram && (
+                <div className="flex items-center gap-3 text-xs font-mono">
+                  <span style={{ color: '#ef4444' }}>■ Unhedged</span>
+                  <span style={{ color: '#10b981' }}>■ 80% Hedged</span>
+                </div>
+              )}
+            </div>
             {results ? (
               <div style={{ width: '100%', height: 220 }}>
                 <ResponsiveContainer>
-                  <BarChart data={histogram} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                    <XAxis dataKey="margin" tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toFixed(1)}%`} interval={Math.floor(histogram.length / 8)} />
-                    <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    {/* Reference lines */}
-                    <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR Floor 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
-                    <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Board Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
-                    {p5Pct && (
-                      <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="var(--accent-blue)" strokeDasharray="4 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: 'var(--accent-blue)', fontSize: 9, position: 'insideTopLeft' }} />
-                    )}
-                    <Bar dataKey="count" radius={[2, 2, 0, 0]}>
-                      {histogram.map((entry, i) => (
-                        <Cell
-                          key={i}
-                          fill={entry.centerPct < 8 ? '#ef4444' : entry.centerPct < 11 ? '#f59e0b' : '#10b981'}
-                          opacity={showComparison ? 0.7 : 0.85}
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
+                  {overlaidHistogram ? (
+                    <BarChart data={overlaidHistogram} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                      <XAxis dataKey="margin" tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toFixed(1)}%`} interval={Math.floor(overlaidHistogram.length / 8)} />
+                      <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                      <Tooltip content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        return (
+                          <div className="rounded p-2 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
+                            <p style={{ color: 'var(--text-primary)' }}>Margin: {Number(label).toFixed(1)}%</p>
+                            {payload.map(p => <p key={p.dataKey} style={{ color: p.fill }}>
+                              {p.dataKey === 'unhedged' ? 'Unhedged' : '80% Hedged'}: {p.value} paths
+                            </p>)}
+                          </div>
+                        );
+                      }} />
+                      <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
+                      <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
+                      {compareResults?.p5 && (
+                        <ReferenceLine x={parseFloat((compareResults.p5 * 100).toFixed(2))} stroke="#ef4444" strokeDasharray="3 2" label={{ value: `P5 ${(compareResults.p5 * 100).toFixed(1)}%`, fill: '#ef4444', fontSize: 8, position: 'insideBottomLeft' }} />
+                      )}
+                      {p5Pct && (
+                        <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="#10b981" strokeDasharray="3 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: '#10b981', fontSize: 8, position: 'insideTopRight' }} />
+                      )}
+                      <Bar dataKey="unhedged" fill="#ef4444" fillOpacity={0.55} radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="hedged" fill="#10b981" fillOpacity={0.7} radius={[2, 2, 0, 0]} />
+                    </BarChart>
+                  ) : (
+                    <BarChart data={histogram} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                      <XAxis dataKey="margin" tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toFixed(1)}%`} interval={Math.floor(histogram.length / 8)} />
+                      <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR Floor 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
+                      <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Board Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
+                      {p5Pct && (
+                        <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="var(--accent-blue)" strokeDasharray="4 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: 'var(--accent-blue)', fontSize: 9, position: 'insideTopLeft' }} />
+                      )}
+                      <Bar dataKey="count" radius={[2, 2, 0, 0]}>
+                        {histogram.map((entry, i) => (
+                          <Cell
+                            key={i}
+                            fill={entry.centerPct < 8 ? '#ef4444' : entry.centerPct < 11 ? '#f59e0b' : '#10b981'}
+                            opacity={0.85}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  )}
                 </ResponsiveContainer>
               </div>
             ) : (

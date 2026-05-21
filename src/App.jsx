@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/layout/Navbar';
 import { KPIGrid } from './components/kpi/KPIGrid';
@@ -11,8 +11,45 @@ import { calcHedgedVsUnhedged, calcHedgeValueCrore } from './lib/calculations';
 
 const COMBINED_DEFAULTS = { ironOreShock: 0.15, inrRate: 88, freightShock: 0.20 };
 
-function ErrorBoundary({ children }) {
-  return children;
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('[BAML RCC] Render error:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          className="rounded-lg p-6 text-center"
+          style={{ background: 'var(--red-bg)', border: '1px solid var(--red-border)' }}
+        >
+          <div className="text-sm font-semibold mb-1" style={{ color: 'var(--red)' }}>
+            Component Error
+          </div>
+          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
+            {this.state.error?.message || 'An unexpected error occurred in this panel.'}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="px-3 py-1.5 rounded text-xs font-medium"
+            style={{ background: 'var(--red-border)', color: 'white' }}
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 const TAB_LABELS = {

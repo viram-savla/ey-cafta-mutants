@@ -187,7 +187,7 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
 
   return (
     <div>
-      <AlertBanner kpis={kpis} />
+      <AlertBanner kpis={kpis} hedgedMargin={hedgedMargin} />
 
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>

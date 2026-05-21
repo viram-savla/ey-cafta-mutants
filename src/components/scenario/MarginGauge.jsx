@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 
 const MIN_MARGIN = 0.09;
 const MAX_MARGIN = 0.14;
+// Gauge spans from -135° (left end) to +135° (right end), measured from 12 o'clock
 const MIN_ANGLE = -135;
 const MAX_ANGLE = 135;
 
@@ -10,6 +11,7 @@ function marginToAngle(margin) {
   return MIN_ANGLE + t * (MAX_ANGLE - MIN_ANGLE);
 }
 
+// polarToXY uses 0° = "up" (12 o'clock), positive = clockwise
 function polarToXY(cx, cy, r, angleDeg) {
   const rad = (angleDeg - 90) * (Math.PI / 180);
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
@@ -36,17 +38,19 @@ export function MarginGauge({ margin }) {
   const boardFloorPt = polarToXY(cx, cy, r + 12, boardFloorAngle);
   const boardFloorPtInner = polarToXY(cx, cy, r - 14, boardFloorAngle);
 
-  const needleTip = polarToXY(cx, cy, r - 8, angle);
-  const needleBase1 = polarToXY(cx, cy, 8, angle - 90);
-  const needleBase2 = polarToXY(cx, cy, 8, angle + 90);
-
   const status = margin >= 0.11 ? 'green' : margin >= 0.108 ? 'amber' : 'red';
   const statusColor = status === 'green' ? '#10b981' : status === 'amber' ? '#f59e0b' : '#ef4444';
 
+  // Needle is drawn pointing straight up (north = 0°).
+  // Framer Motion rotates it to `angle` degrees clockwise from north,
+  // pivoting around (cx, cy). This produces a smooth spring animation.
+  const needleLength = r - 8;
+  const needleBaseHalf = 8;
+
   return (
     <div className="flex flex-col items-center">
-      <svg width="240" height="160" viewBox="0 0 240 180">
-        {/* Background zones */}
+      <svg width="240" height="160" viewBox="0 0 240 180" overflow="visible">
+        {/* Track */}
         {zones.map((z, i) => (
           <path
             key={i}
@@ -55,11 +59,11 @@ export function MarginGauge({ margin }) {
             stroke={z.color}
             strokeWidth="14"
             strokeLinecap="round"
-            opacity="0.4"
+            opacity="0.35"
           />
         ))}
 
-        {/* Active zone highlight */}
+        {/* Active fill up to current margin */}
         <path
           d={arcPath(cx, cy, r, MIN_ANGLE, angle)}
           fill="none"
@@ -75,30 +79,44 @@ export function MarginGauge({ margin }) {
           x2={boardFloorPt.x} y2={boardFloorPt.y}
           stroke="#ef4444" strokeWidth="2" strokeDasharray="4 2"
         />
+        <text
+          x={boardFloorPt.x - 6}
+          y={boardFloorPt.y - 4}
+          fontSize="8"
+          fill="#ef4444"
+          textAnchor="middle"
+        >
+          11%
+        </text>
 
-        {/* Needle */}
-        <motion.polygon
-          points={`${needleTip.x},${needleTip.y} ${needleBase1.x},${needleBase1.y} ${needleBase2.x},${needleBase2.y}`}
-          fill={statusColor}
-          initial={false}
-          animate={{ rotate: 0 }}
+        {/* Needle — drawn pointing north, rotated to `angle` via spring */}
+        <motion.g
           style={{ transformOrigin: `${cx}px ${cy}px` }}
-        />
-        <motion.circle cx={cx} cy={cy} r="6" fill={statusColor} />
+          initial={{ rotate: MIN_ANGLE }}
+          animate={{ rotate: angle }}
+          transition={{ type: 'spring', stiffness: 55, damping: 14 }}
+        >
+          <polygon
+            points={`${cx},${cy - needleLength} ${cx - needleBaseHalf},${cy} ${cx + needleBaseHalf},${cy}`}
+            fill={statusColor}
+          />
+        </motion.g>
+
+        {/* Pivot cap */}
+        <circle cx={cx} cy={cy} r="6" fill={statusColor} />
         <circle cx={cx} cy={cy} r="3" fill="var(--bg-primary)" />
 
-        {/* Center label */}
-        <text x={cx} y={cy + 32} textAnchor="middle" fontSize="22" fontWeight="700" fontFamily="JetBrains Mono" fill={statusColor}>
+        {/* Center readout */}
+        <text x={cx} y={cy + 32} textAnchor="middle" fontSize="22" fontWeight="700" fontFamily="JetBrains Mono, monospace" fill={statusColor}>
           {(margin * 100).toFixed(2)}%
         </text>
         <text x={cx} y={cy + 50} textAnchor="middle" fontSize="10" fill="#6b7280">
           EBITDA Margin (Hedged)
         </text>
 
-        {/* Min/max labels */}
-        <text x="22" y="152" fontSize="9" fill="#6b7280" fontFamily="JetBrains Mono">9%</text>
-        <text x="196" y="152" fontSize="9" fill="#6b7280" fontFamily="JetBrains Mono">14%</text>
-        <text x={boardFloorPt.x - 6} y={boardFloorPt.y - 4} fontSize="8" fill="#ef4444">11%</text>
+        {/* Min / max labels */}
+        <text x="22" y="152" fontSize="9" fill="#6b7280" fontFamily="JetBrains Mono, monospace">9%</text>
+        <text x="196" y="152" fontSize="9" fill="#6b7280" fontFamily="JetBrains Mono, monospace">14%</text>
       </svg>
     </div>
   );

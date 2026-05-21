@@ -48,6 +48,13 @@ export function WaterfallChart({ ironOreShock, inrRate, freightShock }) {
           <Tooltip content={<CustomTooltip />} />
           <Legend wrapperStyle={{ fontSize: 11, color: 'var(--text-secondary)' }} />
           <ReferenceLine y={0} stroke="var(--border-accent)" strokeWidth={1} />
+          <ReferenceLine
+            y={-60}
+            stroke="var(--red)"
+            strokeDasharray="6 3"
+            strokeWidth={1.5}
+            label={{ value: 'Board Floor (11.0%)', position: 'insideTopLeft', fill: 'var(--red)', fontSize: 9 }}
+          />
           <Bar dataKey="unhedged" name="Unhedged" fill="#ef4444" opacity={0.8} radius={[2, 2, 0, 0]}>
             <LabelList dataKey="unhedged" position="top" style={{ fontSize: 9, fill: '#ef4444' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
           </Bar>

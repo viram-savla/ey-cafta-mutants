@@ -8,6 +8,7 @@ import { WaterfallChart } from './WaterfallChart';
 import { SOFRCollarChart } from './SOFRCollarChart';
 import { FXHedgeLadder } from './FXHedgeLadder';
 import { ResidualRiskPanel } from './ResidualRiskPanel';
+import { CommodityPanel } from '../commodity/CommodityPanel';
 import { calcHedgedVsUnhedged, calcBreachThreshold } from '../../lib/calculations';
 import { PRESETS } from '../../lib/constants';
 
@@ -49,6 +50,9 @@ export function ScenarioEngine({ onHedgeValueChange }) {
 
   return (
     <div className="space-y-4">
+      {/* Commodity Exposure & Payoff */}
+      <CommodityPanel />
+
       {/* Presets */}
       <ScenarioPresets activePreset={activePreset} onSelect={handlePresetSelect} />
 

@@ -1,9 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 
-export function AlertBanner({ kpis }) {
+export function AlertBanner({ kpis, hedgedMargin }) {
   const redCount = kpis.filter(k => k.status === 'red').length;
   const hasAlert = redCount > 0;
+
+  const marginPct = hedgedMargin != null ? (hedgedMargin * 100).toFixed(2) : '11.42';
+  const bufferBps = hedgedMargin != null ? ((hedgedMargin - 0.11) * 10000).toFixed(0) : '42';
+  const bufferSign = Number(bufferBps) >= 0 ? '+' : '';
 
   return (
     <AnimatePresence mode="wait">
@@ -24,7 +28,7 @@ export function AlertBanner({ kpis }) {
         <span>
           {hasAlert
             ? `BOARD ALERT: ${redCount} KPI${redCount > 1 ? 's' : ''} in breach — immediate escalation required`
-            : `ALL SYSTEMS COMPLIANT — Hedged margin 11.42% | +42bps above Board floor`}
+            : `ALL SYSTEMS COMPLIANT — Hedged margin ${marginPct}% | ${bufferSign}${bufferBps}bps above Board floor`}
         </span>
       </motion.div>
     </AnimatePresence>
