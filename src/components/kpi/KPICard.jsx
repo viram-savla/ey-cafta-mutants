@@ -137,10 +137,8 @@ export function KPICard({ id, label, value, target, status, onClick, delay = 0, 
     <TooltipProvider delayDuration={250}>
       <Tooltip>
         <TooltipTrigger asChild>{card}</TooltipTrigger>
-        <TooltipContent side="bottom" className="max-w-xs">
-          <p className="text-[11.5px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            {tooltip}
-          </p>
+        <TooltipContent side="bottom" className="max-w-[220px]">
+          <p className="text-[11.5px] leading-relaxed">{tooltip}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

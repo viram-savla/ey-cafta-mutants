@@ -44,12 +44,13 @@ function ChartContainer({ id, className, children, config, ...props }) {
         id={chartId}
         className={cn(
           "flex justify-center text-xs",
-          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground",
+          // Axis tick labels: slightly muted but legible
+          "[&_.recharts-cartesian-axis-tick_text]:fill-[var(--text-muted)]",
           "[&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50",
           "[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border",
           "[&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border",
           "[&_.recharts-radial-bar-background-sector]:fill-muted",
-          "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted",
+          "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted/20",
           "[&_.recharts-reference-line_[stroke='#666']]:stroke-border",
           className
         )}
@@ -96,13 +97,29 @@ function ChartTooltipContent({
 
     if (labelFormatter) {
       return (
-        <div className={cn("font-medium", labelClassName)}>
+        <div
+          className={cn("pb-1.5 mb-0.5 font-medium text-[10.5px]", labelClassName)}
+          style={{
+            color: 'var(--text-muted)',
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
+          }}
+        >
           {labelFormatter(value, payload)}
         </div>
       )
     }
     if (!value) return null
-    return <div className={cn("font-medium", labelClassName)}>{value}</div>
+    return (
+      <div
+        className={cn("pb-1.5 mb-0.5 font-medium text-[10.5px]", labelClassName)}
+        style={{
+          color: 'var(--text-muted)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+        }}
+      >
+        {value}
+      </div>
+    )
   }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey])
 
   if (!active || !payload?.length) return null
@@ -112,16 +129,16 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "grid min-w-[8rem] items-start gap-1.5 rounded-lg px-3 py-2 text-xs",
+        "grid min-w-[9rem] items-start gap-1.5 rounded-xl px-3 py-2.5 text-xs",
         "animate-in fade-in-0 zoom-in-95 duration-150",
         className
       )}
       style={{
-        background: 'rgba(21, 27, 38, 0.92)',
-        backdropFilter: 'blur(16px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(16px) saturate(160%)',
-        border: '1px solid var(--border-accent)',
-        boxShadow: 'var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.04)',
+        background: 'rgba(13, 18, 28, 0.97)',
+        backdropFilter: 'blur(20px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(160%)',
+        border: '1px solid rgba(255, 255, 255, 0.13)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
       }}
     >
       {!nestLabel ? tooltipLabel : null}
@@ -134,14 +151,48 @@ function ChartTooltipContent({
           return (
             <div
               key={item.dataKey}
-              className={cn(
-                "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
-                indicator === "dot" && "items-center"
-              )}
+              className="flex w-full items-center gap-2"
             >
-              {formatter && item?.value !== undefined && item.name ? (
-                formatter(item.value, item.name, item, index, item.payload)
-              ) : (
+              {formatter && item?.value !== undefined && item.name ? (() => {
+                const result = formatter(item.value, item.name, item, index, item.payload)
+
+                // When formatter returns [formattedValue, label] — render as proper value/label row
+                if (Array.isArray(result)) {
+                  const [formattedValue, formattedLabel] = result
+                  return (
+                    <>
+                      {!hideIndicator && (
+                        <div
+                          className={cn(
+                            "shrink-0 rounded-[2px]",
+                            indicator === "dot" && "size-2",
+                            indicator === "line" && "w-0.5 self-stretch rounded-full",
+                            indicator === "dashed" && "w-0 border border-dashed bg-transparent",
+                          )}
+                          style={{
+                            backgroundColor: indicator !== "dashed" ? indicatorColor : undefined,
+                            borderColor: indicator === "dashed" ? indicatorColor : undefined,
+                          }}
+                        />
+                      )}
+                      <div className="flex flex-1 items-center justify-between gap-4 leading-none min-w-0">
+                        <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>
+                          {formattedLabel}
+                        </span>
+                        <span
+                          className="font-mono font-semibold tabular-nums"
+                          style={{ color: 'var(--text-primary)', fontSize: 12 }}
+                        >
+                          {formattedValue}
+                        </span>
+                      </div>
+                    </>
+                  )
+                }
+
+                // formatter returns JSX directly — render as-is
+                return result
+              })() : (
                 <>
                   {itemConfig?.icon ? (
                     <itemConfig.icon />
@@ -150,8 +201,8 @@ function ChartTooltipContent({
                       <div
                         className={cn(
                           "shrink-0 rounded-[2px]",
-                          indicator === "dot" && "size-2.5 translate-y-[2px]",
-                          indicator === "line" && "w-1 self-stretch",
+                          indicator === "dot" && "size-2 translate-y-[1px]",
+                          indicator === "line" && "w-0.5 self-stretch rounded-full",
                           indicator === "dashed" &&
                             "w-0 border-[1.5px] border-dashed bg-transparent",
                           nestLabel && indicator === "dashed" && "my-0.5"
@@ -173,12 +224,15 @@ function ChartTooltipContent({
                   >
                     <div className="grid gap-1.5">
                       {nestLabel ? tooltipLabel : null}
-                      <span className="text-muted-foreground">
+                      <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>
                         {itemConfig?.label || item.name}
                       </span>
                     </div>
                     {item.value !== undefined && (
-                      <span className="font-mono font-medium tabular-nums text-foreground">
+                      <span
+                        className="font-mono font-semibold tabular-nums"
+                        style={{ color: 'var(--text-primary)', fontSize: 12 }}
+                      >
                         {item.value.toLocaleString()}
                       </span>
                     )}
@@ -220,7 +274,7 @@ function ChartLegendContent({
         return (
           <div
             key={item.value}
-            className="flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
+            className="flex items-center gap-1.5"
           >
             {itemConfig?.icon && !hideIcon ? (
               <itemConfig.icon />
@@ -230,7 +284,7 @@ function ChartLegendContent({
                 style={{ backgroundColor: item.color }}
               />
             )}
-            <span className="text-muted-foreground text-xs">
+            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
               {itemConfig?.label || item.value}
             </span>
           </div>
