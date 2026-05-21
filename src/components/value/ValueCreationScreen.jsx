@@ -147,61 +147,84 @@ const NPV_BAR_DATA = [
 
 function LeverCard({ lever, index }) {
   const Icon = lever.icon;
+  const speedColor = lever.speedLabel === 'Fast' ? 'var(--green-soft)' : lever.speedLabel === 'Medium' ? 'var(--amber-soft)' : 'var(--red-soft)';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07 }}
-      className="rounded-lg overflow-hidden"
-      style={{ background: lever.bg, border: `1px solid ${lever.borderColor}` }}
+      transition={{ delay: index * 0.06, duration: 0.4, ease: [0.2, 0, 0.2, 1] }}
+      className="rounded-xl overflow-hidden lift-on-hover"
+      style={{
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',
+        border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.04)',
+      }}
     >
+      {/* lever-coloured accent strip */}
+      <div className="h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${lever.color}, transparent)`, opacity: 0.8 }} />
+
       <div className="p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 p-2 rounded" style={{ background: 'var(--bg-primary)' }}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <div
+              className="mt-0.5 p-2 rounded-lg shrink-0"
+              style={{
+                background: `linear-gradient(135deg, ${lever.color}25, ${lever.color}10)`,
+                border: `1px solid ${lever.color}40`,
+                boxShadow: `0 4px 12px ${lever.color}15`,
+              }}
+            >
               <Icon size={16} style={{ color: lever.color }} />
             </div>
-            <div>
-              <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{lever.title}</div>
-              <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{lever.subtitle}</div>
+            <div className="min-w-0">
+              <div className="font-semibold text-[13.5px] tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
+                {lever.title}
+              </div>
+              <div className="text-[11.5px] mt-1 leading-snug" style={{ color: 'var(--text-secondary)' }}>
+                {lever.subtitle}
+              </div>
             </div>
           </div>
           <div className="text-right shrink-0">
             {lever.type === 'annual' && (
-              <div className="font-mono text-sm font-bold" style={{ color: lever.color }}>
-                ₹{lever.annualLow}–{lever.annualHigh} Cr/yr
+              <div className="font-mono tabular-nums font-semibold text-[14px] tracking-tight" style={{ color: lever.color, letterSpacing: '-0.01em' }}>
+                ₹{lever.annualLow}–{lever.annualHigh}<span className="text-[10px] font-normal ml-0.5 opacity-70">Cr/yr</span>
               </div>
             )}
             {lever.type === 'one-time' && (
-              <div className="font-mono text-sm font-bold" style={{ color: lever.color }}>
-                ₹{lever.oneTime} Cr
+              <div className="font-mono tabular-nums font-semibold text-[14px] tracking-tight" style={{ color: lever.color, letterSpacing: '-0.01em' }}>
+                ₹{lever.oneTime}<span className="text-[10px] font-normal ml-0.5 opacity-70">Cr</span>
               </div>
             )}
             {lever.type === 'enabler' && (
-              <div className="font-mono text-xs font-bold px-2 py-0.5 rounded" style={{ background: 'var(--bg-primary)', color: lever.color, border: `1px solid ${lever.borderColor}` }}>
-                ENABLER
+              <div
+                className="text-[10px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-md"
+                style={{
+                  background: `${lever.color}20`,
+                  color: lever.color,
+                  border: `1px solid ${lever.color}40`,
+                }}
+              >
+                Enabler
               </div>
             )}
-            <div className="text-xs mt-0.5 text-right" style={{ color: 'var(--text-muted)' }}>
+            <div className="text-[10.5px] mt-1 text-right tabular-nums" style={{ color: 'var(--text-faint)' }}>
               {lever.type === 'annual' && `5-yr NPV ₹${lever.npvLow}–${lever.npvHigh} Cr`}
-              {lever.type === 'one-time' && 'One-time WC release'}
+              {lever.type === 'one-time' && 'one-time WC release'}
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-3">
-          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Speed: </span>
-            <span className="px-1.5 py-0.5 rounded text-xs font-mono" style={{
-              background: 'var(--bg-primary)',
-              color: lever.speedLabel === 'Fast' ? 'var(--green)' : lever.speedLabel === 'Medium' ? 'var(--amber)' : 'var(--red)',
-            }}>
-              {lever.speedLabel}
-            </span>
+        <div className="flex items-center gap-3 mt-3.5 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+          <div className="flex items-center gap-1.5 text-[10.5px]">
+            <span className="uppercase tracking-[0.1em]" style={{ color: 'var(--text-faint)' }}>Speed</span>
+            <span className="font-medium" style={{ color: speedColor }}>{lever.speedLabel}</span>
           </div>
-          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Owner: </span>{lever.owner}
+          <span className="w-px h-3" style={{ background: 'var(--border)' }} />
+          <div className="flex items-center gap-1.5 text-[10.5px] min-w-0">
+            <span className="uppercase tracking-[0.1em] shrink-0" style={{ color: 'var(--text-faint)' }}>Owner</span>
+            <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{lever.owner}</span>
           </div>
         </div>
       </div>
@@ -209,16 +232,20 @@ function LeverCard({ lever, index }) {
       <Accordion type="single" collapsible>
         <AccordionItem value="actions" className="border-0">
           <AccordionTrigger
-            className="px-4 py-2 text-xs rounded-none hover:no-underline"
-            style={{ borderTop: `1px solid ${lever.borderColor}`, color: 'var(--text-muted)', background: 'rgba(0,0,0,0.2)' }}
+            className="px-4 py-2 text-[11px] uppercase tracking-[0.12em] rounded-none hover:no-underline font-medium"
+            style={{
+              borderTop: '1px solid var(--border)',
+              color: 'var(--text-muted)',
+              background: 'rgba(255,255,255,0.025)',
+            }}
           >
             Key actions
           </AccordionTrigger>
-          <AccordionContent className="px-4">
-            <ul className="space-y-1">
+          <AccordionContent className="px-4 pb-3 pt-1">
+            <ul className="space-y-1.5">
               {lever.actions.map((a, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                  <span className="mt-0.5 shrink-0" style={{ color: lever.color }}>›</span>
+                <li key={i} className="flex items-start gap-2 text-[11.5px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full" style={{ background: lever.color }} />
                   {a}
                 </li>
               ))}
@@ -240,16 +267,13 @@ function Quadrant2x2() {
   ];
 
   return (
-    <div className="rounded-xl p-4" style={{
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-    }}>
-      <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
-        2×2: Speed vs Value Magnitude
-      </h3>
+    <div className="glass-panel-strong p-5">
+      <div className="flex items-baseline justify-between mb-4">
+        <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
+          Lever Map · Speed × Magnitude
+        </h3>
+        <span className="text-[10.5px]" style={{ color: 'var(--text-faint)' }}>5 levers · prioritise top-right</span>
+      </div>
       <div className="relative" style={{ height: 240 }}>
         {/* Quadrant labels */}
         <div className="absolute inset-0" style={{ borderLeft: '1px solid var(--border-accent)', borderBottom: '1px solid var(--border-accent)' }}>
@@ -348,27 +372,21 @@ export function ValueCreationScreen() {
       {/* Header KPI bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Total 5-yr NPV', value: `₹${TOTAL_NPV_LOW}–${TOTAL_NPV_HIGH} Cr`, sub: 'at 15% CoC', color: 'var(--accent-gold)' },
-          { label: 'Annual Cash Flow', value: '₹129–203 Cr/yr', sub: 'Contracting + Landed Cost', color: 'var(--green)' },
-          { label: 'WC Release (Y1)', value: '₹394 Cr', sub: '71 → 55 inventory days', color: '#3b82f6' },
-          { label: 'CBAM Premium', value: '~₹30 Cr/yr', sub: 'EUR 110M exports, post-2026', color: '#06b6d4' },
+          { label: 'Total 5-yr NPV',  value: `₹${TOTAL_NPV_LOW}–${TOTAL_NPV_HIGH} Cr`, sub: 'at 15% CoC',                  color: 'var(--accent-teal-soft)' },
+          { label: 'Annual Cash Flow',value: '₹129–203 Cr/yr',                          sub: 'Contracting + Landed Cost',  color: 'var(--green-soft)' },
+          { label: 'WC Release (Y1)', value: '₹394 Cr',                                  sub: '71 → 55 inventory days',     color: '#60a5fa' },
+          { label: 'CBAM Premium',    value: '~₹30 Cr/yr',                               sub: 'EUR 110M exports · post-2026', color: '#22d3ee' },
         ].map((kpi, i) => (
           <motion.div
             key={kpi.label}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06 }}
-            className="rounded-lg p-3"
-            style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}
+            transition={{ delay: i * 0.06, duration: 0.35, ease: [0.2, 0, 0.2, 1] }}
+            className="glass-panel-subtle p-3.5 lift-on-hover"
           >
-            <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{kpi.label}</div>
-            <div className="font-mono text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{kpi.sub}</div>
+            <div className="text-[10.5px] font-medium uppercase tracking-[0.1em]" style={{ color: 'var(--text-faint)' }}>{kpi.label}</div>
+            <div className="font-semibold tabular-nums tracking-tight mt-1.5" style={{ color: kpi.color, fontSize: 18, letterSpacing: '-0.02em' }}>{kpi.value}</div>
+            <div className="text-[10.5px] mt-1 leading-snug" style={{ color: 'var(--text-muted)' }}>{kpi.sub}</div>
           </motion.div>
         ))}
       </div>

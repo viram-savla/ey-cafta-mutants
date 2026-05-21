@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { KPICard } from './KPICard';
 import { AlertBanner } from './AlertBanner';
 import { MODEL } from '../../lib/constants';
@@ -124,10 +125,17 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
     <div>
       <AlertBanner kpis={kpis} hedgedMargin={hedgedMargin} />
 
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-          Board KPI Scorecard — Live
-        </h2>
+      <div className="flex items-center justify-between mb-3.5">
+        <div className="flex items-baseline gap-3">
+          <h2 className="text-[13px] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+            Board KPI Scorecard
+          </h2>
+          <div className="flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.12em]"
+               style={{ color: 'var(--text-faint)' }}>
+            <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: 'var(--green)' }} />
+            Live · {kpis.filter(k => k.status === 'green').length}/{kpis.length} Green
+          </div>
+        </div>
         <Button
           variant="outline"
           size="sm"
@@ -230,35 +238,79 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
         </DialogContent>
       </Dialog>
 
-      {/* Board Floor Compliance — shadcn Progress */}
-      <div className="mt-4 p-3 rounded-xl" style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-      }}>
-        <div className="flex items-center justify-between mb-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-          <span>Board Floor Compliance</span>
-          <span className="font-mono" style={{ color: 'var(--green)' }}>
-            {(hedgedMargin * 100).toFixed(2)}% hedged vs 11.0% floor · +{((hedgedMargin - 0.11) * 10000).toFixed(0)}bps buffer
-          </span>
-        </div>
-        <div className="relative">
-          <Progress
-            value={progressValue}
-            indicatorClassName="bg-gradient-to-r from-[var(--green-border)] to-[var(--green)]"
-          />
-          {/* Board floor tick */}
+      {/* Board Floor Compliance — Bloomberg-style indicator */}
+      <div className="mt-5 glass-panel-strong p-4">
+        <div className="flex items-baseline justify-between mb-3 gap-3 flex-wrap">
+          <div className="flex items-baseline gap-3">
+            <span className="text-[12px] uppercase tracking-[0.12em] font-medium" style={{ color: 'var(--text-muted)' }}>
+              Board Floor Compliance
+            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-semibold text-[16px] tabular-nums tracking-tight"
+                    style={{ color: 'var(--text-primary)' }}>
+                {(hedgedMargin * 100).toFixed(2)}%
+              </span>
+              <span className="text-[11px]" style={{ color: 'var(--text-faint)' }}>hedged margin</span>
+            </div>
+          </div>
           <div
-            className="absolute top-0 bottom-0 w-0.5"
-            style={{ left: `${floorPct}%`, background: 'var(--red)', boxShadow: '0 0 4px var(--red)' }}
+            className="text-[11px] font-medium px-2.5 py-1 rounded-md font-mono tabular-nums"
+            style={{
+              background: 'var(--green-bg)',
+              border: '1px solid var(--green-border)',
+              color: 'var(--green-soft)',
+            }}
+          >
+            +{((hedgedMargin - 0.11) * 10000).toFixed(0)} bps buffer
+          </div>
+        </div>
+
+        {/* Track */}
+        <div className="relative h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          {/* Floor zone (0–11%) — subtle red */}
+          <div
+            className="absolute top-0 bottom-0 left-0"
+            style={{
+              width: `${floorPct}%`,
+              background: 'linear-gradient(90deg, rgba(244,63,94,0.10), rgba(244,63,94,0.06))',
+            }}
+          />
+          {/* Filled value */}
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progressValue}%` }}
+            transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
+            className="absolute top-0 bottom-0 left-0 rounded-full"
+            style={{
+              background: 'linear-gradient(90deg, var(--green-border), var(--green-soft))',
+              boxShadow: '0 0 12px rgba(16,185,129,0.4)',
+            }}
+          />
+          {/* Floor tick */}
+          <div
+            className="absolute -top-1 -bottom-1 w-[2px] rounded-full"
+            style={{
+              left: `calc(${floorPct}% - 1px)`,
+              background: 'var(--red)',
+              boxShadow: '0 0 6px rgba(244,63,94,0.6)',
+            }}
           />
         </div>
-        <div className="flex items-center justify-between mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-          <span>9.0%</span>
-          <span style={{ color: 'var(--red)' }}>Board Floor: 11.0%</span>
-          <span>14.0%</span>
+
+        {/* Scale labels */}
+        <div className="relative mt-2" style={{ height: 14 }}>
+          <span className="absolute left-0 text-[10px] font-mono tabular-nums" style={{ color: 'var(--text-faint)' }}>9.0%</span>
+          <span
+            className="absolute text-[10px] font-mono tabular-nums font-semibold whitespace-nowrap"
+            style={{
+              left: `${floorPct}%`,
+              transform: 'translateX(-50%)',
+              color: 'var(--red-soft)',
+            }}
+          >
+            ↑ Floor 11.0%
+          </span>
+          <span className="absolute right-0 text-[10px] font-mono tabular-nums" style={{ color: 'var(--text-faint)' }}>14.0%</span>
         </div>
       </div>
     </div>

@@ -52,13 +52,13 @@ class ErrorBoundary extends Component {
   }
 }
 
-const TAB_LABELS = {
-  overview: 'Board Overview',
-  scenario: 'Scenario Engine',
-  nigeria: 'Nigeria Liquidity',
-  montecarlo: 'CFaR Simulator',
-  value: 'Part D: Value Creation',
-  roadmap: '12-Month Roadmap',
+const TAB_META = {
+  overview:   { title: 'Board Overview',          sub: 'Live KPI scorecard · RAG-tracked across 10 metrics' },
+  scenario:   { title: 'Scenario Engine',         sub: 'Real-time stress testing across iron ore, FX, and freight' },
+  nigeria:    { title: 'Nigeria Liquidity',       sub: 'Hard-currency buffer monitoring · 12-month forecast' },
+  montecarlo: { title: 'CFaR Simulator',          sub: 'Monte Carlo cash-flow at risk · 5th percentile floor' },
+  value:      { title: 'Value Creation',          sub: 'Five-lever NPV analysis at 15% cost of capital' },
+  roadmap:    { title: '12-Month Roadmap',        sub: 'Workstream Gantt across 3 phases with M6 phase gate' },
 };
 
 export default function App() {
@@ -88,13 +88,15 @@ export default function App() {
 
   const handleCfarUpdate = useCallback((p5) => setCfar5th(p5), []);
 
+  const meta = TAB_META[activeTab];
+
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
+    <div className="min-h-screen">
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} hedgeValue={hedgeValue} theme={theme} onThemeToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} />
 
       {/* Print-only header */}
       <div className="hidden print:block p-6 border-b" style={{ borderColor: 'var(--border)' }}>
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--accent-gold)' }}>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--accent-teal-soft)' }}>
           BAML Risk Command Center — Board Snapshot
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
@@ -102,29 +104,38 @@ export default function App() {
         </p>
       </div>
 
-      <main className="px-4 md:px-6 py-4 max-w-screen-xl mx-auto">
+      <main className="px-4 lg:px-6 py-5 max-w-[1600px] mx-auto">
         {/* Tab header */}
-        <div className="mb-4 no-print">
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-              {TAB_LABELS[activeTab]}
-            </h1>
-            <span className="text-xs px-2 py-0.5 rounded font-mono" style={{ background: 'var(--bg-card)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
-              EY CAFTA 2026
-            </span>
+        <div className="mb-5 no-print flex items-end justify-between gap-3 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-[20px] font-semibold tracking-tight leading-tight" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                {meta.title}
+              </h1>
+              <span className="text-[10.5px] font-mono uppercase tracking-[0.12em] px-2 py-0.5 rounded-md"
+                style={{ background: 'var(--accent-teal-bg)', color: 'var(--accent-teal-soft)', border: '1px solid var(--accent-teal-border)' }}>
+                EY CAFTA 2026
+              </span>
+            </div>
+            <p className="text-[12px] mt-1.5" style={{ color: 'var(--text-muted)' }}>
+              {meta.sub}
+            </p>
           </div>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-            Bharat Advanced Materials Limited · Masters Union · {new Date().toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </p>
+          <div className="text-right text-[11px] hidden md:block leading-tight">
+            <div style={{ color: 'var(--text-secondary)' }}>Bharat Advanced Materials Limited</div>
+            <div className="font-mono tabular-nums mt-0.5" style={{ color: 'var(--text-faint)' }}>
+              Masters Union · {new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </div>
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, x: 8 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -8 }}
-            transition={{ duration: 0.25 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.22, ease: [0.2, 0, 0.2, 1] }}
           >
             {activeTab === 'overview' && (
               <ErrorBoundary>
@@ -171,10 +182,32 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="no-print mt-8 px-4 md:px-6 py-4 border-t text-xs" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
-        <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <span>BAML Risk Command Center · EY CAFTA Case Championship 2026 — 11th Edition · Masters Union</span>
-          <span className="font-mono">Excel: 10 sheets · 7,382 formulas · Monte Carlo: 1,000 paths · SOFR: 3.59% (NY Fed, 19 May 2026)</span>
+      <footer className="no-print mt-10 px-4 lg:px-6 py-5" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="max-w-[1600px] mx-auto">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <div
+                  className="w-6 h-6 rounded flex items-center justify-center font-bold text-[11px]"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--accent-teal), #0d9488)',
+                    color: '#fff',
+                  }}
+                >B</div>
+                <span className="text-[12.5px] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+                  BAML Risk Command Center
+                </span>
+              </div>
+              <p className="text-[11px] leading-relaxed max-w-md" style={{ color: 'var(--text-muted)' }}>
+                Bharat Advanced Materials Limited · EY CAFTA Case Championship 2026 — 11th Edition · Masters Union
+              </p>
+            </div>
+            <div className="text-[10.5px] font-mono tabular-nums leading-relaxed text-right hidden md:block" style={{ color: 'var(--text-faint)' }}>
+              <div>10 sheets · 7,382 formulas · 1,000 MC paths</div>
+              <div>SOFR 3.59% (NY Fed, 19 May 2026)</div>
+              <div className="mt-1" style={{ color: 'var(--text-muted)' }}>Live · Tabular · Tabular nums</div>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

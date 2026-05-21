@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Flag, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
+import { Flag, CheckCircle2, AlertTriangle, Clock, ChevronDown } from 'lucide-react';
 
 const MONTHS = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12'];
 
@@ -106,9 +106,9 @@ const WORKSTREAMS = [
 ];
 
 const PHASE_META = {
-  1: { label: 'Phase 1: Foundation & Stabilisation', color: '#ef4444', bg: 'rgba(239,68,68,0.25)', border: '#dc2626', range: 'M1–M3' },
-  2: { label: 'Phase 2: Execution', color: '#f59e0b', bg: 'rgba(245,158,11,0.25)', border: '#d97706', range: 'M4–M6' },
-  3: { label: 'Phase 3: Scale & Institutionalise', color: '#10b981', bg: 'rgba(16,185,129,0.25)', border: '#059669', range: 'M7–M12' },
+  1: { num: '01', label: 'Foundation & Stabilisation', color: 'var(--red-soft)',   colorRaw: '#fb7185', bg: 'rgba(244,63,94,0.10)',  bgStrong: 'rgba(244,63,94,0.18)', border: 'rgba(244,63,94,0.4)',   range: 'M1–M3' },
+  2: { num: '02', label: 'Execution',                  color: 'var(--amber-soft)', colorRaw: '#fbbf24', bg: 'rgba(245,158,11,0.10)',  bgStrong: 'rgba(245,158,11,0.18)', border: 'rgba(245,158,11,0.4)',  range: 'M4–M6' },
+  3: { num: '03', label: 'Scale & Institutionalise',   color: 'var(--green-soft)', colorRaw: '#34d399', bg: 'rgba(16,185,129,0.10)',  bgStrong: 'rgba(16,185,129,0.18)', border: 'rgba(16,185,129,0.4)',  range: 'M7–M12' },
 };
 
 const SUCCESS_CRITERIA_PHASE2 = 'Phase Gate M6: ROI >15% vs implementation cost; ≥30% of contracts renegotiated; Nigeria buffer ≥45 days; RCC live with CFO sign-off';
@@ -121,44 +121,65 @@ function GanttRow({ ws, index }) {
       <motion.div
         initial={{ opacity: 0, x: -8 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: index * 0.06 }}
-        className="grid gap-2 items-center py-2 border-b"
-        style={{ gridTemplateColumns: '200px 1fr', borderColor: 'var(--border)' }}
+        transition={{ delay: index * 0.045, duration: 0.32, ease: [0.2, 0, 0.2, 1] }}
+        className="grid gap-3 items-center py-2.5"
+        style={{ gridTemplateColumns: 'minmax(180px, 220px) 1fr', borderBottom: '1px solid var(--border)' }}
       >
         {/* Name column */}
         <button
           onClick={() => setShowDetail(!showDetail)}
-          className="text-left pr-2"
+          className="text-left pr-2 flex items-start gap-1.5 group"
         >
-          <div className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{ws.name}</div>
-          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{ws.owner}</div>
+          <ChevronDown
+            size={11}
+            className="mt-1 shrink-0 transition-transform"
+            style={{
+              color: 'var(--text-faint)',
+              transform: showDetail ? 'rotate(0deg)' : 'rotate(-90deg)',
+            }}
+          />
+          <div className="min-w-0">
+            <div className="text-[12px] font-medium leading-tight group-hover:text-[var(--text-primary)] transition-colors"
+              style={{ color: 'var(--text-primary)' }}>
+              {ws.name}
+            </div>
+            <div className="text-[10.5px] mt-0.5 leading-tight truncate" style={{ color: 'var(--text-muted)' }}>
+              {ws.owner}
+            </div>
+          </div>
         </button>
 
-        {/* Bar column — 12 equal cells */}
-        <div className="relative" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '2px', minHeight: '28px' }}>
+        {/* Bar column */}
+        <div className="relative" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '3px', minHeight: '28px' }}>
           {MONTHS.map((_, m) => {
             const bar = ws.bars.find(b => m >= b.start && m <= b.end);
             const isStart = bar && m === bar.start;
             const isEnd = bar && m === bar.end;
             const meta = bar ? PHASE_META[bar.phase] : null;
+            const span = bar ? (bar.end - bar.start + 1) : 1;
             return (
               <div
                 key={m}
-                className="h-7 flex items-center justify-center text-xs relative"
+                className="h-6 flex items-center text-[10px] relative"
                 style={{
-                  background: meta ? meta.bg : 'var(--bg-card)',
-                  borderTop: meta ? `1px solid ${meta.border}` : '1px solid var(--border)',
-                  borderBottom: meta ? `1px solid ${meta.border}` : '1px solid var(--border)',
-                  borderLeft: isStart ? `2px solid ${meta.color}` : meta ? 'none' : '1px solid var(--border)',
-                  borderRight: isEnd ? `2px solid ${meta.color}` : meta ? 'none' : '1px solid var(--border)',
-                  borderRadius: isStart ? '3px 0 0 3px' : isEnd ? '0 3px 3px 0' : '0',
+                  background: meta ? meta.bgStrong : 'rgba(255,255,255,0.025)',
+                  borderTop: meta ? `1px solid ${meta.border}` : '1px solid rgba(255,255,255,0.04)',
+                  borderBottom: meta ? `1px solid ${meta.border}` : '1px solid rgba(255,255,255,0.04)',
+                  borderLeft: isStart ? `2px solid ${meta.colorRaw}` : meta ? 'none' : '1px solid rgba(255,255,255,0.04)',
+                  borderRight: isEnd ? `2px solid ${meta.colorRaw}` : meta ? 'none' : '1px solid rgba(255,255,255,0.04)',
+                  borderRadius: isStart ? '6px 0 0 6px' : isEnd ? '0 6px 6px 0' : '0',
+                  boxShadow: meta ? `inset 0 1px 0 ${meta.border}` : 'none',
                 }}
                 title={bar?.label || ''}
               >
                 {isStart && bar.label && (
                   <span
-                    className="absolute left-1 text-xs font-medium whitespace-nowrap overflow-hidden"
-                    style={{ color: meta.color, fontSize: 8, maxWidth: `${(bar.end - bar.start + 1) * 100}%` }}
+                    className="absolute left-2 font-medium tabular-nums whitespace-nowrap overflow-hidden text-ellipsis"
+                    style={{
+                      color: meta.color,
+                      fontSize: 10,
+                      maxWidth: `calc(${span * 100}% - 16px)`,
+                    }}
                   >
                     {bar.label}
                   </span>
@@ -174,16 +195,24 @@ function GanttRow({ ws, index }) {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="pl-2 py-2 border-b text-xs space-y-1"
-          style={{ borderColor: 'var(--border)', gridColumn: '1 / -1' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="grid gap-3 px-3 py-3 mb-1 rounded-lg"
+          style={{
+            gridTemplateColumns: 'minmax(180px, 220px) 1fr',
+            background: 'rgba(255,255,255,0.025)',
+            border: '1px solid var(--border)',
+          }}
         >
-          <div style={{ color: 'var(--text-secondary)' }}>
-            <span className="font-semibold" style={{ color: 'var(--text-muted)' }}>Deliverable: </span>
-            {ws.deliverable}
-          </div>
-          <div style={{ color: 'var(--text-secondary)' }}>
-            <span className="font-semibold" style={{ color: 'var(--text-muted)' }}>Success Criteria: </span>
-            {ws.successCriteria}
+          <div />
+          <div className="space-y-1.5 text-[11.5px] leading-relaxed">
+            <div>
+              <span className="font-semibold text-[10.5px] uppercase tracking-[0.12em] mr-2" style={{ color: 'var(--text-faint)' }}>Deliverable</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{ws.deliverable}</span>
+            </div>
+            <div>
+              <span className="font-semibold text-[10.5px] uppercase tracking-[0.12em] mr-2" style={{ color: 'var(--text-faint)' }}>Success Criteria</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{ws.successCriteria}</span>
+            </div>
           </div>
         </motion.div>
       )}
@@ -194,81 +223,131 @@ function GanttRow({ ws, index }) {
 export function RoadmapScreen() {
   return (
     <div className="space-y-4">
-      {/* Phase legend */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {[1, 2, 3].map(p => {
-          const meta = PHASE_META[p];
-          return (
-            <motion.div
-              key={p}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: p * 0.1 }}
-              className="rounded-lg p-3"
-              style={{
-                background: meta.bg,
-                border: `1px solid ${meta.border}`,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-              }}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-sm" style={{ background: meta.color }} />
-                <span className="text-xs font-semibold" style={{ color: meta.color }}>{meta.range}</span>
-              </div>
-              <div className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{meta.label}</div>
-              {p === 2 && (
-                <div className="mt-1 flex items-center gap-1 text-xs" style={{ color: meta.color }}>
-                  <Flag size={10} />
-                  <span>Phase Gate at M6 (ROI &gt;15%)</span>
+      {/* ─── Phase timeline with connecting line ─────────────── */}
+      <div className="glass-panel-strong p-5">
+        <div className="flex items-baseline justify-between mb-4">
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
+            12-Month Implementation Phases
+          </h3>
+          <span className="text-[10.5px]" style={{ color: 'var(--text-faint)' }}>3 phases · 8 workstreams</span>
+        </div>
+        <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* connecting line */}
+          <div
+            className="hidden sm:block absolute top-[18px] left-[8%] right-[8%] h-px"
+            style={{ background: 'linear-gradient(90deg, rgba(244,63,94,0.35), rgba(245,158,11,0.35), rgba(16,185,129,0.35))' }}
+          />
+          {[1, 2, 3].map(p => {
+            const meta = PHASE_META[p];
+            return (
+              <motion.div
+                key={p}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: p * 0.08, duration: 0.4 }}
+                className="relative"
+              >
+                {/* timeline dot */}
+                <div className="flex items-center gap-2 mb-2">
+                  <div
+                    className="relative w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                    style={{
+                      background: meta.bgStrong,
+                      border: `1px solid ${meta.border}`,
+                      boxShadow: `0 0 0 4px var(--bg-primary), 0 4px 12px ${meta.border}`,
+                    }}
+                  >
+                    <span className="font-mono tabular-nums font-semibold text-[12px]" style={{ color: meta.color }}>
+                      {meta.num}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-[0.12em] font-mono tabular-nums" style={{ color: meta.color }}>
+                      {meta.range}
+                    </div>
+                    <div className="text-[13px] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+                      {meta.label}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </motion.div>
-          );
-        })}
+                {p === 2 && (
+                  <div
+                    className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-md text-[10.5px] font-medium ml-11"
+                    style={{
+                      background: meta.bgStrong,
+                      border: `1px solid ${meta.border}`,
+                      color: meta.color,
+                    }}
+                  >
+                    <Flag size={9} />
+                    <span>Phase Gate · ROI &gt; 15%</span>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Gantt chart */}
-      <div className="rounded-xl p-4 overflow-x-auto" style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-      }}>
-        <h3 className="text-sm font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted)' }}>
-          12-Month Implementation Gantt
-        </h3>
-
-        {/* Month header */}
-        <div className="grid gap-2 mb-2" style={{ gridTemplateColumns: '200px 1fr' }}>
-          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Workstream / Owner</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '2px' }}>
-            {MONTHS.map((m, i) => (
-              <div key={m} className="text-center text-xs font-mono" style={{
-                color: i < 3 ? '#ef4444' : i < 6 ? '#f59e0b' : '#10b981',
-              }}>
-                {m}
-              </div>
-            ))}
+      {/* ─── Gantt ───────────────────────────────────────────── */}
+      <div className="glass-panel-strong p-5 overflow-x-auto">
+        <div className="flex items-baseline justify-between mb-4">
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
+            Workstream Gantt
+          </h3>
+          <div className="hidden md:flex items-center gap-3 text-[10.5px]">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ background: 'rgba(244,63,94,0.4)' }} />
+              <span style={{ color: 'var(--red-soft)' }}>Foundation</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ background: 'rgba(245,158,11,0.4)' }} />
+              <span style={{ color: 'var(--amber-soft)' }}>Execution</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ background: 'rgba(16,185,129,0.4)' }} />
+              <span style={{ color: 'var(--green-soft)' }}>Scale</span>
+            </span>
           </div>
         </div>
 
-        {/* Phase background bands */}
+        {/* Month header */}
+        <div className="grid gap-3 mb-2 pb-2" style={{ gridTemplateColumns: 'minmax(180px, 220px) 1fr', borderBottom: '1px solid var(--border)' }}>
+          <div className="text-[10px] uppercase tracking-[0.12em] font-medium" style={{ color: 'var(--text-faint)' }}>Workstream</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '3px' }}>
+            {MONTHS.map((m, i) => {
+              const phase = i < 3 ? 1 : i < 6 ? 2 : 3;
+              const color = PHASE_META[phase].color;
+              return (
+                <div key={m} className="text-center text-[10.5px] font-mono tabular-nums font-medium" style={{ color }}>
+                  {m}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Rows */}
         <div className="relative">
           {WORKSTREAMS.map((ws, i) => <GanttRow key={ws.id} ws={ws} index={i} />)}
         </div>
 
         {/* Phase gate marker */}
-        <div className="mt-4 grid gap-2" style={{ gridTemplateColumns: '200px 1fr' }}>
+        <div className="mt-3 grid gap-3" style={{ gridTemplateColumns: 'minmax(180px, 220px) 1fr' }}>
           <div />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '2px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '3px' }}>
             {MONTHS.map((_, i) => (
-              <div key={i} className="text-center">
+              <div key={i} className="flex justify-center">
                 {i === 5 && (
-                  <div className="flex flex-col items-center">
-                    <div className="w-0.5 h-4" style={{ background: '#f59e0b' }} />
-                    <Flag size={10} style={{ color: '#f59e0b' }} />
-                    <div className="text-xs whitespace-nowrap" style={{ color: '#f59e0b', fontSize: 8 }}>Phase Gate</div>
+                  <div className="flex flex-col items-center -mt-1">
+                    <div className="w-px h-3" style={{ background: 'var(--amber-soft)' }} />
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)' }}>
+                      <Flag size={9} style={{ color: 'var(--amber-soft)' }} />
+                    </div>
+                    <div className="text-[9px] mt-0.5 uppercase tracking-[0.1em] font-mono whitespace-nowrap" style={{ color: 'var(--amber-soft)' }}>
+                      Gate
+                    </div>
                   </div>
                 )}
               </div>
@@ -277,68 +356,83 @@ export function RoadmapScreen() {
         </div>
       </div>
 
-      {/* Phase Gate criteria */}
-      <div className="rounded-xl p-4" style={{
-        background: 'rgba(245,158,11,0.08)',
-        border: '1px solid var(--amber-border)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-      }}>
-        <div className="flex items-center gap-2 mb-2">
-          <Flag size={14} style={{ color: 'var(--amber)' }} />
-          <span className="text-sm font-semibold" style={{ color: 'var(--amber)' }}>M6 Phase Gate — Hard Stop Criteria</span>
+      {/* ─── M6 Phase Gate criteria — status card grid ──────── */}
+      <div
+        className="rounded-xl p-5"
+        style={{
+          background: 'linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.02))',
+          border: '1px solid var(--amber-border)',
+          backdropFilter: 'blur(12px) saturate(140%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(140%)',
+          boxShadow: 'var(--shadow-md)',
+        }}
+      >
+        <div className="flex items-start gap-3 mb-4">
+          <div
+            className="p-2 rounded-lg shrink-0"
+            style={{
+              background: 'var(--amber-bg)',
+              border: '1px solid var(--amber-border)',
+            }}
+          >
+            <Flag size={14} style={{ color: 'var(--amber-soft)' }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] font-semibold tracking-tight" style={{ color: 'var(--amber-soft)' }}>
+              M6 Phase Gate · Hard Stop Criteria
+            </div>
+            <p className="text-[11.5px] mt-1 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              All four criteria must be met before proceeding to Phase 3 (Scale & Institutionalise).
+            </p>
+          </div>
         </div>
-        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>{SUCCESS_CRITERIA_PHASE2}</p>
-        <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
           {[
-            { label: 'ROI threshold', value: '>15%', icon: CheckCircle },
-            { label: 'Contracts renegotiated', value: '≥30%', icon: CheckCircle },
-            { label: 'Nigeria buffer', value: '≥45 days', icon: CheckCircle },
-            { label: 'RCC status', value: 'CFO sign-off', icon: CheckCircle },
+            { label: 'ROI vs cost',          value: '> 15%',          icon: CheckCircle2 },
+            { label: 'Contracts renegotiated', value: '≥ 30%',         icon: CheckCircle2 },
+            { label: 'Nigeria buffer',       value: '≥ 45 days',      icon: CheckCircle2 },
+            { label: 'RCC status',           value: 'CFO sign-off',   icon: CheckCircle2 },
           ].map(item => (
-            <div key={item.label} className="flex items-center gap-2 text-xs p-2 rounded-lg" style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <item.icon size={12} style={{ color: 'var(--amber)', shrink: 0 }} />
-              <div>
-                <div style={{ color: 'var(--text-muted)' }}>{item.label}</div>
-                <div className="font-mono font-semibold" style={{ color: 'var(--amber)' }}>{item.value}</div>
+            <div key={item.label} className="glass-panel-subtle p-3">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <item.icon size={11} style={{ color: 'var(--amber-soft)' }} />
+                <span className="text-[10px] uppercase tracking-[0.1em] font-medium" style={{ color: 'var(--text-muted)' }}>
+                  {item.label}
+                </span>
+              </div>
+              <div className="font-mono tabular-nums font-semibold text-[13.5px]" style={{ color: 'var(--amber-soft)' }}>
+                {item.value}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Owner summary table */}
-      <div className="rounded-xl p-4" style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-      }}>
-        <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
-          Workstream Summary
-        </h3>
+      {/* ─── Workstream Summary table ────────────────────────── */}
+      <div className="glass-panel-strong p-5">
+        <div className="flex items-baseline justify-between mb-3">
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
+            Workstream Summary
+          </h3>
+          <span className="text-[10.5px]" style={{ color: 'var(--text-faint)' }}>{WORKSTREAMS.length} workstreams</span>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full text-[12px]">
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)' }}>
                 {['Workstream', 'Owner', 'M6 Deliverable', 'M12 Target'].map(h => (
-                  <th key={h} className="text-left pb-2 pr-4 font-medium" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                  <th key={h} className="text-left py-2 pr-4 text-[10px] font-medium uppercase tracking-[0.1em]"
+                    style={{ color: 'var(--text-faint)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {WORKSTREAMS.map((ws, i) => (
-                <tr key={ws.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                  <td className="py-2 pr-4 font-medium" style={{ color: 'var(--text-primary)' }}>{ws.name}</td>
-                  <td className="py-2 pr-4" style={{ color: 'var(--text-secondary)' }}>{ws.owner}</td>
-                  <td className="py-2 pr-4" style={{ color: 'var(--text-secondary)' }}>{ws.successCriteria.split(';')[0]}</td>
-                  <td className="py-2" style={{ color: 'var(--green)' }}>{ws.deliverable.split(';')[0]}</td>
+              {WORKSTREAMS.map((ws) => (
+                <tr key={ws.id} style={{ borderBottom: '1px solid var(--border)' }} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-2.5 pr-4 font-medium" style={{ color: 'var(--text-primary)' }}>{ws.name}</td>
+                  <td className="py-2.5 pr-4" style={{ color: 'var(--text-secondary)' }}>{ws.owner}</td>
+                  <td className="py-2.5 pr-4" style={{ color: 'var(--text-secondary)' }}>{ws.successCriteria.split(';')[0]}</td>
+                  <td className="py-2.5" style={{ color: 'var(--green-soft)' }}>{ws.deliverable.split(';')[0]}</td>
                 </tr>
               ))}
             </tbody>

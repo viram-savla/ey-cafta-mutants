@@ -95,53 +95,59 @@ export function MCScreen({ onCfarUpdate }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Parameters */}
-        <div className="rounded-xl p-4 space-y-4" style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-        }}>
-          <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-            Simulation Parameters
-          </h3>
+        {/* ─── Parameters panel ─────────────────────────────── */}
+        <div className="glass-panel-strong p-5 space-y-5">
+          <div className="flex items-baseline justify-between mb-1">
+            <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
+              Simulation Parameters
+            </h3>
+            <span className="text-[10.5px]" style={{ color: 'var(--text-faint)' }}>Monte Carlo · 1k+ paths</span>
+          </div>
+
           <ScenarioSlider
             label="Number of Paths"
+            hint="More paths = smoother distribution"
             value={nPaths}
             min={100} max={5000} step={100}
             onChange={setNPaths}
             formatValue={v => v.toLocaleString()}
           />
           <ScenarioSlider
-            label="FX Volatility (σ INR/USD)"
+            label="FX Volatility"
+            hint="σ INR/USD — historical: ±3.5"
             value={fxStd}
             min={1.0} max={5.0} step={0.1}
             onChange={setFxStd}
             formatValue={v => `±${v.toFixed(1)}`}
           />
           <ScenarioSlider
-            label="Iron Ore Volatility (σ USD/t)"
+            label="Iron Ore Volatility"
+            hint="σ USD/t — historical: ±18"
             value={ironOreStd}
             min={4} max={30} step={1}
             onChange={setIronOreStd}
             formatValue={v => `±${v.toFixed(0)}`}
           />
 
-          {/* Hedge toggle */}
+          {/* Hedge segmented control */}
           <div>
-            <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Hedge Ratio</div>
-            <div className="flex gap-2">
-              {[0, 0.80].map(r => (
-                <Button
-                  key={r}
-                  variant={hedgeRatio === r ? 'default' : 'outline'}
-                  size="xs"
-                  className="flex-1"
-                  onClick={() => setHedgeRatio(r)}
+            <div className="text-[12px] font-medium tracking-tight mb-2" style={{ color: 'var(--text-secondary)' }}>
+              Hedge Ratio
+            </div>
+            <div className="segmented w-full" style={{ display: 'flex' }}>
+              {[
+                { v: 0,    label: 'Unhedged',    sub: '0% coverage' },
+                { v: 0.80, label: '80% Hedged',  sub: 'SGX / FFA / FX' },
+              ].map(opt => (
+                <button
+                  key={opt.v}
+                  data-active={hedgeRatio === opt.v}
+                  onClick={() => setHedgeRatio(opt.v)}
+                  style={{ flex: 1, padding: '8px 12px', textAlign: 'center' }}
                 >
-                  {r === 0 ? 'Unhedged' : '80% Hedged'}
-                </Button>
+                  <div className="text-[12px] font-semibold leading-tight">{opt.label}</div>
+                  <div className="text-[10px] mt-0.5 opacity-70 font-normal">{opt.sub}</div>
+                </button>
               ))}
             </div>
           </div>
@@ -153,7 +159,7 @@ export function MCScreen({ onCfarUpdate }) {
               className="flex-1"
             >
               {loading ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
-              {loading ? 'Running...' : 'Run Simulation'}
+              {loading ? 'Running…' : 'Run Simulation'}
             </Button>
           </div>
           <Button
@@ -180,20 +186,14 @@ export function MCScreen({ onCfarUpdate }) {
                   key={stat.label}
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="rounded-lg p-3"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    backdropFilter: 'blur(8px)',
-                    WebkitBackdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                  }}
+                  className="glass-panel-subtle p-3.5"
                 >
-                  <div className="flex items-start justify-between mb-1">
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{stat.label}</span>
+                  <div className="flex items-start justify-between mb-2 gap-2">
+                    <span className="text-[10.5px] font-medium uppercase tracking-[0.1em] leading-tight" style={{ color: 'var(--text-muted)' }}>{stat.label}</span>
                     <RAGBadge status={stat.status} />
                   </div>
-                  <div className="font-mono text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{stat.value}</div>
-                  <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{stat.target}</div>
+                  <div className="font-semibold tabular-nums tracking-tight" style={{ color: 'var(--text-primary)', fontSize: 21, letterSpacing: '-0.02em' }}>{stat.value}</div>
+                  <div className="text-[11px] mt-0.5 font-mono tabular-nums" style={{ color: 'var(--text-faint)' }}>{stat.target}</div>
                 </motion.div>
               ))}
             </div>
@@ -290,14 +290,7 @@ export function MCScreen({ onCfarUpdate }) {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg p-4"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-              }}
+              className="glass-panel-strong p-5"
             >
               <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 CFaR Comparison: Unhedged vs 80% Hedged

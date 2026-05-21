@@ -81,50 +81,62 @@ function CommodityCard({ commodity, expanded, onToggle }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-lg overflow-hidden"
+      className="rounded-xl overflow-hidden lift-on-hover"
       style={{
-        background: commodity.bg,
-        border: `1px solid ${commodity.border}`,
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',
+        border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.04)',
       }}
     >
-      <div className="p-3">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <div>
-            <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{commodity.name}</div>
-            <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{commodity.benchmark}</div>
+      {/* top accent bar in commodity color */}
+      <div
+        className="h-[2px]"
+        style={{ background: `linear-gradient(90deg, transparent, ${commodity.color}, transparent)`, opacity: 0.7 }}
+      />
+      <div className="p-3.5">
+        <div className="flex items-start justify-between gap-2 mb-2.5">
+          <div className="min-w-0">
+            <div className="font-semibold text-[13px] tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
+              {commodity.name}
+            </div>
+            <div className="text-[10.5px] mt-1 leading-tight" style={{ color: 'var(--text-faint)' }}>
+              {commodity.benchmark}
+            </div>
           </div>
           <div className="text-right shrink-0">
-            <div className="font-mono text-xl font-bold" style={{ color: commodity.color }}>
+            <div className="font-semibold tabular-nums tracking-tight" style={{ color: commodity.color, fontSize: 19, letterSpacing: '-0.02em' }}>
               ${commodity.livePrice.toFixed(2)}
             </div>
-            <div className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{commodity.unit}</div>
+            <div className="text-[10px] uppercase tracking-[0.1em] mt-0.5" style={{ color: 'var(--text-faint)' }}>{commodity.unit}</div>
           </div>
         </div>
 
         <PriceChange casePrice={commodity.casePrice} livePrice={commodity.livePrice} color={commodity.color} />
 
-        <div className="mt-2 grid grid-cols-2 gap-1 text-xs">
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>Case price: </span>
-            <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>${commodity.casePrice}/t</span>
+        <div className="mt-2.5 pt-2.5 grid grid-cols-2 gap-y-1.5 gap-x-2 text-[11px]" style={{ borderTop: '1px solid var(--border)' }}>
+          <div className="flex justify-between">
+            <span style={{ color: 'var(--text-muted)' }}>Case</span>
+            <span className="font-mono tabular-nums font-medium" style={{ color: 'var(--text-secondary)' }}>${commodity.casePrice}/t</span>
           </div>
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>Volume: </span>
-            <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>{commodity.volumeLabel}</span>
+          <div className="flex justify-between">
+            <span style={{ color: 'var(--text-muted)' }}>Volume</span>
+            <span className="font-mono tabular-nums font-medium" style={{ color: 'var(--text-secondary)' }}>{commodity.volumeLabel}</span>
           </div>
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>Annual cost: </span>
-            <span className="font-mono" style={{ color: commodity.color }}>₹{commodity.annualCostCr} Cr</span>
+          <div className="flex justify-between">
+            <span style={{ color: 'var(--text-muted)' }}>Annual</span>
+            <span className="font-mono tabular-nums font-medium" style={{ color: commodity.color }}>₹{commodity.annualCostCr} Cr</span>
           </div>
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>Hedge: </span>
-            <span className="font-mono" style={{ color: '#10b981' }}>{commodity.hedgeLabel}</span>
+          <div className="flex justify-between">
+            <span style={{ color: 'var(--text-muted)' }}>Hedge</span>
+            <span className="font-mono tabular-nums font-medium" style={{ color: commodity.hedgeLabel === 'Not hedged' ? 'var(--amber-soft)' : 'var(--green-soft)' }}>
+              {commodity.hedgeLabel}
+            </span>
           </div>
         </div>
 
-        <div className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-          {commodity.instrument} · {commodity.hedgeTenor}
+        <div className="mt-2.5 text-[10.5px] leading-snug" style={{ color: 'var(--text-muted)' }}>
+          <span style={{ color: 'var(--text-secondary)' }}>{commodity.instrument}</span>
+          {' · '}{commodity.hedgeTenor}
         </div>
       </div>
 
@@ -150,23 +162,27 @@ export function CommodityPanel() {
   const totalAnnualCostCr = COMMODITIES.reduce((s, c) => s + c.annualCostCr, 0);
 
   return (
-    <div className="rounded-xl p-4 space-y-4" style={{
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-    }}>
-      <div className="flex items-center justify-between">
+    <div className="glass-panel-strong p-5 space-y-4">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
             Commodity Exposure
           </h3>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-            Total annual commodity cost: <span className="font-mono" style={{ color: 'var(--accent-teal)' }}>
-              ₹{totalAnnualCostCr.toLocaleString('en-IN')} Cr
-            </span> · Based on case prices at ₹83.25/USD
+          <p className="text-[11px] mt-1" style={{ color: 'var(--text-faint)' }}>
+            Based on case prices at <span className="font-mono tabular-nums">₹83.25/USD</span>
           </p>
+        </div>
+        <div
+          className="px-3 py-1.5 rounded-lg text-right"
+          style={{
+            background: 'var(--accent-teal-bg)',
+            border: '1px solid var(--accent-teal-border)',
+          }}
+        >
+          <div className="text-[10px] uppercase tracking-[0.1em]" style={{ color: 'var(--text-muted)' }}>Annual Cost</div>
+          <div className="font-mono tabular-nums font-semibold text-[15px]" style={{ color: 'var(--accent-teal-soft)' }}>
+            ₹{totalAnnualCostCr.toLocaleString('en-IN')} Cr
+          </div>
         </div>
       </div>
 
@@ -189,14 +205,9 @@ export function CommodityPanel() {
             exit={{ opacity: 0, height: 0 }}
             style={{ overflow: 'hidden' }}
           >
-            <div className="rounded-lg p-4" style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <h4 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
-                Iron Ore Hedge Payoff — Margin Impact vs Price (bps)
+            <div className="glass-panel-subtle p-4">
+              <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] mb-3" style={{ color: 'var(--text-secondary)' }}>
+                Iron Ore Hedge Payoff · Margin Impact vs Price
               </h4>
               <PayoffDiagram />
             </div>
