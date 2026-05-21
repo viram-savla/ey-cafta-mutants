@@ -58,31 +58,26 @@ const SEVERITY_META = {
 
 export function ResidualRiskPanel() {
   return (
-    <div className="rounded-xl p-4 space-y-4" style={{
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-    }}>
-      <div className="flex items-center gap-2">
-        <AlertTriangle size={14} style={{ color: 'var(--amber)' }} />
-        <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-          Residual Risk Register
-        </h3>
+    <div className="glass-panel-strong p-5 space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <AlertTriangle size={13} style={{ color: 'var(--amber-soft)' }} />
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
+            Residual Risk Register
+          </h3>
+        </div>
+        <span className="text-[10.5px]" style={{ color: 'var(--text-faint)' }}>Below-the-line exposures · not in EBITDA</span>
       </div>
 
       {/* PAT vs EBITDA callout */}
-      <div className="p-3 rounded-lg text-xs" style={{
-        background: 'rgba(32, 178, 170, 0.1)',
-        border: '1px solid rgba(32, 178, 170, 0.3)',
-        backdropFilter: 'blur(6px)',
-        WebkitBackdropFilter: 'blur(6px)',
+      <div className="p-3 rounded-lg text-[11.5px] leading-relaxed" style={{
+        background: 'var(--accent-teal-bg)',
+        border: '1px solid var(--accent-teal-border)',
       }}>
-        <div className="flex items-start gap-2">
-          <Info size={12} style={{ color: 'var(--accent-teal)', marginTop: 1, shrink: 0 }} />
+        <div className="flex items-start gap-2.5">
+          <Info size={13} style={{ color: 'var(--accent-teal-soft)', marginTop: 1, flexShrink: 0 }} />
           <div>
-            <span className="font-semibold" style={{ color: 'var(--accent-teal)' }}>PAT vs EBITDA Distinction: </span>
+            <span className="font-semibold" style={{ color: 'var(--accent-teal-soft)' }}>PAT vs EBITDA Distinction: </span>
             <span style={{ color: 'var(--text-secondary)' }}>
               Hedges protect EBITDA margin (operating level). Finance costs, FX translation MTM on USD debt, and
               tax implications flow below EBITDA to PAT. A 71bps EBITDA hedge benefit does not translate 1:1 to PAT
@@ -94,31 +89,33 @@ export function ResidualRiskPanel() {
 
       {/* Finance cost table */}
       <div>
-        <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Finance Cost Sensitivity (USD {MODEL.loanPrincipal}M @ SOFR+220bps)</div>
-        <table className="w-full text-xs">
+        <div className="text-[11px] font-medium uppercase tracking-[0.12em] mb-2" style={{ color: 'var(--text-faint)' }}>
+          Finance Cost Sensitivity · USD {MODEL.loanPrincipal}M @ SOFR + 220 bps
+        </div>
+        <table className="w-full text-[12px] tabular-nums">
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
-              {['FX Rate', 'Finance Cost (₹ Cr)', 'vs Base', 'USD Loan MTM (₹ Cr)', 'P&L Level'].map(h => (
-                <th key={h} className="text-left pb-1.5 pr-3 font-medium" style={{ color: 'var(--text-muted)' }}>{h}</th>
+              {['FX Rate', 'Finance Cost', 'vs Base', 'USD Loan MTM', 'P&L Level'].map(h => (
+                <th key={h} className="text-left pb-2 pr-3 font-medium text-[10.5px] uppercase tracking-[0.1em]" style={{ color: 'var(--text-faint)' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {FX_SCENARIOS.map((s, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
-                <td className="py-1.5 pr-3 font-mono" style={{ color: i === 0 ? 'var(--text-primary)' : i === 3 ? '#ef4444' : 'var(--text-secondary)' }}>
+              <tr key={i} style={{ borderBottom: '1px solid var(--border)' }} className="hover:bg-white/[0.02]">
+                <td className="py-2 pr-3 font-mono font-medium" style={{ color: i === 0 ? 'var(--text-primary)' : i === 3 ? 'var(--red-soft)' : 'var(--text-secondary)' }}>
                   {s.label}
                 </td>
-                <td className="py-1.5 pr-3 font-mono" style={{ color: i === 0 ? '#10b981' : i >= 2 ? '#f59e0b' : 'var(--text-secondary)' }}>
+                <td className="py-2 pr-3 font-mono" style={{ color: i === 0 ? 'var(--green-soft)' : i >= 2 ? 'var(--amber-soft)' : 'var(--text-secondary)' }}>
                   ₹{s.finCost.toFixed(1)} Cr
                 </td>
-                <td className="py-1.5 pr-3 font-mono" style={{ color: i === 0 ? 'var(--text-muted)' : '#f59e0b' }}>
+                <td className="py-2 pr-3 font-mono" style={{ color: i === 0 ? 'var(--text-muted)' : 'var(--amber-soft)' }}>
                   {i === 0 ? '—' : `+₹${(s.finCost - MODEL.annualInterestInr).toFixed(1)} Cr`}
                 </td>
-                <td className="py-1.5 pr-3 font-mono" style={{ color: i === 0 ? 'var(--text-muted)' : '#ef4444' }}>
+                <td className="py-2 pr-3 font-mono" style={{ color: i === 0 ? 'var(--text-muted)' : 'var(--red-soft)' }}>
                   {i === 0 ? '—' : `−₹${s.mtm} Cr`}
                 </td>
-                <td className="py-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+                <td className="py-2 text-[10.5px]" style={{ color: 'var(--text-muted)' }}>
                   {i === 0 ? 'EBITDA + PAT' : 'PAT only (below EBITDA)'}
                 </td>
               </tr>
@@ -128,23 +125,32 @@ export function ResidualRiskPanel() {
       </div>
 
       {/* Risk cards */}
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {RESIDUAL_RISKS.map((risk) => {
           const meta = SEVERITY_META[risk.severity];
+          const colorSoft = risk.severity === 'red' ? 'var(--red-soft)' : risk.severity === 'amber' ? 'var(--amber-soft)' : 'var(--green-soft)';
           return (
-            <div key={risk.id} className="rounded p-3" style={{ background: meta.bg, border: `1px solid ${meta.border}` }}>
-              <div className="flex items-center gap-2 mb-1">
-                <AlertTriangle size={11} style={{ color: meta.color }} />
-                <span className="text-xs font-semibold" style={{ color: meta.color }}>{risk.title}</span>
+            <div key={risk.id} className="rounded-lg p-3.5" style={{
+              background: meta.bg,
+              border: `1px solid ${meta.border}`,
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle size={11} style={{ color: colorSoft }} />
+                <span className="text-[12.5px] font-semibold tracking-tight" style={{ color: colorSoft }}>{risk.title}</span>
+                <span className="ml-auto text-[10px] uppercase tracking-[0.12em] px-1.5 py-0.5 rounded font-mono"
+                  style={{ background: 'rgba(255,255,255,0.06)', color: colorSoft, border: `1px solid ${meta.border}` }}>
+                  {risk.severity}
+                </span>
               </div>
-              <p className="text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>{risk.description}</p>
-              <div className="text-xs space-y-0.5">
+              <p className="text-[11.5px] mb-2 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{risk.description}</p>
+              <div className="text-[11px] space-y-1 leading-relaxed">
                 <div>
-                  <span className="font-medium" style={{ color: 'var(--text-muted)' }}>Impact: </span>
-                  <span style={{ color: meta.color }}>{risk.impact}</span>
+                  <span className="font-semibold uppercase text-[10px] tracking-[0.1em] mr-1.5" style={{ color: 'var(--text-faint)' }}>Impact</span>
+                  <span style={{ color: colorSoft }}>{risk.impact}</span>
                 </div>
                 <div>
-                  <span className="font-medium" style={{ color: 'var(--text-muted)' }}>Mitigation: </span>
+                  <span className="font-semibold uppercase text-[10px] tracking-[0.1em] mr-1.5" style={{ color: 'var(--text-faint)' }}>Mitigation</span>
                   <span style={{ color: 'var(--text-secondary)' }}>{risk.mitigation}</span>
                 </div>
               </div>

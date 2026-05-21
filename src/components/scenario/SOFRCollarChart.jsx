@@ -38,10 +38,10 @@ export function SOFRCollarChart() {
             USD 90M collared (3.00%–4.50%) + USD 60M floating · All-in: 5.79%
           </CardDescription>
         </div>
-        <div className="hidden sm:flex flex-col gap-1 text-xs font-mono text-right shrink-0">
-          <span style={{ color: '#10b981' }}>● SOFR 3.59% (current)</span>
-          <span style={{ color: '#ef4444' }}>— Cap 4.50%</span>
-          <span style={{ color: '#3b82f6' }}>— Floor 3.00%</span>
+        <div className="hidden sm:flex flex-col gap-1 text-[10.5px] font-mono tabular-nums text-right shrink-0">
+          <span style={{ color: 'var(--green-soft)' }}>● SOFR 3.59% live</span>
+          <span style={{ color: 'var(--red-soft)' }}>— Cap 4.50%</span>
+          <span style={{ color: '#60a5fa' }}>— Floor 3.00%</span>
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
@@ -107,16 +107,16 @@ export function SOFRCollarChart() {
         </ChartContainer>
 
         {/* Summary row */}
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-4 grid grid-cols-3 gap-2.5">
           {[
-            { label: 'Collared (USD 90M)', value: '3.00–4.50%', note: '60% of USD 150M loan', color: '#8b5cf6' },
-            { label: 'Floating (USD 60M)', value: 'SOFR + 220bps', note: 'Currently 5.79%', color: '#f59e0b' },
-            { label: 'Current SOFR', value: '3.59%', note: 'Below cap — collar inactive', color: '#10b981' },
+            { label: 'Collared · $90M', value: '3.00–4.50%',     note: '60% of $150M loan',         color: 'var(--accent-violet)' },
+            { label: 'Floating · $60M', value: 'SOFR + 220 bps',  note: 'Currently 5.79%',           color: 'var(--amber-soft)' },
+            { label: 'Current SOFR',    value: '3.59%',            note: 'Below cap · collar inactive', color: 'var(--green-soft)' },
           ].map(item => (
-            <div key={item.label} className="p-2 rounded text-xs" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-accent)' }}>
-              <div style={{ color: 'var(--text-muted)' }}>{item.label}</div>
-              <div className="font-mono font-bold mt-0.5" style={{ color: item.color }}>{item.value}</div>
-              <div style={{ color: 'var(--text-muted)', fontSize: 10 }}>{item.note}</div>
+            <div key={item.label} className="glass-panel-subtle p-2.5">
+              <div className="text-[10px] uppercase tracking-[0.1em]" style={{ color: 'var(--text-faint)' }}>{item.label}</div>
+              <div className="font-mono tabular-nums font-semibold text-[13px] mt-0.5" style={{ color: item.color }}>{item.value}</div>
+              <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{item.note}</div>
             </div>
           ))}
         </div>
