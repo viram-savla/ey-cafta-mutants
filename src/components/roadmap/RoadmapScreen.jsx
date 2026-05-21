@@ -205,7 +205,11 @@ export function RoadmapScreen() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: p * 0.1 }}
               className="rounded-lg p-3"
-              style={{ background: meta.bg, border: `1px solid ${meta.border}` }}
+              style={{
+                background: meta.bg,
+                border: `1px solid ${meta.border}`,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+              }}
             >
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-3 h-3 rounded-sm" style={{ background: meta.color }} />
@@ -224,7 +228,13 @@ export function RoadmapScreen() {
       </div>
 
       {/* Gantt chart */}
-      <div className="rounded-lg p-4 overflow-x-auto" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="rounded-xl p-4 overflow-x-auto" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <h3 className="text-sm font-semibold uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted)' }}>
           12-Month Implementation Gantt
         </h3>
@@ -268,7 +278,12 @@ export function RoadmapScreen() {
       </div>
 
       {/* Phase Gate criteria */}
-      <div className="rounded-lg p-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid var(--amber-border)' }}>
+      <div className="rounded-xl p-4" style={{
+        background: 'rgba(245,158,11,0.08)',
+        border: '1px solid var(--amber-border)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+      }}>
         <div className="flex items-center gap-2 mb-2">
           <Flag size={14} style={{ color: 'var(--amber)' }} />
           <span className="text-sm font-semibold" style={{ color: 'var(--amber)' }}>M6 Phase Gate — Hard Stop Criteria</span>
@@ -281,7 +296,12 @@ export function RoadmapScreen() {
             { label: 'Nigeria buffer', value: '≥45 days', icon: CheckCircle },
             { label: 'RCC status', value: 'CFO sign-off', icon: CheckCircle },
           ].map(item => (
-            <div key={item.label} className="flex items-center gap-2 text-xs p-2 rounded" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+            <div key={item.label} className="flex items-center gap-2 text-xs p-2 rounded-lg" style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
               <item.icon size={12} style={{ color: 'var(--amber)', shrink: 0 }} />
               <div>
                 <div style={{ color: 'var(--text-muted)' }}>{item.label}</div>
@@ -293,7 +313,13 @@ export function RoadmapScreen() {
       </div>
 
       {/* Owner summary table */}
-      <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="rounded-xl p-4" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
           Workstream Summary
         </h3>
