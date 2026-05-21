@@ -7,12 +7,17 @@ const META = {
 export function RAGBadge({ status, size = 'sm' }) {
   const m = META[status] || META.green;
   const padding = size === 'md' ? '4px 10px' : '3px 8px';
-  const fontSize = size === 'md' ? 11 : 10;
+  const fontSize = size === 'md' ? 11.5 : 11;
 
   return (
     <span
       className={`rag-pill rag-${status}`}
-      style={{ padding, fontSize }}
+      style={{
+        padding,
+        fontSize,
+        letterSpacing: '0.05em',
+        fontFeatureSettings: '"cpsp" 1, "case" 1',
+      }}
     >
       <span
         className="rounded-full"

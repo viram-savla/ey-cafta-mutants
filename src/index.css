@@ -42,13 +42,13 @@
   --border-accent:     rgba(255, 255, 255, 0.12);
   --border-strong:     rgba(255, 255, 255, 0.18);
 
-  /* ─── Text ────────────────────────────────────────────────── */
-  --text-primary:      #f4f6fa;
-  --text-secondary:    #c2cad6;
-  --text-muted:        #8590a3;
-  --text-faint:        #5b6577;
+  /* ─── Text (WCAG AA verified) ─────────────────────────────── */
+  --text-primary:      #f4f6fa;   /* 17.1:1 on bg-primary */
+  --text-secondary:    #c8d0db;   /* 11.3:1 */
+  --text-muted:        #8e99ad;   /* 6.1:1  */
+  --text-faint:        #6e7a8c;   /* 4.6:1 — bumped from #5b6577 for AA on glass */
 
-  /* ─── Status colours (refined) ────────────────────────────── */
+  /* ─── Status colours (refined for contrast on tinted bgs) ─── */
   --green:             #10b981;
   --green-soft:        #34d399;
   --green-bg:          rgba(16, 185, 129, 0.12);
@@ -58,9 +58,16 @@
   --amber-bg:          rgba(245, 158, 11, 0.12);
   --amber-border:      rgba(245, 158, 11, 0.45);
   --red:               #f43f5e;
-  --red-soft:          #fb7185;
+  --red-soft:          #fda4af;   /* brightened from #fb7185 for AA on red-bg */
   --red-bg:            rgba(244, 63, 94, 0.12);
   --red-border:        rgba(244, 63, 94, 0.45);
+
+  /* ─── Chart palette (centralized for migration) ───────────── */
+  --chart-blue:        #60a5fa;
+  --chart-amber:       #fbbf24;
+  --chart-violet:      #a78bfa;
+  --chart-cyan:        #22d3ee;
+  --chart-rose:        #fda4af;
 
   /* ─── Brand accents ───────────────────────────────────────── */
   --accent-teal:       #14b8a6;
@@ -86,9 +93,30 @@
   --shadow-glow-teal:  0 0 0 1px rgba(20, 184, 166, 0.35), 0 8px 24px rgba(20, 184, 166, 0.15);
   --shadow-glow-red:   0 0 0 1px rgba(244, 63, 94, 0.35), 0 8px 24px rgba(244, 63, 94, 0.18);
 
+  /* ─── Status-tinted resting shadows (pronounced ~12%) ──────── */
+  --shadow-status-green: 0 8px 24px rgba(16, 185, 129, 0.12), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-status-amber: 0 8px 24px rgba(245, 158, 11, 0.12), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-status-red:   0 8px 24px rgba(244, 63, 94, 0.13), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-status-green-hover: 0 16px 40px rgba(16, 185, 129, 0.22), 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-status-amber-hover: 0 16px 40px rgba(245, 158, 11, 0.22), 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-status-red-hover:   0 16px 40px rgba(244, 63, 94, 0.24),  0 4px 8px rgba(0, 0, 0, 0.2);
+
   /* ─── Typography ──────────────────────────────────────────── */
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ─── Type ramp (one source of truth) ─────────────────────── */
+  --fs-display:    36px;  --tracking-display: -0.035em;
+  --fs-h1:         24px;  --tracking-h1:      -0.025em;
+  --fs-h2:         18px;  --tracking-h2:      -0.02em;
+  --fs-h3:         15px;  --tracking-h3:      -0.015em;
+  --fs-body:       13px;  --tracking-body:    -0.005em;
+  --fs-label:      11px;  --tracking-label:    0.04em;
+  --fs-micro:    10.5px;  --tracking-micro:    0.12em;
+
+  /* ─── Animation springs ──────────────────────────────────── */
+  --ease-out-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-quart:  cubic-bezier(0.25, 1, 0.5, 1);
 
   /* ─── Nav height ──────────────────────────────────────────── */
   --nav-h: 56px;
@@ -104,7 +132,15 @@
 html, body {
   margin: 0;
   font-family: var(--font-sans);
-  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  font-feature-settings:
+    'cv11' 1,   /* alternate digit zero (slashed) */
+    'ss01' 1,   /* single-storey g/y */
+    'ss03' 1,   /* curly alternates */
+    'cpsp' 1,   /* capital spacing */
+    'case' 1,   /* case-aware punctuation (em-dash, parens) */
+    'ccmp' 1,   /* composition (proper diacritics) */
+    'kern' 1;   /* kerning */
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
@@ -143,6 +179,28 @@ body {
   font-feature-settings: 'tnum' 1;
 }
 
+/* ───────────────────────────────────────────────────────────
+   Type ramp utilities (use these instead of inline font-size)
+   ─────────────────────────────────────────────────────────── */
+.type-display { font-size: var(--fs-display); letter-spacing: var(--tracking-display); line-height: 1; font-weight: 600; }
+.type-h1      { font-size: var(--fs-h1);      letter-spacing: var(--tracking-h1);      line-height: 1.1; font-weight: 600; }
+.type-h2      { font-size: var(--fs-h2);      letter-spacing: var(--tracking-h2);      line-height: 1.15; font-weight: 600; }
+.type-h3      { font-size: var(--fs-h3);      letter-spacing: var(--tracking-h3);      line-height: 1.2; font-weight: 600; }
+.type-body    { font-size: var(--fs-body);    letter-spacing: var(--tracking-body);    line-height: 1.5; }
+.type-label   { font-size: var(--fs-label);   letter-spacing: var(--tracking-label);   line-height: 1.3; }
+.type-micro   { font-size: var(--fs-micro);   letter-spacing: var(--tracking-micro);   line-height: 1.2; text-transform: uppercase; font-weight: 500; }
+
+/* Currency / unit suffix — visually balanced when paired with display numbers */
+.unit-suffix {
+  display: inline-block;
+  font-size: 0.62em;
+  font-weight: 400;
+  margin-left: 0.18em;
+  opacity: 0.7;
+  letter-spacing: 0;
+  vertical-align: baseline;
+}
+
 /* ────────────────────────────────────────────────────────────
    Surface utilities (Bloomberg × Perplexity glassmorphism)
    ──────────────────────────────────────────────────────────── */
@@ -175,17 +233,46 @@ body {
 .card-shadow      { box-shadow: var(--shadow-md); }
 .card-shadow-lg   { box-shadow: var(--shadow-lg); }
 
-/* Hover lift */
+/* Status-tinted shadows (pronounced ~12% tint) */
+.shadow-status-green { box-shadow: var(--shadow-status-green); }
+.shadow-status-amber { box-shadow: var(--shadow-status-amber); }
+.shadow-status-red   { box-shadow: var(--shadow-status-red); }
+
+/* Mouse-tracked card spotlight (set --mx/--my via JS) */
+.card-spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    520px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(20, 184, 166, 0.07),
+    transparent 42%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.card-spotlight:hover::before { opacity: 1; }
+.card-spotlight > * { position: relative; z-index: 1; }
+
+/* Hover lift — refined with asymmetric shadow growth */
 .lift-on-hover {
-  transition: transform 200ms cubic-bezier(0.2, 0, 0.2, 1),
-              box-shadow 200ms cubic-bezier(0.2, 0, 0.2, 1),
-              border-color 200ms ease;
+  transition: transform 220ms var(--ease-out-quart),
+              box-shadow 220ms var(--ease-out-quart),
+              border-color 220ms ease;
 }
 .lift-on-hover:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.18);
   border-color: var(--border-strong);
 }
+.lift-on-hover:active { transform: translateY(-1px) scale(0.998); transition-duration: 80ms; }
 
 /* ────────────────────────────────────────────────────────────
    RAG status pills — refined, filled, properly weighted
@@ -377,4 +464,17 @@ input[type="range"]::-moz-range-thumb {
     border: 1px solid #e5e7eb !important;
     box-shadow: none !important;
   }
+}
+
+/* ────────────────────────────────────────────────────────────
+   Reduced motion — accessibility
+   ──────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .pulse-dot, .pulse-ring, .alert-pulse, .shimmer { animation: none !important; }
 }

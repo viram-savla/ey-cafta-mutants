@@ -27,6 +27,7 @@ export function ScenarioSlider({ label, value, min, max, step, onChange, formatV
         step={step}
         value={[value]}
         onValueChange={([v]) => onChange(v)}
+        formatBubble={formatValue}
       />
       {note && (
         <p className="text-[10.5px] mt-1 leading-snug flex items-center gap-1.5" style={{ color: 'var(--accent-teal-soft)' }}>

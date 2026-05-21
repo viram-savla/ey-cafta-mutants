@@ -8,6 +8,7 @@ function Slider({
   value,
   min = 0,
   max = 100,
+  formatBubble,
   ...props
 }) {
   const _values = React.useMemo(
@@ -20,6 +21,8 @@ function Slider({
     [value, defaultValue, min, max]
   )
 
+  const [dragging, setDragging] = React.useState(false)
+
   return (
     <SliderPrimitive.Root
       data-slot="slider"
@@ -27,6 +30,9 @@ function Slider({
       value={value}
       min={min}
       max={max}
+      onPointerDown={() => setDragging(true)}
+      onPointerUp={() => setDragging(false)}
+      onLostPointerCapture={() => setDragging(false)}
       className={cn(
         "relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50",
         className
@@ -40,24 +46,53 @@ function Slider({
       >
         <SliderPrimitive.Range
           data-slot="slider-range"
-          className="absolute h-full"
+          className="absolute h-full rounded-full"
           style={{
             background: 'linear-gradient(90deg, var(--accent-teal), var(--accent-teal-soft))',
             boxShadow: '0 0 8px rgba(20, 184, 166, 0.4)',
           }}
         />
       </SliderPrimitive.Track>
-      {Array.from({ length: _values.length }, (_, index) => (
+      {_values.map((v, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={index}
-          className="block size-4 shrink-0 rounded-full transition-all cursor-pointer hover:scale-110 active:scale-115 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          className="relative block size-4 shrink-0 rounded-full transition-transform cursor-pointer hover:scale-110 active:scale-115 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
           style={{
             background: '#ffffff',
             border: '2px solid var(--accent-teal)',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.4), 0 0 0 4px rgba(20, 184, 166, 0.15)',
+            boxShadow: dragging
+              ? '0 4px 12px rgba(0,0,0,0.5), 0 0 0 8px rgba(20, 184, 166, 0.18)'
+              : '0 2px 6px rgba(0,0,0,0.4), 0 0 0 4px rgba(20, 184, 166, 0.15)',
+            transition: 'box-shadow 180ms ease, transform 180ms ease',
           }}
-        />
+        >
+          {formatBubble && (
+            <div
+              className="absolute left-1/2 -translate-x-1/2 -top-9 px-2 py-1 rounded-md text-[11px] font-mono tabular-nums font-semibold pointer-events-none whitespace-nowrap"
+              style={{
+                background: 'var(--bg-popover)',
+                border: '1px solid var(--border-accent)',
+                color: 'var(--text-primary)',
+                boxShadow: 'var(--shadow-md)',
+                opacity: dragging ? 1 : 0,
+                transform: `translate(-50%, ${dragging ? '0' : '4px'})`,
+                transition: 'opacity 180ms ease, transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+              }}
+            >
+              {formatBubble(v)}
+              {/* arrow */}
+              <div
+                className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-2 h-2 rotate-45"
+                style={{
+                  background: 'var(--bg-popover)',
+                  borderRight: '1px solid var(--border-accent)',
+                  borderBottom: '1px solid var(--border-accent)',
+                }}
+              />
+            </div>
+          )}
+        </SliderPrimitive.Thumb>
       ))}
     </SliderPrimitive.Root>
   )

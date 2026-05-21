@@ -112,9 +112,17 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+        "grid min-w-[8rem] items-start gap-1.5 rounded-lg px-3 py-2 text-xs",
+        "animate-in fade-in-0 zoom-in-95 duration-150",
         className
       )}
+      style={{
+        background: 'rgba(21, 27, 38, 0.92)',
+        backdropFilter: 'blur(16px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(160%)',
+        border: '1px solid var(--border-accent)',
+        boxShadow: 'var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.04)',
+      }}
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
