@@ -1,20 +1,13 @@
 import {
-  ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ReferenceLine, ResponsiveContainer, LabelList,
+  ComposedChart, Bar, XAxis, YAxis, CartesianGrid,
+  ReferenceLine, LabelList,
 } from 'recharts';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '../ui/chart';
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded-lg p-3 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
-      <p className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>{label}</p>
-      {payload.map((p) => (
-        <p key={p.name} style={{ color: p.fill }}>
-          {p.name}: {p.value > 0 ? '+' : ''}{p.value?.toFixed(1)} bps
-        </p>
-      ))}
-    </div>
-  );
+const chartConfig = {
+  unhedged: { label: 'Unhedged', color: '#ef4444' },
+  hedged: { label: 'Hedged', color: '#10b981' },
 };
 
 export function WaterfallChart({ ironOreShock, inrRate, freightShock }) {
@@ -39,30 +32,49 @@ export function WaterfallChart({ ironOreShock, inrRate, freightShock }) {
   ];
 
   return (
-    <div style={{ width: '100%', height: 260 }}>
-      <ResponsiveContainer>
-        <ComposedChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}bps`} />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend wrapperStyle={{ fontSize: 11, color: 'var(--text-secondary)' }} />
-          <ReferenceLine y={0} stroke="var(--border-accent)" strokeWidth={1} />
-          <ReferenceLine
-            y={-60}
-            stroke="var(--red)"
-            strokeDasharray="6 3"
-            strokeWidth={1.5}
-            label={{ value: 'Board Floor (11.0%)', position: 'insideTopLeft', fill: 'var(--red)', fontSize: 9 }}
-          />
-          <Bar dataKey="unhedged" name="Unhedged" fill="#ef4444" opacity={0.8} radius={[2, 2, 0, 0]}>
-            <LabelList dataKey="unhedged" position="top" style={{ fontSize: 9, fill: '#ef4444' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
-          </Bar>
-          <Bar dataKey="hedged" name="Hedged" fill="#10b981" opacity={0.8} radius={[2, 2, 0, 0]}>
-            <LabelList dataKey="hedged" position="top" style={{ fontSize: 9, fill: '#10b981' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
-          </Bar>
-        </ComposedChart>
-      </ResponsiveContainer>
-    </div>
+    <Card className="pt-0">
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="grid flex-1 gap-1">
+          <CardTitle>EBITDA Impact Waterfall</CardTitle>
+          <CardDescription>Basis-point margin impact per risk factor · Unhedged vs Hedged</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+        <ChartContainer config={chartConfig} className="aspect-auto h-[260px] w-full">
+          <ComposedChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+            <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}bps`} />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  indicator="dot"
+                  formatter={(value, name) => [
+                    `${value > 0 ? '+' : ''}${value?.toFixed(1)} bps`,
+                    chartConfig[name]?.label || name,
+                  ]}
+                />
+              }
+            />
+            <ReferenceLine y={0} stroke="var(--border-accent)" strokeWidth={1} />
+            <ReferenceLine
+              y={-60}
+              stroke="var(--red)"
+              strokeDasharray="6 3"
+              strokeWidth={1.5}
+              label={{ value: 'Board Floor (11.0%)', position: 'insideTopLeft', fill: 'var(--red)', fontSize: 9 }}
+            />
+            <Bar dataKey="unhedged" name="unhedged" fill="var(--color-unhedged)" opacity={0.8} radius={[2, 2, 0, 0]}>
+              <LabelList dataKey="unhedged" position="top" style={{ fontSize: 9, fill: '#ef4444' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
+            </Bar>
+            <Bar dataKey="hedged" name="hedged" fill="var(--color-hedged)" opacity={0.8} radius={[2, 2, 0, 0]}>
+              <LabelList dataKey="hedged" position="top" style={{ fontSize: 9, fill: '#10b981' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
+            </Bar>
+            <ChartLegend content={<ChartLegendContent />} />
+          </ComposedChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }

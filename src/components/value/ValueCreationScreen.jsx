@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, LabelList,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Cell, LabelList,
 } from 'recharts';
 import { TrendingUp, Package, Layers, Shield, Leaf } from 'lucide-react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../ui/accordion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 const DISCOUNT_RATE = 0.15;
 const NPV_YEARS = 5;
@@ -231,14 +233,20 @@ function LeverCard({ lever, index }) {
 function Quadrant2x2() {
   const dots = [
     { label: 'Contracting', x: 82, y: 88, color: '#10b981' },
-    { label: 'Inventory', x: 40, y: 92, color: '#3b82f6' },
+    { label: 'Inventory', x: 40, y: 92, color: '#20b2aa' },
     { label: 'Landed Cost', x: 55, y: 52, color: '#f59e0b' },
     { label: 'RCC', x: 80, y: 68, color: '#8b5cf6' },
     { label: 'CBAM', x: 22, y: 38, color: '#06b6d4' },
   ];
 
   return (
-    <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+    <div className="rounded-xl p-4" style={{
+      background: 'rgba(255, 255, 255, 0.05)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+    }}>
       <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
         2×2: Speed vs Value Magnitude
       </h3>
@@ -287,6 +295,10 @@ function Quadrant2x2() {
   );
 }
 
+const npvChartConfig = {
+  npvMid: { label: '5-yr NPV (₹ Cr)' },
+};
+
 function NPVBarChart() {
   const data = NPV_BAR_DATA.map(d => ({
     name: d.name.replace('\n', ' '),
@@ -294,53 +306,39 @@ function NPVBarChart() {
     color: d.color,
   }));
 
-  const CustomLabel = (props) => {
-    const { x, y, width, value, color } = props;
-    return (
-      <text x={x + width / 2} y={y - 4} textAnchor="middle" fill={color} fontSize={10} fontFamily="monospace">
-        ₹{value}
-      </text>
-    );
-  };
-
   return (
-    <div style={{ width: '100%', height: 180 }}>
-      <ResponsiveContainer>
-        <BarChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-          <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={v => `₹${v}`} />
-          <Tooltip
-            content={({ active, payload }) => {
-              if (!active || !payload?.length) return null;
-              const d = payload[0];
+    <ChartContainer config={npvChartConfig} className="aspect-auto h-[180px] w-full">
+      <BarChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={v => `₹${v}`} />
+        <ChartTooltip
+          cursor={false}
+          content={
+            <ChartTooltipContent
+              indicator="dot"
+              formatter={(value, name, item) => [`₹${value} Cr`, '5-yr NPV']}
+            />
+          }
+        />
+        <Bar dataKey="npvMid" radius={[3, 3, 0, 0]}>
+          {data.map((entry, i) => (
+            <Cell key={i} fill={entry.color} fillOpacity={0.8} />
+          ))}
+          <LabelList
+            content={(props) => {
+              const { x, y, width, value, index } = props;
               return (
-                <div className="rounded p-2 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
-                  <p style={{ color: 'var(--text-primary)' }}>{d.payload.name}</p>
-                  <p style={{ color: d.payload.color }}>5-yr NPV: ₹{d.value} Cr</p>
-                </div>
+                <text x={x + width / 2} y={y - 4} textAnchor="middle"
+                  fill={data[index]?.color} fontSize={9} fontFamily="monospace">
+                  ₹{value}
+                </text>
               );
             }}
           />
-          <Bar dataKey="npvMid" radius={[3, 3, 0, 0]}>
-            {data.map((entry, i) => (
-              <Cell key={i} fill={entry.color} fillOpacity={0.8} />
-            ))}
-            <LabelList
-              content={(props) => {
-                const { x, y, width, value, index } = props;
-                return (
-                  <text x={x + width / 2} y={y - 4} textAnchor="middle"
-                    fill={data[index]?.color} fontSize={9} fontFamily="monospace">
-                    ₹{value}
-                  </text>
-                );
-              }}
-            />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+        </Bar>
+      </BarChart>
+    </ChartContainer>
   );
 }
 
@@ -361,7 +359,12 @@ export function ValueCreationScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06 }}
             className="rounded-lg p-3"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}
           >
             <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{kpi.label}</div>
             <div className="font-mono text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</div>
@@ -383,25 +386,38 @@ export function ValueCreationScreen() {
         <Quadrant2x2 />
 
         {/* NPV bar chart */}
-        <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-          <h3 className="text-sm font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
-            5-Year NPV by Lever (₹ Cr, 15% CoC)
-          </h3>
-          <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-            Mid-point estimates · Inventory = one-time WC release (not discounted further)
-          </p>
-          <NPVBarChart />
-          <div className="mt-3 p-2 rounded text-xs" style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber-border)' }}>
-            <span style={{ color: 'var(--amber)' }} className="font-semibold">Total: </span>
-            <span style={{ color: 'var(--text-secondary)' }}>
-              PV(₹129–203 Cr annuity, 5yr, 15%) + ₹394 Cr = <span className="font-mono" style={{ color: 'var(--accent-gold)' }}>₹826–1,075 Cr</span>
-            </span>
-          </div>
-        </div>
+        <Card className="pt-0">
+          <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+            <div className="grid flex-1 gap-1">
+              <CardTitle>5-Year NPV by Lever (₹ Cr, 15% CoC)</CardTitle>
+              <CardDescription>Mid-point estimates · Inventory = one-time WC release (not discounted further)</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+            <NPVBarChart />
+            <div className="mt-3 p-2 rounded-lg text-xs" style={{
+              background: 'rgba(32, 178, 170, 0.1)',
+              border: '1px solid rgba(32, 178, 170, 0.3)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}>
+              <span style={{ color: 'var(--accent-teal)' }} className="font-semibold">Total: </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                PV(₹129–203 Cr annuity, 5yr, 15%) + ₹394 Cr = <span className="font-mono" style={{ color: 'var(--accent-teal)' }}>₹826–1,075 Cr</span>
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Footnote */}
-      <div className="p-3 rounded-lg text-xs" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+      <div className="p-3 rounded-lg text-xs" style={{
+        background: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        color: 'var(--text-muted)',
+      }}>
         <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Assumptions: </span>
         15% cost of capital · 5-year horizon · Annual savings realised from Year 1 post-implementation ·
         Inventory WC release treated as Year-1 cash inflow · CBAM not included in base NPV (regulatory timeline TBD) ·

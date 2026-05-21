@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ReferenceLine, ReferenceArea, ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  ReferenceLine, ReferenceArea,
 } from 'recharts';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { MODEL, NIGERIA_TIER1, NIGERIA_TIER2 } from '../../lib/constants';
@@ -10,8 +10,14 @@ import { RAGBadge } from '../shared/RAGBadge';
 import { Button } from '../ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../ui/accordion';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const chartConfig = {
+  days: { label: 'Buffer Days' },
+};
 
 function buildChartData(facilityApplied) {
   const { newBufferDays } = calcNigeriaWithFacility(MODEL.nigeriaBuffer, MODEL.nigeriaCreditFacility, MODEL.nigeriaMonthlyImport);
@@ -21,14 +27,6 @@ function buildChartData(facilityApplied) {
   }));
 }
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded p-2 text-xs font-mono" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-accent)' }}>
-      <p style={{ color: 'var(--text-primary)' }}>{label}: {payload[0].value.toFixed(1)} days</p>
-    </div>
-  );
-};
 
 export function NigeriaScreen() {
   const [facilityApplied, setFacilityApplied] = useState(false);
@@ -48,7 +46,13 @@ export function NigeriaScreen() {
   return (
     <div className="space-y-4">
       {/* Status header */}
-      <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="rounded-xl p-4" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -84,17 +88,28 @@ export function NigeriaScreen() {
       </div>
 
       {/* Chart */}
-      <div className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-        <h3 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
-          12-Month Hard-Currency Buffer Forecast
-        </h3>
-        <div style={{ width: '100%', height: 260 }}>
-          <ResponsiveContainer>
+      <Card className="pt-0">
+        <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+          <div className="grid flex-1 gap-1">
+            <CardTitle>12-Month Hard-Currency Buffer Forecast</CardTitle>
+            <CardDescription>Policy floor 45 days · Danger threshold 30 days</CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+          <ChartContainer config={chartConfig} className="aspect-auto h-[260px] w-full">
             <LineChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis domain={[0, 100]} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}d`} />
-              <Tooltip content={<CustomTooltip />} />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    indicator="line"
+                    formatter={(value) => [`${value.toFixed(1)} days`, 'Buffer']}
+                  />
+                }
+              />
               <ReferenceArea y1={45} y2={100} fill="#064e3b" fillOpacity={0.3} />
               <ReferenceArea y1={30} y2={45} fill="#451a03" fillOpacity={0.5} />
               <ReferenceArea y1={0} y2={30} fill="#450a0a" fillOpacity={0.4} />
@@ -110,12 +125,15 @@ export function NigeriaScreen() {
                 animationEasing="ease-out"
               />
             </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+          </ChartContainer>
+        </CardContent>
+      </Card>
 
       {/* Status table */}
-      <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+      <div className="rounded-xl overflow-hidden" style={{
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -144,20 +162,29 @@ export function NigeriaScreen() {
           { title: 'Tier 1: Immediate Operational Controls (Months 1–3)', items: NIGERIA_TIER1, defaultValue: 'tier-0' },
           { title: 'Tier 2: Structural Solutions (Months 3–12)', items: NIGERIA_TIER2, defaultValue: undefined },
         ].map((tier, i) => (
-          <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+          <div key={i} className="rounded-lg overflow-hidden" style={{
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+          }}>
             <Accordion type="single" collapsible defaultValue={tier.defaultValue}>
               <AccordionItem value={`tier-${i}`} className="border-0">
                 <AccordionTrigger
                   className="px-3 rounded-none"
-                  style={{ background: 'var(--bg-card)' }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                  }}
                 >
                   {tier.title}
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="px-3 space-y-2" style={{ background: 'var(--bg-primary)' }}>
+                  <ul className="px-3 space-y-2" style={{
+                    background: 'rgba(255, 255, 255, 0.02)',
+                  }}>
                     {tier.items.map((item, j) => (
                       <li key={j} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                        <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent-blue)' }} />
+                        <span className="mt-1 shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent-teal)' }} />
                         {item}
                       </li>
                     ))}

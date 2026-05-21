@@ -170,9 +170,14 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
             {[
               { label: 'Current Days', value: `${MODEL.inventoryDaysCurrent}d`, color: 'var(--red)' },
               { label: 'Target Days', value: `${MODEL.inventoryDaysTarget}d`, color: 'var(--green)' },
-              { label: 'WC Release', value: `₹${MODEL.wcRelease} Cr`, color: 'var(--accent-gold)' },
+              { label: 'WC Release', value: `₹${MODEL.wcRelease} Cr`, color: 'var(--accent-teal)' },
             ].map(item => (
-              <div key={item.label} className="text-center p-2 rounded" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+              <div key={item.label} className="text-center p-2 rounded-lg" style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+              }}>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
                 <div className="font-mono font-bold mt-0.5" style={{ color: item.color }}>{item.value}</div>
               </div>
@@ -185,8 +190,13 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
               const release = item.fixed ?? Math.round((item.current - item.target) * item.dailyCost);
               const reduction = item.current ? item.current - item.target : null;
               return (
-                <div key={item.label} className="flex items-center gap-3 p-2 rounded text-xs"
-                  style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                <div key={item.label} className="flex items-center gap-3 p-2 rounded-lg text-xs"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                  }}>
                   <div className="w-2 h-6 rounded shrink-0" style={{ background: item.color, opacity: 0.8 }} />
                   <div className="flex-1">
                     <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{item.label}</div>
@@ -201,13 +211,18 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
             })}
           </div>
 
-          <div className="mt-3 flex items-center justify-between p-2 rounded"
-            style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid var(--amber-border)' }}>
+          <div className="mt-3 flex items-center justify-between p-2 rounded-lg"
+            style={{
+              background: 'rgba(32, 178, 170, 0.1)',
+              border: '1px solid rgba(32, 178, 170, 0.3)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}>
             <div className="flex items-center gap-2 text-xs">
-              <TrendingDown size={12} style={{ color: 'var(--accent-gold)' }} />
+              <TrendingDown size={12} style={{ color: 'var(--accent-teal)' }} />
               <span style={{ color: 'var(--text-secondary)' }}>Total WC Release (Year 1 one-time)</span>
             </div>
-            <div className="font-mono font-bold" style={{ color: 'var(--accent-gold)' }}>₹{MODEL.wcRelease} Cr</div>
+            <div className="font-mono font-bold" style={{ color: 'var(--accent-teal)' }}>₹{MODEL.wcRelease} Cr</div>
           </div>
           <p className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
             Daily RM cost: ₹{MODEL.dailyRmCost.toFixed(2)} Cr/day · Revenue ₹{MODEL.revenue} Cr ÷ 365 × ~48.7% RM ratio
@@ -216,7 +231,13 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
       </Dialog>
 
       {/* Board Floor Compliance — shadcn Progress */}
-      <div className="mt-4 p-3 rounded-lg" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="mt-4 p-3 rounded-xl" style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+      }}>
         <div className="flex items-center justify-between mb-2 text-xs" style={{ color: 'var(--text-muted)' }}>
           <span>Board Floor Compliance</span>
           <span className="font-mono" style={{ color: 'var(--green)' }}>

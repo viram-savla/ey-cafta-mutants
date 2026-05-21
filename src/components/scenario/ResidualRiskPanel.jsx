@@ -58,7 +58,13 @@ const SEVERITY_META = {
 
 export function ResidualRiskPanel() {
   return (
-    <div className="rounded-lg p-4 space-y-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+    <div className="rounded-xl p-4 space-y-4" style={{
+      background: 'rgba(255, 255, 255, 0.05)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+    }}>
       <div className="flex items-center gap-2">
         <AlertTriangle size={14} style={{ color: 'var(--amber)' }} />
         <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
@@ -67,11 +73,16 @@ export function ResidualRiskPanel() {
       </div>
 
       {/* PAT vs EBITDA callout */}
-      <div className="p-3 rounded text-xs" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.3)' }}>
+      <div className="p-3 rounded-lg text-xs" style={{
+        background: 'rgba(32, 178, 170, 0.1)',
+        border: '1px solid rgba(32, 178, 170, 0.3)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+      }}>
         <div className="flex items-start gap-2">
-          <Info size={12} style={{ color: '#3b82f6', marginTop: 1, shrink: 0 }} />
+          <Info size={12} style={{ color: 'var(--accent-teal)', marginTop: 1, shrink: 0 }} />
           <div>
-            <span className="font-semibold" style={{ color: '#3b82f6' }}>PAT vs EBITDA Distinction: </span>
+            <span className="font-semibold" style={{ color: 'var(--accent-teal)' }}>PAT vs EBITDA Distinction: </span>
             <span style={{ color: 'var(--text-secondary)' }}>
               Hedges protect EBITDA margin (operating level). Finance costs, FX translation MTM on USD debt, and
               tax implications flow below EBITDA to PAT. A 71bps EBITDA hedge benefit does not translate 1:1 to PAT
