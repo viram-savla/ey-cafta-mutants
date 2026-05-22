@@ -135,42 +135,42 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
           <div className="flex items-center gap-2 shrink-0">
             {/* SGX ticker */}
             <div
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono"
+              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono"
               style={{
-                background: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.25)',
-                color: 'var(--amber-soft)',
+                background: 'transparent',
+                border: '1px solid var(--border-translucent)',
+                color: 'var(--text-primary)',
               }}
             >
-              <LiveDot color="var(--amber)" />
-              <span className="font-semibold tracking-tight">SGX Fe62</span>
+              <LiveDot color="var(--accent-sunset)" />
+              <span className="font-normal tracking-tight">SGX Fe62</span>
               <span className="tabular-nums">$110</span>
             </div>
             {/* SOFR */}
             <div
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono"
               style={{
-                background: 'var(--green-bg)',
-                border: '1px solid var(--green-border)',
-                color: 'var(--green-soft)',
+                background: 'transparent',
+                border: '1px solid var(--border-translucent)',
+                color: 'var(--text-primary)',
               }}
             >
-              <LiveDot color="var(--green)" />
-              <span className="font-semibold tracking-tight">SOFR</span>
+              <LiveDot color="var(--accent-breeze)" />
+              <span className="font-normal tracking-tight">SOFR</span>
               <span className="tabular-nums">{sofr.toFixed(2)}%</span>
             </div>
             {/* Hedge ticker */}
             {hedgeValue > 0 && (
               <div
-                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono"
+                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono"
                 style={{
-                  background: 'var(--accent-teal-bg)',
-                  border: '1px solid var(--accent-teal-border)',
-                  color: 'var(--accent-teal-soft)',
+                  background: 'transparent',
+                  border: '1px solid var(--border-translucent)',
+                  color: 'var(--text-primary)',
                 }}
               >
                 <Activity size={11} />
-                <span className="font-semibold tracking-tight">Hedge ₹</span>
+                <span className="font-normal tracking-tight">Hedge ₹</span>
                 <ValueTicker value={hedgeValue} />
                 <span>Cr</span>
               </div>

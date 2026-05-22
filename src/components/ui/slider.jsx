@@ -48,8 +48,7 @@ function Slider({
           data-slot="slider-range"
           className="absolute h-full rounded-full"
           style={{
-            background: 'linear-gradient(90deg, var(--accent-teal), var(--accent-teal-soft))',
-            boxShadow: '0 0 8px rgba(20, 184, 166, 0.4)',
+            background: '#ffffff',
           }}
         />
       </SliderPrimitive.Track>
@@ -60,10 +59,10 @@ function Slider({
           className="relative block size-4 shrink-0 rounded-full transition-transform cursor-pointer hover:scale-110 active:scale-115 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
           style={{
             background: '#ffffff',
-            border: '2px solid var(--accent-teal)',
+            border: '1px solid #ffffff',
             boxShadow: dragging
-              ? '0 4px 12px rgba(0,0,0,0.5), 0 0 0 8px rgba(20, 184, 166, 0.18)'
-              : '0 2px 6px rgba(0,0,0,0.4), 0 0 0 4px rgba(20, 184, 166, 0.15)',
+              ? '0 0 0 6px rgba(255, 255, 255, 0.12)'
+              : '0 0 0 0 rgba(255, 255, 255, 0)',
             transition: 'box-shadow 180ms ease, transform 180ms ease',
           }}
         >

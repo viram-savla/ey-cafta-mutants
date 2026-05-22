@@ -40,19 +40,17 @@ export function ScenarioPresets({ activePreset, onSelect }) {
             <button
               key={key}
               onClick={() => onSelect(key)}
-              className="relative px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 text-[12.5px] font-medium"
-              style={{ color: isActive ? 'var(--text-primary)' : 'var(--text-muted)' }}
-              onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
-              onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
+              className="relative px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 text-[12.5px] font-normal"
+              style={{ color: isActive ? 'var(--bg-primary)' : 'var(--text-secondary)' }}
+              onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-primary)'; }}
+              onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
             >
               {isActive && (
                 <motion.div
                   layoutId="preset-active"
-                  className="absolute inset-0 rounded-lg"
+                  className="absolute inset-0 rounded-full"
                   style={{
-                    background: 'linear-gradient(180deg, rgba(20, 184, 166, 0.18), rgba(20, 184, 166, 0.08))',
-                    border: '1px solid rgba(20, 184, 166, 0.35)',
-                    boxShadow: '0 2px 8px rgba(20, 184, 166, 0.15), inset 0 1px 0 rgba(255,255,255,0.08)',
+                    background: 'var(--text-primary)',
                   }}
                   transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                 />
@@ -60,7 +58,7 @@ export function ScenarioPresets({ activePreset, onSelect }) {
               <span className="relative z-10 flex items-center gap-1.5">
                 <span
                   className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: isActive ? 'var(--accent-teal)' : tone.dot }}
+                  style={{ background: isActive ? 'var(--bg-primary)' : tone.dot }}
                 />
                 {preset.label}
                 <span

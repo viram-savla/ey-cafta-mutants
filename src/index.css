@@ -28,61 +28,74 @@
 }
 
 :root {
-  /* ─── xAI canvas palette — strict near-black ────────────────── */
-  --bg-primary:        #0a0a0a;   /* canvas — the only true surface */
-  --bg-elevated:       #1a1c20;   /* canvas-soft — tooltips, hovered nav */
-  --bg-card:           #191919;   /* canvas-card — flat solid card */
-  --bg-card-hover:     #1f1f1f;
-  --bg-card-strong:    #191919;
-  --bg-popover:        #0a0a0a;
+  /* ═══════════════════════════════════════════════════════════
+     xAI palette — every token traced to DESIGN.md verbatim
+     ═══════════════════════════════════════════════════════════ */
+
+  /* ─── Canvas surfaces (exact from DESIGN.md) ──────────────── */
+  --bg-primary:        #0a0a0a;   /* canvas */
+  --bg-elevated:       #1a1c20;   /* canvas-soft */
+  --bg-card:           #191919;   /* canvas-card */
+  --bg-card-hover:     #1a1c20;   /* canvas-soft on hover */
+  --bg-card-strong:    #191919;   /* canvas-card */
+  --bg-popover:        #1a1c20;   /* canvas-soft */
   --bg-nav:            rgba(10, 10, 10, 0.92);
 
-  /* ─── Borders — hairlines only ────────────────────────────── */
+  /* ─── Borders — hairline #212327, canvas-mid #363a3f ─────── */
   --border:            #212327;   /* hairline */
-  --border-accent:     #363a3f;   /* canvas-mid for emphasis */
+  --border-accent:     #363a3f;   /* canvas-mid */
   --border-strong:     #4a4f56;
-  --border-translucent: rgba(255, 255, 255, 0.18);   /* outline-pill border */
+  --border-translucent: rgba(255, 255, 255, 0.25);  /* button-outline white-translucent */
 
-  /* ─── Text — ink/body/mute ladder ─────────────────────────── */
+  /* ─── Text — ink / body / mute (DESIGN.md exact) ──────────── */
   --text-primary:      #ffffff;   /* ink */
   --text-secondary:    #dadbdf;   /* body */
-  --text-muted:        #9ca0a6;   /* body-mid — bumped slightly from #7d8187 for AA */
-  --text-faint:        #7d8187;   /* mute */
+  --text-muted:        #7d8187;   /* body-mid / mute */
+  --text-faint:        #7d8187;   /* xAI defines one mute level only */
+  --text-ink-hover:    #fafaf7;   /* ink-hover */
 
-  /* ─── Status (semantic data, kept for RAG legibility) ─────── */
+  /* ─── xAI illustrative accents (DESIGN.md exact) ──────────── */
+  --accent-sunset:        #ff7a17;
+  --accent-sunset-soft:   #ffc285;
+  --accent-dusk:          #7c3aed;
+  --accent-twilight:      #c4b5fd;
+  --accent-breeze:        #a0c3ec;
+  --accent-midnight:      #0d1726;
+
+  /* ─── Brand "interactive" tokens → white-on-black ─────────── */
+  /* xAI marketing uses WHITE for every interactive surface;
+     these aliases keep all existing call-sites working without
+     ripping out var(--accent-teal-*) across the codebase. */
+  --accent-teal:        #ffffff;
+  --accent-teal-soft:   #fafaf7;
+  --accent-teal-bg:     rgba(255, 255, 255, 0.06);
+  --accent-teal-border: rgba(255, 255, 255, 0.18);
+  --accent-blue:        #a0c3ec;   /* legacy alias → breeze */
+  --accent-gold:        #ff7a17;   /* legacy alias → sunset */
+  --accent-violet:      #7c3aed;   /* legacy alias → dusk */
+
+  /* ─── Status (RAG semantic — kept; restrained to feel xAI) ── */
+  /* xAI's marketing site has no semantic palette, but this is a
+     risk dashboard — RAG is functional data, not decoration. */
   --green:             #22c55e;
   --green-soft:        #4ade80;
-  --green-bg:          rgba(34, 197, 94, 0.11);
-  --green-border:      rgba(34, 197, 94, 0.40);
-  --amber:             #f59e0b;
-  --amber-soft:        #fbbf24;
-  --amber-bg:          rgba(245, 158, 11, 0.11);
-  --amber-border:      rgba(245, 158, 11, 0.40);
+  --green-bg:          rgba(34, 197, 94, 0.10);
+  --green-border:      rgba(34, 197, 94, 0.35);
+  --amber:             #ff7a17;   /* aligned to xAI sunset */
+  --amber-soft:        #ffc285;   /* sunset-soft */
+  --amber-bg:          rgba(255, 122, 23, 0.10);
+  --amber-border:      rgba(255, 122, 23, 0.35);
   --red:               #f43f5e;
   --red-soft:          #fb7185;
-  --red-bg:            rgba(244, 63, 94, 0.11);
-  --red-border:        rgba(244, 63, 94, 0.40);
+  --red-bg:            rgba(244, 63, 94, 0.10);
+  --red-border:        rgba(244, 63, 94, 0.35);
 
-  /* ─── Chart palette ───────────────────────────────────────── */
+  /* ─── Chart palette → xAI illustrative accents ──────────── */
   --chart-blue:        #a0c3ec;   /* breeze */
   --chart-amber:       #ffc285;   /* sunset-soft */
   --chart-violet:      #c4b5fd;   /* twilight */
-  --chart-cyan:        #a0c3ec;
-  --chart-rose:        #fb7185;
-
-  /* ─── Brand accents (xAI sunset/dusk palette) ─────────────── */
-  --accent-teal:       #ff7a17;   /* repurposed: sunset orange = primary accent */
-  --accent-teal-soft:  #ffc285;   /* sunset-soft */
-  --accent-teal-bg:    rgba(255, 122, 23, 0.10);
-  --accent-teal-border: rgba(255, 122, 23, 0.38);
-  --accent-blue:       #a0c3ec;   /* breeze */
-  --accent-gold:       #ff7a17;
-  --accent-violet:     #7c3aed;   /* dusk */
-  --accent-sunset:     #ff7a17;
-  --accent-dusk:       #7c3aed;
-  --accent-twilight:   #c4b5fd;
-  --accent-breeze:     #a0c3ec;
-  --accent-midnight:   #0d1726;
+  --chart-cyan:        #a0c3ec;   /* breeze (no cyan in xAI) */
+  --chart-rose:        #fb7185;   /* kept for chart contrast */
 
   /* ─── Radii — 8px for cards, pill for buttons ─────────────── */
   --radius-xs:  4px;
@@ -349,42 +362,37 @@ body {
 }
 
 /* ────────────────────────────────────────────────────────────
-   Sliders (modern, teal-accented)
+   Sliders — xAI white-on-canvas
    ──────────────────────────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  height: 4px;
+  height: 2px;
   border-radius: 999px;
-  background: linear-gradient(to right, var(--accent-teal) var(--_p, 50%), rgba(255, 255, 255, 0.1) var(--_p, 50%));
+  background: linear-gradient(to right, #ffffff var(--_p, 50%), #212327 var(--_p, 50%));
   outline: none;
   cursor: pointer;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
-  border: 2px solid var(--accent-teal);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(20, 184, 166, 0.15);
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  border: 1px solid #ffffff;
+  transition: transform 150ms ease;
 }
 input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-input[type="range"]::-webkit-slider-thumb:active {
-  transform: scale(1.15);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 0 6px rgba(20, 184, 166, 0.25);
-}
+input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.15); }
 input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
-  border: 2px solid var(--accent-teal);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  border: 1px solid #ffffff;
 }
 
 /* ────────────────────────────────────────────────────────────

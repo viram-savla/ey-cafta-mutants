@@ -56,8 +56,8 @@ export function ScenarioSlider({ label, value, min, max, step, onChange, formatV
             className="text-[12px] font-mono tabular-nums font-semibold px-2 py-1 rounded-md shrink-0 w-[88px] text-right outline-none"
             style={{
               color: 'var(--text-primary)',
-              background: 'rgba(20,184,166,0.08)',
-              border: '1px solid var(--accent-teal-border)',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.32)',
             }}
           />
         ) : (
@@ -65,12 +65,14 @@ export function ScenarioSlider({ label, value, min, max, step, onChange, formatV
             type="button"
             onClick={startEdit}
             title="Click to enter exact value"
-            className="text-[12px] font-mono tabular-nums font-semibold px-2 py-1 rounded-md shrink-0 cursor-text hover:border-[var(--accent-teal-border)] transition-colors"
+            className="text-[12px] font-mono tabular-nums font-semibold px-2 py-1 rounded-md shrink-0 cursor-text transition-colors"
             style={{
               color: 'var(--text-primary)',
-              background: 'rgba(255,255,255,0.04)',
+              background: 'transparent',
               border: '1px solid var(--border)',
             }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.32)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
             {formatValue(value)}
           </button>
