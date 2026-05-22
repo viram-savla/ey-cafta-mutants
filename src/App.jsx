@@ -106,24 +106,26 @@ export default function App() {
 
       <main className="px-4 lg:px-6 py-5 max-w-[1600px] mx-auto">
         {/* Tab header */}
-        <div className="mb-5 no-print flex items-end justify-between gap-3 flex-wrap">
+        <div className="mb-6 no-print flex items-end justify-between gap-3 flex-wrap">
           <div>
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-[20px] font-semibold tracking-tight leading-tight" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                {meta.title}
-              </h1>
-              <span className="text-[10.5px] font-mono uppercase tracking-[0.12em] px-2 py-0.5 rounded-md"
-                style={{ background: 'var(--accent-teal-bg)', color: 'var(--accent-teal-soft)', border: '1px solid var(--accent-teal-border)' }}>
-                EY CAFTA 2026
-              </span>
-            </div>
-            <p className="text-[12px] mt-1.5" style={{ color: 'var(--text-muted)' }}>
+            <div className="eyebrow-mono-sm mb-2">EY CAFTA 2026 · RISK COMMAND</div>
+            <h1
+              className="font-normal leading-[1.05]"
+              style={{
+                color: 'var(--text-primary)',
+                fontSize: 'var(--fs-h1)',
+                letterSpacing: 'var(--tracking-h1)',
+              }}
+            >
+              {meta.title}
+            </h1>
+            <p className="text-[13px] mt-2 max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
               {meta.sub}
             </p>
           </div>
           <div className="text-right text-[11px] hidden md:block leading-tight">
             <div style={{ color: 'var(--text-secondary)' }}>Bharat Advanced Materials Limited</div>
-            <div className="font-mono tabular-nums mt-0.5" style={{ color: 'var(--text-faint)' }}>
+            <div className="font-mono tabular-nums mt-1 uppercase tracking-[0.1em]" style={{ color: 'var(--text-faint)', fontSize: 10.5 }}>
               Masters Union · {new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
             </div>
           </div>
@@ -188,10 +190,11 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <div
-                  className="w-6 h-6 rounded flex items-center justify-center font-bold text-[11px]"
+                  className="w-6 h-6 flex items-center justify-center font-normal text-[11px]"
                   style={{
-                    background: 'linear-gradient(135deg, var(--accent-teal), #0d9488)',
-                    color: '#fff',
+                    background: 'var(--text-primary)',
+                    color: 'var(--bg-primary)',
+                    borderRadius: 'var(--radius-xs)',
                   }}
                 >B</div>
                 <span className="text-[12.5px] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>

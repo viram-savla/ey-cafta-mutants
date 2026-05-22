@@ -66,11 +66,11 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
           {/* ─── Logo + brand ─────────────────────────────── */}
           <div className="flex items-center gap-2.5 shrink-0">
             <div
-              className="w-8 h-8 rounded-md flex items-center justify-center font-bold text-[15px] shrink-0"
+              className="w-8 h-8 flex items-center justify-center font-normal text-[15px] shrink-0"
               style={{
-                background: 'linear-gradient(135deg, var(--accent-teal), #0d9488)',
-                color: '#fff',
-                boxShadow: '0 2px 8px rgba(20, 184, 166, 0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
+                background: 'var(--text-primary)',
+                color: 'var(--bg-primary)',
+                borderRadius: 'var(--radius-sm)',
                 letterSpacing: '-0.02em',
               }}
             >
@@ -91,10 +91,11 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
           {/* ─── Center: tabs (segmented control) ─────────── */}
           <div className="hidden md:flex flex-1 justify-center px-3">
             <div
-              className="inline-flex p-1 rounded-xl items-center"
+              className="inline-flex p-1 items-center"
               style={{
-                background: 'rgba(255,255,255,0.03)',
+                background: 'transparent',
                 border: '1px solid var(--border)',
+                borderRadius: '9999px',
                 gap: '2px',
               }}
             >
@@ -104,21 +105,20 @@ export function Navbar({ activeTab, onTabChange, hedgeValue, theme, onThemeToggl
                   <button
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
-                    className="relative px-2.5 lg:px-3 py-1.5 text-[12px] lg:text-[12.5px] font-medium rounded-lg transition-colors whitespace-nowrap"
+                    className="relative px-2.5 lg:px-3 py-1.5 text-[12px] lg:text-[13px] font-normal rounded-full transition-colors whitespace-nowrap"
                     style={{
-                      color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
+                      color: isActive ? 'var(--bg-primary)' : 'var(--text-secondary)',
                     }}
-                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                    onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
+                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-primary)'; }}
+                    onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="nav-active-pill"
-                        className="absolute inset-0 rounded-lg"
+                        className="absolute inset-0"
                         style={{
-                          background: 'linear-gradient(180deg, rgba(20, 184, 166, 0.18), rgba(20, 184, 166, 0.08))',
-                          border: '1px solid rgba(20, 184, 166, 0.35)',
-                          boxShadow: '0 2px 8px rgba(20, 184, 166, 0.15), inset 0 1px 0 rgba(255,255,255,0.08)',
+                          background: 'var(--text-primary)',
+                          borderRadius: '9999px',
                         }}
                         transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                       />

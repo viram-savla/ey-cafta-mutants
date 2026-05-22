@@ -3,33 +3,39 @@ import { cva } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
 import { cn } from "../../lib/utils"
 
+// xAI buttons: pill-shaped, outline-on-dark canonical, white-filled rare primary
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all duration-150 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] active:duration-75 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 cursor-pointer",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-sm font-normal whitespace-nowrap transition-all duration-150 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-white focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 active:opacity-90 active:duration-75 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 cursor-pointer",
   {
     variants: {
       variant: {
+        // Default = xAI outline-on-dark pill (the canonical interactive shape)
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_2px_8px_rgba(20,184,166,0.25),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_14px_rgba(20,184,166,0.4),inset_0_1px_0_rgba(255,255,255,0.15)]",
+          "bg-transparent text-white border border-[var(--border-translucent)] hover:bg-white/[0.04] hover:border-white/[0.32]",
+        // Primary = rare white-filled pill (Sign Up / Run-style CTA)
+        primary:
+          "bg-white text-[var(--bg-primary)] border border-white hover:bg-white/95",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
+          "bg-transparent text-white border border-[var(--red-border)] hover:bg-[var(--red-bg)]",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "bg-transparent text-white border border-[var(--border-translucent)] hover:bg-white/[0.04] hover:border-white/[0.32]",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-[var(--bg-card)] text-white border border-[var(--border)] hover:bg-[var(--bg-card-hover)]",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
-        gold: "border border-[var(--amber-border)] bg-[var(--amber-bg)] text-[var(--accent-gold)] hover:bg-[var(--amber-bg)]/80",
+          "bg-transparent text-[var(--text-secondary)] hover:bg-white/[0.04] hover:text-white",
+        link: "text-white underline-offset-4 hover:underline rounded-none",
+        gold:
+          "bg-transparent text-[var(--accent-sunset-soft,var(--accent-gold))] border border-[var(--amber-border)] hover:bg-[var(--amber-bg)]",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
-        "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm": "size-8",
-        "icon-lg": "size-10",
+        default: "h-9 px-4 has-[>svg]:px-3",
+        xs: "h-6 gap-1 px-3 text-xs has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8 gap-1.5 px-3.5 has-[>svg]:px-3",
+        lg: "h-10 px-6 has-[>svg]:px-5",
+        icon: "size-9 rounded-full",
+        "icon-xs": "size-6 rounded-full [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm": "size-8 rounded-full",
+        "icon-lg": "size-10 rounded-full",
       },
     },
     defaultVariants: {

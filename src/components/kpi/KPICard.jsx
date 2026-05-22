@@ -52,13 +52,12 @@ export function KPICard({ id, label, value, target, status, onClick, delay = 0, 
         transition: { type: 'spring', stiffness: 300, damping: 22 },
       } : {}}
       whileTap={onClick ? { scale: 0.97, transition: { duration: 0.08 } } : {}}
-      className={`card-spotlight kpi-card-${status} relative overflow-hidden rounded-xl p-4 ${onClick ? 'cursor-pointer' : ''}`}
+      className={`kpi-card-${status} relative overflow-hidden p-4 ${onClick ? 'cursor-pointer' : ''}`}
       style={{
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))',
-        backdropFilter: 'blur(14px) saturate(140%)',
-        WebkitBackdropFilter: 'blur(14px) saturate(140%)',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border)',
         borderBottom: `2px solid var(--${status})`,
+        borderRadius: 'var(--radius)',
         minHeight: 142,
       }}
     >

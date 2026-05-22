@@ -28,27 +28,28 @@
 }
 
 :root {
-  /* ─── Surface palette (Perplexity-inspired warm-dark) ────────── */
-  --bg-primary:        #131316;   /* near-black with warm undertone */
-  --bg-elevated:       #18191f;   /* subtle lift */
-  --bg-card:           rgba(255, 255, 255, 0.042);
-  --bg-card-hover:     rgba(255, 255, 255, 0.072);
-  --bg-card-strong:    rgba(255, 255, 255, 0.058);
-  --bg-popover:        #1e1f28;
-  --bg-nav:            rgba(19, 19, 22, 0.84);
+  /* ─── xAI canvas palette — strict near-black ────────────────── */
+  --bg-primary:        #0a0a0a;   /* canvas — the only true surface */
+  --bg-elevated:       #1a1c20;   /* canvas-soft — tooltips, hovered nav */
+  --bg-card:           #191919;   /* canvas-card — flat solid card */
+  --bg-card-hover:     #1f1f1f;
+  --bg-card-strong:    #191919;
+  --bg-popover:        #0a0a0a;
+  --bg-nav:            rgba(10, 10, 10, 0.92);
 
-  /* ─── Borders ─────────────────────────────────────────────── */
-  --border:            rgba(255, 255, 255, 0.09);
-  --border-accent:     rgba(255, 255, 255, 0.14);
-  --border-strong:     rgba(255, 255, 255, 0.22);
+  /* ─── Borders — hairlines only ────────────────────────────── */
+  --border:            #212327;   /* hairline */
+  --border-accent:     #363a3f;   /* canvas-mid for emphasis */
+  --border-strong:     #4a4f56;
+  --border-translucent: rgba(255, 255, 255, 0.18);   /* outline-pill border */
 
-  /* ─── Text (WCAG AA, Perplexity tonal range) ─────────────── */
-  --text-primary:      #e8eaed;   /* warm near-white, not harsh */
-  --text-secondary:    #b6c0cd;   /* clear blue-gray, bumped for AA */
-  --text-muted:        #8a93a4;   /* accessible muted, bumped to ~5.5:1 */
-  --text-faint:        #707b8f;   /* fine print — bumped from #4e5666 to clear 4.5:1 */
+  /* ─── Text — ink/body/mute ladder ─────────────────────────── */
+  --text-primary:      #ffffff;   /* ink */
+  --text-secondary:    #dadbdf;   /* body */
+  --text-muted:        #9ca0a6;   /* body-mid — bumped slightly from #7d8187 for AA */
+  --text-faint:        #7d8187;   /* mute */
 
-  /* ─── Status colours (vivid, Perplexity-grade saturation) ─── */
+  /* ─── Status (semantic data, kept for RAG legibility) ─────── */
   --green:             #22c55e;
   --green-soft:        #4ade80;
   --green-bg:          rgba(34, 197, 94, 0.11);
@@ -63,56 +64,62 @@
   --red-border:        rgba(244, 63, 94, 0.40);
 
   /* ─── Chart palette ───────────────────────────────────────── */
-  --chart-blue:        #60a5fa;
-  --chart-amber:       #fbbf24;
-  --chart-violet:      #a78bfa;
-  --chart-cyan:        #22d3ee;
+  --chart-blue:        #a0c3ec;   /* breeze */
+  --chart-amber:       #ffc285;   /* sunset-soft */
+  --chart-violet:      #c4b5fd;   /* twilight */
+  --chart-cyan:        #a0c3ec;
   --chart-rose:        #fb7185;
 
-  /* ─── Brand accents ───────────────────────────────────────── */
-  --accent-teal:       #14b8a6;
-  --accent-teal-soft:  #2dd4bf;
-  --accent-teal-bg:    rgba(20, 184, 166, 0.12);
-  --accent-teal-border: rgba(20, 184, 166, 0.42);
-  --accent-blue:       #3b82f6;
-  --accent-gold:       #f59e0b;
-  --accent-violet:     #8b5cf6;
+  /* ─── Brand accents (xAI sunset/dusk palette) ─────────────── */
+  --accent-teal:       #ff7a17;   /* repurposed: sunset orange = primary accent */
+  --accent-teal-soft:  #ffc285;   /* sunset-soft */
+  --accent-teal-bg:    rgba(255, 122, 23, 0.10);
+  --accent-teal-border: rgba(255, 122, 23, 0.38);
+  --accent-blue:       #a0c3ec;   /* breeze */
+  --accent-gold:       #ff7a17;
+  --accent-violet:     #7c3aed;   /* dusk */
+  --accent-sunset:     #ff7a17;
+  --accent-dusk:       #7c3aed;
+  --accent-twilight:   #c4b5fd;
+  --accent-breeze:     #a0c3ec;
+  --accent-midnight:   #0d1726;
 
-  /* ─── Spacing & radii ─────────────────────────────────────── */
+  /* ─── Radii — 8px for cards, pill for buttons ─────────────── */
   --radius-xs:  4px;
   --radius-sm:  6px;
-  --radius:     10px;
-  --radius-lg:  14px;
-  --radius-xl:  20px;
+  --radius:     8px;
+  --radius-lg:  8px;
+  --radius-xl:  8px;
+  --radius-pill: 9999px;
 
-  /* ─── Shadows ─────────────────────────────────────────────── */
-  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md:   0 4px 16px rgba(0, 0, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.18);
-  --shadow-lg:   0 12px 36px rgba(0, 0, 0, 0.40), 0 4px 10px rgba(0, 0, 0, 0.18);
-  --shadow-xl:   0 24px 64px rgba(0, 0, 0, 0.46), 0 8px 20px rgba(0, 0, 0, 0.22);
-  --shadow-glow-teal:  0 0 0 1px rgba(20, 184, 166, 0.32), 0 8px 24px rgba(20, 184, 166, 0.14);
-  --shadow-glow-red:   0 0 0 1px rgba(244, 63, 94, 0.32), 0 8px 24px rgba(244, 63, 94, 0.16);
+  /* ─── Shadows — none (xAI uses hairlines for elevation) ──── */
+  --shadow-sm:   none;
+  --shadow-md:   none;
+  --shadow-lg:   none;
+  --shadow-xl:   none;
+  --shadow-glow-teal:  none;
+  --shadow-glow-red:   none;
 
-  /* ─── Status-tinted resting shadows ──────────────────────── */
-  --shadow-status-green: 0 6px 20px rgba(34, 197, 94, 0.11), 0 2px 6px rgba(0, 0, 0, 0.22);
-  --shadow-status-amber: 0 6px 20px rgba(245, 158, 11, 0.11), 0 2px 6px rgba(0, 0, 0, 0.22);
-  --shadow-status-red:   0 6px 20px rgba(244, 63, 94, 0.12),  0 2px 6px rgba(0, 0, 0, 0.22);
-  --shadow-status-green-hover: 0 14px 36px rgba(34, 197, 94, 0.20), 0 4px 8px rgba(0, 0, 0, 0.22);
-  --shadow-status-amber-hover: 0 14px 36px rgba(245, 158, 11, 0.20), 0 4px 8px rgba(0, 0, 0, 0.22);
-  --shadow-status-red-hover:   0 14px 36px rgba(244, 63, 94, 0.22),  0 4px 8px rgba(0, 0, 0, 0.22);
+  /* ─── Status shadows neutralised — RAG comes from accent bar / border */
+  --shadow-status-green: none;
+  --shadow-status-amber: none;
+  --shadow-status-red:   none;
+  --shadow-status-green-hover: none;
+  --shadow-status-amber-hover: none;
+  --shadow-status-red-hover:   none;
 
-  /* ─── Typography (Manrope — clean modern grotesque) ──────── */
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-sans: 'Manrope', system-ui, -apple-system, sans-serif;
+  /* ─── Typography (Inter weight-400 — Universal Sans stand-in) ─ */
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* ─── Type ramp (one source of truth) ─────────────────────── */
-  --fs-display:    36px;  --tracking-display: -0.035em;
-  --fs-h1:         24px;  --tracking-h1:      -0.025em;
-  --fs-h2:         18px;  --tracking-h2:      -0.02em;
-  --fs-h3:         15px;  --tracking-h3:      -0.015em;
-  --fs-body:       13px;  --tracking-body:    -0.005em;
-  --fs-label:      11px;  --tracking-label:    0.04em;
-  --fs-micro:    10.5px;  --tracking-micro:    0.12em;
+  /* ─── Type ramp — xAI negative-tracking ladder ────────────── */
+  --fs-display:    48px;  --tracking-display: -0.025em;   /* display-md */
+  --fs-h1:         32px;  --tracking-h1:      -0.019em;   /* display-sm */
+  --fs-h2:         20px;  --tracking-h2:      -0.012em;   /* display-xs */
+  --fs-h3:         16px;  --tracking-h3:      -0.005em;
+  --fs-body:       14px;  --tracking-body:     0;          /* body-sm */
+  --fs-label:      12px;  --tracking-label:    0.10em;
+  --fs-micro:      11px;  --tracking-micro:    0.12em;    /* caption-mono small */
 
   /* ─── Animation springs ──────────────────────────────────── */
   --ease-out-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -132,24 +139,21 @@
 html, body {
   margin: 0;
   font-family: var(--font-sans);
-  font-feature-settings: 'kern' 1, 'calt' 1, 'liga' 1;
+  font-feature-settings: 'kern' 1, 'calt' 1, 'liga' 1, 'cv11' 1;
   font-optical-sizing: auto;
+  font-weight: 400;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
   overflow-x: hidden;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 body {
   background-color: var(--bg-primary);
-  /* Perplexity-style: subtle teal crown glow + deep indigo bottom — no harsh texture */
-  background-image:
-    radial-gradient(ellipse 140% 45% at 50% -2%, rgba(20, 184, 166, 0.09) 0%, transparent 65%),
-    radial-gradient(ellipse 80% 40% at 0% 100%,  rgba(99, 102, 241, 0.05) 0%, transparent 60%);
-  background-attachment: fixed;
+  /* xAI canvas: flat near-black, no gradient, no texture */
   min-height: 100vh;
 }
 
@@ -198,30 +202,69 @@ body {
 /* ────────────────────────────────────────────────────────────
    Surface utilities (Bloomberg × Perplexity glassmorphism)
    ──────────────────────────────────────────────────────────── */
+/* xAI flat cards — solid canvas-card fill + hairline border, no blur, no shadow */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
 }
 
 .glass-panel-strong {
-  background: var(--bg-card-strong);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid var(--border-accent);
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .glass-panel-subtle {
-  background: rgba(255, 255, 255, 0.028);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
+}
+
+/* xAI signature eyebrow — uppercase Geist Mono with positive tracking */
+.eyebrow-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  font-weight: 400;
+  line-height: 1.3;
+}
+.eyebrow-mono-sm {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Hairline divider */
+.divider-hairline {
+  height: 1px;
+  background: var(--border);
+  border: 0;
+}
+
+/* xAI pill — outline-on-dark interactive shape */
+.pill-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-translucent);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.pill-outline:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.32);
 }
 
 .card-shadow      { box-shadow: var(--shadow-md); }
@@ -232,48 +275,33 @@ body {
 .shadow-status-amber { box-shadow: var(--shadow-status-amber); }
 .shadow-status-red   { box-shadow: var(--shadow-status-red); }
 
-/* KPI card status shadows with hover transition */
-.kpi-card-green { box-shadow: var(--shadow-status-green); transition: box-shadow 220ms var(--ease-out-quart); }
-.kpi-card-amber { box-shadow: var(--shadow-status-amber); transition: box-shadow 220ms var(--ease-out-quart); }
-.kpi-card-red   { box-shadow: var(--shadow-status-red);   transition: box-shadow 220ms var(--ease-out-quart); }
-.kpi-card-green:hover { box-shadow: var(--shadow-status-green-hover); }
-.kpi-card-amber:hover { box-shadow: var(--shadow-status-amber-hover); }
-.kpi-card-red:hover   { box-shadow: var(--shadow-status-red-hover); }
-
-/* Mouse-tracked card spotlight (set --mx/--my via JS) */
-.card-spotlight {
-  position: relative;
-  isolation: isolate; /* creates a new stacking context so z-index: -1 stays inside */
+/* xAI: KPI cards use status accent bar instead of shadow tint */
+.kpi-card-green,
+.kpi-card-amber,
+.kpi-card-red {
+  box-shadow: none;
+  transition: border-color 180ms ease, background 180ms ease;
 }
-.card-spotlight::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    520px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(20, 184, 166, 0.07),
-    transparent 42%
-  );
-  opacity: 0;
-  transition: opacity 220ms ease;
-  pointer-events: none;
-  z-index: -1; /* sit behind content; isolation keeps it within the card */
+.kpi-card-green:hover,
+.kpi-card-amber:hover,
+.kpi-card-red:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
 }
-.card-spotlight:hover::before { opacity: 1; }
 
-/* Hover lift — refined with asymmetric shadow growth */
+/* Card spotlight neutralised — xAI is flat */
+.card-spotlight { position: relative; }
+.card-spotlight::before { content: none; }
+
+/* Hover lift — flat, hairline brightens, no shadow */
 .lift-on-hover {
-  transition: transform 220ms var(--ease-out-quart),
-              box-shadow 220ms var(--ease-out-quart),
-              border-color 220ms ease;
+  transition: border-color 180ms ease, background 180ms ease;
 }
 .lift-on-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.18);
-  border-color: var(--border-strong);
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
 }
-.lift-on-hover:active { transform: translateY(-1px) scale(0.998); transition-duration: 80ms; }
+.lift-on-hover:active { opacity: 0.92; transition-duration: 80ms; }
 
 /* ────────────────────────────────────────────────────────────
    RAG status pills — refined, filled, properly weighted
@@ -452,7 +480,7 @@ input[type="range"]::-moz-range-thumb {
    Focus rings (a11y)
    ──────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--accent-teal);
+  outline: 1px solid var(--text-primary);
   outline-offset: 2px;
   border-radius: var(--radius-xs);
 }
