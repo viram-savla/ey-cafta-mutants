@@ -41,7 +41,7 @@ export function SOFRCollarChart() {
         <div className="hidden sm:flex flex-col gap-1 text-[10.5px] font-mono tabular-nums text-right shrink-0">
           <span style={{ color: 'var(--green-soft)' }}>● SOFR 3.59% live</span>
           <span style={{ color: 'var(--red-soft)' }}>— Cap 4.50%</span>
-          <span style={{ color: '#60a5fa' }}>— Floor 3.00%</span>
+          <span style={{ color: '#a0c3ec' }}>— Floor 3.00%</span>
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
@@ -77,16 +77,16 @@ export function SOFRCollarChart() {
             <ReferenceArea
               y1={3.0}
               y2={4.5}
-              fill="#8b5cf6"
+              fill="#7c3aed"
               fillOpacity={0.06}
-              label={{ value: 'Collar Band', position: 'insideTopRight', fill: '#8b5cf6', fontSize: 9 }}
+              label={{ value: 'Collar Band', position: 'insideTopRight', fill: '#7c3aed', fontSize: 9 }}
             />
-            <ReferenceLine y={4.5} stroke="#ef4444" strokeDasharray="6 3" strokeWidth={1.5}
-              label={{ value: 'Cap 4.50%', position: 'insideTopRight', fill: '#ef4444', fontSize: 9 }} />
-            <ReferenceLine y={3.0} stroke="#3b82f6" strokeDasharray="6 3" strokeWidth={1.5}
-              label={{ value: 'Floor 3.00%', position: 'insideBottomRight', fill: '#3b82f6', fontSize: 9 }} />
-            <ReferenceLine y={3.59} stroke="#10b981" strokeDasharray="3 2" strokeWidth={1}
-              label={{ value: '3.59% Today', position: 'insideTopLeft', fill: '#10b981', fontSize: 9 }} />
+            <ReferenceLine y={4.5} stroke="#f43f5e" strokeDasharray="6 3" strokeWidth={1.5}
+              label={{ value: 'Cap 4.50%', position: 'insideTopRight', fill: '#f43f5e', fontSize: 9 }} />
+            <ReferenceLine y={3.0} stroke="#a0c3ec" strokeDasharray="6 3" strokeWidth={1.5}
+              label={{ value: 'Floor 3.00%', position: 'insideBottomRight', fill: '#a0c3ec', fontSize: 9 }} />
+            <ReferenceLine y={3.59} stroke="#22c55e" strokeDasharray="3 2" strokeWidth={1}
+              label={{ value: '3.59% Today', position: 'insideTopLeft', fill: '#22c55e', fontSize: 9 }} />
             <ReferenceLine x="Now" stroke="var(--border-accent)" strokeDasharray="4 2"
               label={{ value: 'Today', position: 'insideTopLeft', fill: 'var(--text-muted)', fontSize: 8 }} />
             <Line
@@ -95,7 +95,7 @@ export function SOFRCollarChart() {
               strokeWidth={2}
               dot={(props) => {
                 const { cx, cy, payload } = props;
-                const color = payload.type === 'forecast' ? '#3b82f6' : payload.type === 'current' ? '#10b981' : 'var(--text-secondary)';
+                const color = payload.type === 'forecast' ? '#a0c3ec' : payload.type === 'current' ? '#22c55e' : 'var(--text-secondary)';
                 return (
                   <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy}
                     r={payload.type === 'current' ? 5 : 3}

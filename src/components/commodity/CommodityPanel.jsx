@@ -18,7 +18,7 @@ const COMMODITIES = [
     hedgeLabel: '80% / 50% / 20%',
     hedgeTenor: '0–3M / 3–6M / 6–12M',
     instrument: 'SGX Futures + FFA Collar',
-    color: '#ef4444',
+    color: '#f43f5e',
     bg: 'var(--red-bg)',
     border: 'var(--red-border)',
     hasPayoff: true,
@@ -35,7 +35,7 @@ const COMMODITIES = [
     hedgeLabel: 'Not hedged',
     hedgeTenor: 'Spot procurement',
     instrument: 'Recommend zero-cost collar',
-    color: '#8b5cf6',
+    color: '#7c3aed',
     bg: 'rgba(76,29,149,0.2)',
     border: '#7c3aed',
     hasPayoff: false,
@@ -52,7 +52,7 @@ const COMMODITIES = [
     hedgeLabel: '0–3M FFA only',
     hedgeTenor: 'Near-term coverage',
     instrument: 'Baltic C5 FFA Forward',
-    color: '#f59e0b',
+    color: '#ff7a17',
     bg: 'var(--amber-bg)',
     border: 'var(--amber-border)',
     hasPayoff: false,
@@ -66,7 +66,7 @@ function PriceChange({ casePrice, livePrice, color }) {
   const isFlat = diff === 0;
 
   const Icon = isFlat ? Minus : isUp ? TrendingUp : TrendingDown;
-  const changeColor = isFlat ? 'var(--text-muted)' : isUp ? '#ef4444' : '#10b981';
+  const changeColor = isFlat ? 'var(--text-muted)' : isUp ? '#f43f5e' : '#22c55e';
 
   return (
     <div className="flex items-center gap-1 text-xs font-mono" style={{ color: changeColor }}>

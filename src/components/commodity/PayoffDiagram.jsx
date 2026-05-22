@@ -22,8 +22,8 @@ const PAYOFF_DATA = (() => {
 })();
 
 const chartConfig = {
-  unhedged: { label: 'Unhedged (0%)', color: '#ef4444' },
-  hedged: { label: '80% Hedged', color: '#10b981' },
+  unhedged: { label: 'Unhedged (0%)', color: '#f43f5e' },
+  hedged: { label: '80% Hedged', color: '#22c55e' },
 };
 
 export function PayoffDiagram() {

@@ -145,8 +145,8 @@ export function NigeriaScreen() {
                   />
                 }
               />
-              <ReferenceArea y1={45} y2={100} fill="#10b981" fillOpacity={0.06} />
-              <ReferenceArea y1={30} y2={45} fill="#f59e0b" fillOpacity={0.08} />
+              <ReferenceArea y1={45} y2={100} fill="#22c55e" fillOpacity={0.06} />
+              <ReferenceArea y1={30} y2={45} fill="#ff7a17" fillOpacity={0.08} />
               <ReferenceArea y1={0} y2={30} fill="#f43f5e" fillOpacity={0.10} />
               <ReferenceLine
                 y={45}

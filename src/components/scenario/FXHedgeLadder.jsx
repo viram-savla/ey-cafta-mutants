@@ -5,7 +5,7 @@ import {
 import { MODEL } from '../../lib/constants';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
-const LADDER_COLORS = { hedged: '#10b981', unhedged: '#ef4444' };
+const LADDER_COLORS = { hedged: '#22c55e', unhedged: '#f43f5e' };
 
 const BUCKETS = MODEL.fxLadder.map(b => ({
   ...b,
@@ -28,8 +28,8 @@ export function FXHedgeLadder() {
   }));
 
   const fxChartConfig = {
-    hedged: { label: 'Hedged', color: '#10b981' },
-    unhedged: { label: 'Open Exposure', color: '#ef4444' },
+    hedged: { label: 'Hedged', color: '#22c55e' },
+    unhedged: { label: 'Open Exposure', color: '#f43f5e' },
   };
 
   return (

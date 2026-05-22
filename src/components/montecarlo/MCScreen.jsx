@@ -49,8 +49,8 @@ const singleChartConfig = {
   count: { label: 'Paths' },
 };
 const overlaidChartConfig = {
-  unhedged: { label: 'Unhedged', color: '#ef4444' },
-  hedged: { label: '80% Hedged', color: '#10b981' },
+  unhedged: { label: 'Unhedged', color: '#f43f5e' },
+  hedged: { label: '80% Hedged', color: '#22c55e' },
 };
 
 export function MCScreen({ onCfarUpdate }) {
@@ -250,10 +250,10 @@ export function MCScreen({ onCfarUpdate }) {
                       <ReferenceLine x={8.0} stroke="var(--red)" strokeDasharray="4 2" label={{ value: 'CFaR 8%', fill: 'var(--red)', fontSize: 9, position: 'insideTopLeft' }} />
                       <ReferenceLine x={11.0} stroke="var(--amber)" strokeDasharray="4 2" label={{ value: 'Floor 11%', fill: 'var(--amber)', fontSize: 9, position: 'insideTopLeft' }} />
                       {compareResults?.p5 && (
-                        <ReferenceLine x={parseFloat((compareResults.p5 * 100).toFixed(2))} stroke="#ef4444" strokeDasharray="3 2" label={{ value: `P5 ${(compareResults.p5 * 100).toFixed(1)}%`, fill: '#ef4444', fontSize: 8, position: 'insideBottomLeft' }} />
+                        <ReferenceLine x={parseFloat((compareResults.p5 * 100).toFixed(2))} stroke="#f43f5e" strokeDasharray="3 2" label={{ value: `P5 ${(compareResults.p5 * 100).toFixed(1)}%`, fill: '#f43f5e', fontSize: 8, position: 'insideBottomLeft' }} />
                       )}
                       {p5Pct && (
-                        <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="#10b981" strokeDasharray="3 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: '#10b981', fontSize: 8, position: 'insideTopRight' }} />
+                        <ReferenceLine x={parseFloat(p5Pct.toFixed(2))} stroke="#22c55e" strokeDasharray="3 2" label={{ value: `P5 ${p5Pct.toFixed(1)}%`, fill: '#22c55e', fontSize: 8, position: 'insideTopRight' }} />
                       )}
                       <Bar dataKey="unhedged" fill="var(--color-unhedged)" fillOpacity={0.55} radius={[2, 2, 0, 0]} />
                       <Bar dataKey="hedged" fill="var(--color-hedged)" fillOpacity={0.7} radius={[2, 2, 0, 0]} />
@@ -280,7 +280,7 @@ export function MCScreen({ onCfarUpdate }) {
                       )}
                       <Bar dataKey="count" radius={[2, 2, 0, 0]}>
                         {histogram.map((entry, i) => (
-                          <Cell key={i} fill={entry.centerPct < 8 ? '#ef4444' : entry.centerPct < 11 ? '#f59e0b' : '#10b981'} opacity={0.85} />
+                          <Cell key={i} fill={entry.centerPct < 8 ? '#f43f5e' : entry.centerPct < 11 ? '#ff7a17' : '#22c55e'} opacity={0.85} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -314,7 +314,7 @@ export function MCScreen({ onCfarUpdate }) {
                     p5: compareResults.p5,
                     mean: compareResults.mean,
                     pct: compareResults.pctAboveFloor,
-                    color: '#ef4444',
+                    color: '#f43f5e',
                     bg: 'var(--red-bg)',
                     border: 'var(--red-border)',
                   },
@@ -323,7 +323,7 @@ export function MCScreen({ onCfarUpdate }) {
                     p5: results.p5,
                     mean: results.mean,
                     pct: results.pctAboveFloor,
-                    color: '#10b981',
+                    color: '#22c55e',
                     bg: 'var(--green-bg)',
                     border: 'var(--green-border)',
                   },
@@ -341,7 +341,7 @@ export function MCScreen({ onCfarUpdate }) {
                       </div>
                       <div className="flex items-center justify-between text-xs">
                         <span style={{ color: 'var(--text-muted)' }}>Above floor</span>
-                        <span className="font-mono" style={{ color: col.pct >= 80 ? '#10b981' : '#f59e0b' }}>{col.pct.toFixed(1)}%</span>
+                        <span className="font-mono" style={{ color: col.pct >= 80 ? '#22c55e' : '#ff7a17' }}>{col.pct.toFixed(1)}%</span>
                       </div>
                     </div>
                   </div>
@@ -352,9 +352,9 @@ export function MCScreen({ onCfarUpdate }) {
                 <span style={{ color: 'var(--amber)' }} className="font-semibold">Hedge benefit: </span>
                 <span style={{ color: 'var(--text-secondary)' }}>
                   P5 improves from{' '}
-                  <span className="font-mono" style={{ color: '#ef4444' }}>{(compareResults.p5 * 100).toFixed(2)}%</span>
+                  <span className="font-mono" style={{ color: '#f43f5e' }}>{(compareResults.p5 * 100).toFixed(2)}%</span>
                   {' '}→{' '}
-                  <span className="font-mono" style={{ color: '#10b981' }}>{(results.p5 * 100).toFixed(2)}%</span>
+                  <span className="font-mono" style={{ color: '#22c55e' }}>{(results.p5 * 100).toFixed(2)}%</span>
                   {' '}(+{((results.p5 - compareResults.p5) * 10000).toFixed(0)}bps).{' '}
                   This is the margin predictability value of 80% hedging — compressing the left tail without
                   capping the upside beyond hedge-adjusted outcomes.

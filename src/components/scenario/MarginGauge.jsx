@@ -29,9 +29,9 @@ export function MarginGauge({ margin }) {
   const angle = marginToAngle(margin);
 
   const zones = [
-    { from: MIN_ANGLE, to: marginToAngle(0.108), color: '#ef4444' },
-    { from: marginToAngle(0.108), to: marginToAngle(0.11), color: '#f59e0b' },
-    { from: marginToAngle(0.11), to: MAX_ANGLE, color: '#10b981' },
+    { from: MIN_ANGLE, to: marginToAngle(0.108), color: '#f43f5e' },
+    { from: marginToAngle(0.108), to: marginToAngle(0.11), color: '#ff7a17' },
+    { from: marginToAngle(0.11), to: MAX_ANGLE, color: '#22c55e' },
   ];
 
   const boardFloorAngle = marginToAngle(0.11);
@@ -39,7 +39,7 @@ export function MarginGauge({ margin }) {
   const boardFloorPtInner = polarToXY(cx, cy, r - 14, boardFloorAngle);
 
   const status = margin >= 0.11 ? 'green' : margin >= 0.108 ? 'amber' : 'red';
-  const statusColor = status === 'green' ? '#10b981' : status === 'amber' ? '#f59e0b' : '#ef4444';
+  const statusColor = status === 'green' ? '#22c55e' : status === 'amber' ? '#ff7a17' : '#f43f5e';
 
   // Needle is drawn pointing straight up (north = 0°).
   // Framer Motion rotates it to `angle` degrees clockwise from north,
@@ -77,13 +77,13 @@ export function MarginGauge({ margin }) {
         <line
           x1={boardFloorPtInner.x} y1={boardFloorPtInner.y}
           x2={boardFloorPt.x} y2={boardFloorPt.y}
-          stroke="#ef4444" strokeWidth="2" strokeDasharray="4 2"
+          stroke="#f43f5e" strokeWidth="2" strokeDasharray="4 2"
         />
         <text
           x={boardFloorPt.x - 6}
           y={boardFloorPt.y - 4}
           fontSize="8"
-          fill="#ef4444"
+          fill="#f43f5e"
           textAnchor="middle"
         >
           11%

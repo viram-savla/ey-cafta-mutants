@@ -108,10 +108,10 @@ function buildKPIs(hedgedMargin, unhedgedMargin, cfar5th) {
 }
 
 const INVENTORY_ITEMS = [
-  { label: 'DRI Buffer', current: 18, target: 12, dailyCost: MODEL.dailyRmCost, color: '#3b82f6' },
-  { label: 'Iron Ore Pellets', current: 24, target: 18, dailyCost: MODEL.dailyRmCost, color: '#10b981' },
-  { label: 'Coal', current: 28, target: 25, dailyCost: MODEL.dailyRmCost, color: '#f59e0b' },
-  { label: 'MRO / Consumables', current: null, target: null, dailyCost: null, fixed: 24, color: '#8b5cf6' },
+  { label: 'DRI Buffer', current: 18, target: 12, dailyCost: MODEL.dailyRmCost, color: '#a0c3ec' },
+  { label: 'Iron Ore Pellets', current: 24, target: 18, dailyCost: MODEL.dailyRmCost, color: '#22c55e' },
+  { label: 'Coal', current: 28, target: 25, dailyCost: MODEL.dailyRmCost, color: '#ff7a17' },
+  { label: 'MRO / Consumables', current: null, target: null, dailyCost: null, fixed: 24, color: '#7c3aed' },
 ];
 
 export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
@@ -171,7 +171,7 @@ export function KPIGrid({ hedgedMargin, unhedgedMargin, cfar5th, onNavigate }) {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Package size={15} style={{ color: '#3b82f6' }} />
+              <Package size={15} style={{ color: '#a0c3ec' }} />
               Inventory Optimisation — WC Release
             </DialogTitle>
           </DialogHeader>

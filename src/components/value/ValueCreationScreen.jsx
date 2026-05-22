@@ -22,7 +22,7 @@ const LEVERS = [
     annualLow: 92,
     annualHigh: 148,
     type: 'annual',
-    color: '#10b981',
+    color: '#22c55e',
     borderColor: '#059669',
     bg: 'rgba(6,78,59,0.4)',
     speedLabel: 'Fast',
@@ -46,7 +46,7 @@ const LEVERS = [
     annualHigh: null,
     oneTime: 394,
     type: 'one-time',
-    color: '#3b82f6',
+    color: '#a0c3ec',
     borderColor: '#2563eb',
     bg: 'rgba(29,78,216,0.15)',
     speedLabel: 'Medium',
@@ -70,7 +70,7 @@ const LEVERS = [
     annualLow: 37,
     annualHigh: 55,
     type: 'annual',
-    color: '#f59e0b',
+    color: '#ff7a17',
     borderColor: '#d97706',
     bg: 'rgba(69,26,3,0.5)',
     speedLabel: 'Medium',
@@ -94,7 +94,7 @@ const LEVERS = [
     annualLow: null,
     annualHigh: null,
     type: 'enabler',
-    color: '#8b5cf6',
+    color: '#7c3aed',
     borderColor: '#7c3aed',
     bg: 'rgba(76,29,149,0.25)',
     speedLabel: 'Fast',
@@ -140,9 +140,9 @@ const TOTAL_NPV_LOW = 826;
 const TOTAL_NPV_HIGH = 1075;
 
 const NPV_BAR_DATA = [
-  { name: 'Smarter\nContracting', low: Math.round(pvAnnuity(92)), high: Math.round(pvAnnuity(148)), color: '#10b981' },
-  { name: 'Inventory\nOptimisation', low: 394, high: 394, color: '#3b82f6' },
-  { name: 'Landed Cost\nIntegration', low: Math.round(pvAnnuity(37)), high: Math.round(pvAnnuity(55)), color: '#f59e0b' },
+  { name: 'Smarter\nContracting', low: Math.round(pvAnnuity(92)), high: Math.round(pvAnnuity(148)), color: '#22c55e' },
+  { name: 'Inventory\nOptimisation', low: 394, high: 394, color: '#a0c3ec' },
+  { name: 'Landed Cost\nIntegration', low: Math.round(pvAnnuity(37)), high: Math.round(pvAnnuity(55)), color: '#ff7a17' },
   { name: 'CBAM\nPremium', low: Math.round(pvAnnuity(27)), high: Math.round(pvAnnuity(33)), color: '#06b6d4' },
 ];
 
@@ -260,10 +260,10 @@ function LeverCard({ lever, index }) {
 
 function Quadrant2x2() {
   const dots = [
-    { label: 'Contracting', x: 82, y: 88, color: '#10b981' },
+    { label: 'Contracting', x: 82, y: 88, color: '#22c55e' },
     { label: 'Inventory', x: 40, y: 92, color: '#20b2aa' },
-    { label: 'Landed Cost', x: 55, y: 52, color: '#f59e0b' },
-    { label: 'RCC', x: 80, y: 68, color: '#8b5cf6' },
+    { label: 'Landed Cost', x: 55, y: 52, color: '#ff7a17' },
+    { label: 'RCC', x: 80, y: 68, color: '#7c3aed' },
     { label: 'CBAM', x: 22, y: 38, color: '#06b6d4' },
   ];
 
@@ -375,7 +375,7 @@ export function ValueCreationScreen() {
         {[
           { label: 'Total 5-yr NPV',  numeric: TOTAL_NPV_HIGH, prefix: '₹', suffix: ` Cr`,    display: `₹${TOTAL_NPV_LOW}–${TOTAL_NPV_HIGH} Cr`,   sub: 'at 15% CoC',                   color: 'var(--accent-teal-soft)' },
           { label: 'Annual Cash Flow', display: '₹129–203 Cr/yr', sub: 'Contracting + Landed Cost',   color: 'var(--green-soft)' },
-          { label: 'WC Release (Y1)',  numeric: 394, prefix: '₹', suffix: ' Cr', sub: '71 → 55 inventory days',      color: '#60a5fa' },
+          { label: 'WC Release (Y1)',  numeric: 394, prefix: '₹', suffix: ' Cr', sub: '71 → 55 inventory days',      color: '#a0c3ec' },
           { label: 'CBAM Premium',     display: '~₹30 Cr/yr',  sub: 'EUR 110M exports · post-2026',  color: '#22d3ee' },
         ].map((kpi, i) => (
           <motion.div

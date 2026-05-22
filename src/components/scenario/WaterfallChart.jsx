@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '../ui/chart';
 
 const chartConfig = {
-  unhedged: { label: 'Unhedged', color: '#ef4444' },
-  hedged: { label: 'Hedged', color: '#10b981' },
+  unhedged: { label: 'Unhedged', color: '#f43f5e' },
+  hedged: { label: 'Hedged', color: '#22c55e' },
 };
 
 export function WaterfallChart({ ironOreShock, inrRate, freightShock }) {
@@ -66,10 +66,10 @@ export function WaterfallChart({ ironOreShock, inrRate, freightShock }) {
               label={{ value: 'Board Floor (11.0%)', position: 'insideTopLeft', fill: 'var(--red)', fontSize: 9 }}
             />
             <Bar dataKey="unhedged" name="unhedged" fill="var(--color-unhedged)" opacity={0.8} radius={[2, 2, 0, 0]}>
-              <LabelList dataKey="unhedged" position="top" style={{ fontSize: 9, fill: '#ef4444' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
+              <LabelList dataKey="unhedged" position="top" style={{ fontSize: 9, fill: '#f43f5e' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
             </Bar>
             <Bar dataKey="hedged" name="hedged" fill="var(--color-hedged)" opacity={0.8} radius={[2, 2, 0, 0]}>
-              <LabelList dataKey="hedged" position="top" style={{ fontSize: 9, fill: '#10b981' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
+              <LabelList dataKey="hedged" position="top" style={{ fontSize: 9, fill: '#22c55e' }} formatter={v => v !== 0 ? `${v > 0 ? '+' : ''}${v}` : ''} />
             </Bar>
             <ChartLegend content={<ChartLegendContent />} />
           </ComposedChart>
